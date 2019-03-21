@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="testing"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomee-jaxrs-7.0.2.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/javaee-api-7.0-1.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/slf4j-api-1.7.21.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/slf4j-jdk14-1.7.21.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomcat-api.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomcat-coyote.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomcat-dbcp.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomcat-i18n-es.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomcat-i18n-fr.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomcat-i18n-ja.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomcat-jdbc.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomcat-jni.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomcat-util.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomcat-util-scan.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomcat-websocket.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomee-catalina-7.0.2.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomee-common-7.0.2.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomee-jdbc-7.0.2.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomee-loader-7.0.2.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomee-webapp-7.0.2.jar"/>
+	<classpathentry kind="lib" path="D:/Apache/apache-tomee-7.0.2-plume/apache-tomee-plume-7.0.2/lib/tomee-webservices-7.0.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/MySQL/Connector J 8.0/mysql-connector-java-8.0.13.jar"/>
+	<classpathentry kind="lib" path="D:/Nokona/Jars/gson-2.8.1.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

@@ -1,12 +1,12 @@
 package com.nokona.model;
 
 public class Employee {
-	long key;
+	private long key;
 	private String lastName;
 	private String firstName;
-	int barCodeID;
-	int laborCode;
-	String empId;
+	private int barCodeID;
+	private int laborCode;
+	private String empId;
 	boolean active;
 	
 	public Employee() {

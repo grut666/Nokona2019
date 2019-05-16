@@ -13,20 +13,22 @@ import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.nokona.data.NokonaDatabaseLaborCode;
 import com.nokona.data.NokonaDatabaseOperation;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
+import com.nokona.model.LaborCode;
 import com.nokona.model.Operation;
 
-@Path("/operations")
-public class NokonaOperationResource {
+@Path("/laborcodes")
+public class NokonaLaborCodeResource {
 //	@Inject
 //	private NokonaDAOManager dbMgr;
 //	@Inject @Named("x")
 @Inject
-	private NokonaDatabaseOperation db;
-public NokonaOperationResource() throws DatabaseException  {
+	private NokonaDatabaseLaborCode db;
+public NokonaLaborCodeResource() throws DatabaseException  {
 //	db =  (NokonaDatabaseOperation) dbMgr.getDAO(DAOType.OPERATION);
 //	db = new NokonaDAOOperation();
 	
@@ -34,18 +36,18 @@ public NokonaOperationResource() throws DatabaseException  {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{operation}")
-	public Response getOperation(@PathParam("operation") String operation) {
+	@Path("/{laborcode}")
+	public Response getLaborCode(@PathParam("laborcode") int laborCodeIn) {
 		
-		Operation op;
+		LaborCode laborCode;
 		
 		try {
 //			getDB();
 			
-				op = db.getOperation(operation);
+				laborCode = db.getLaborCode(laborCodeIn);
 	
 		} catch (DataNotFoundException ex) {
-			return Response.status(404).entity("{\"error\":\"" + operation + " not found\"}").build();
+			return Response.status(404).entity("{\"error\":\"" + laborCodeIn + " not found\"}").build();
 		} catch (DatabaseException ex ) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
@@ -53,16 +55,39 @@ public NokonaOperationResource() throws DatabaseException  {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 		
-		return Response.status(200).entity(op).build();
+		return Response.status(200).entity(laborCode).build();
+	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/bykey/{key}")
+	public Response getLaborCodeByKey(@PathParam("key") int key) {
+		
+		LaborCode laborCode;
+		
+		try {
+//			getDB();
+			
+				laborCode = db.getLaborCodeByKey(key);
+	
+		} catch (DataNotFoundException ex) {
+			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
+		} catch (DatabaseException ex ) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+		catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+		
+		return Response.status(200).entity(laborCode).build();
 	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response getOperations() {
+	public Response getLaborCodes() {
 		try {
 //			getDB();
-			return Response.status(200).entity(db.getOperations()).build();
+			return Response.status(200).entity(db.getLaborCodes()).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
@@ -75,19 +100,19 @@ public NokonaOperationResource() throws DatabaseException  {
 	@Produces(MediaType.APPLICATION_JSON)
 	// @Consumes(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response updateOperation(String opIn) {
+	public Response updateLaborCode(String laborCodeIn) {
 
 		Gson gson;
-		Operation op;
+		LaborCode laborCode;
 		try {
 			gson = new Gson();
-			op = gson.fromJson(opIn, Operation.class);
+			laborCode = gson.fromJson(laborCodeIn, LaborCode.class);
 		} catch (JsonSyntaxException jse) {
 			return Response.status(400).entity(jse.getMessage()).build();
 		}
 		try {
 //			getDB();
-			op = db.updateOperation(op);
+			laborCode = db.updateLaborCode(laborCode);
 		} catch (DuplicateDataException e) {
 			return Response.status(400).entity(e.getMessage()).build();
 		}catch (DatabaseException ex) {
@@ -97,26 +122,26 @@ public NokonaOperationResource() throws DatabaseException  {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 
-		return Response.status(200).entity(op).build();
+		return Response.status(200).entity(laborCode).build();
 	}
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	// @Consumes(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response addOperation(String opIn) {
+	public Response addLaborCode(String laborCodeIn) {
 
 		
 		Gson gson;
-		Operation op;
+		LaborCode laborCode;
 		try {
 			gson = new Gson();
-			op = gson.fromJson(opIn, Operation.class);
+			laborCode = gson.fromJson(laborCodeIn, LaborCode.class);
 		} catch (JsonSyntaxException jse) {
 			return Response.status(400).entity(jse.getMessage()).build();
 		}
 		try {
 //			getDB();
-			op = db.addOperation(op);
+			laborCode = db.addLaborCode(laborCode);
 		} catch (DuplicateDataException e) {
 			return Response.status(400).entity(e.getMessage()).build();
 		}catch (DatabaseException ex) {
@@ -125,20 +150,20 @@ public NokonaOperationResource() throws DatabaseException  {
 		catch (Exception ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
-		return Response.status(200).entity(op).build();
+		return Response.status(200).entity(laborCode).build();
 	}
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{operation}")
-	public Response deleteOperation(@PathParam("operation") String operation) {
+	@Path("/{laborCode}")
+	public Response deleteLaborCode(@PathParam("laborcode") int laborCode) {
 		
 		
 		try {
 //			getDB();
-				db.deleteOperation(operation);
+				db.deleteLaborCode(laborCode);
 	
 		} catch (DataNotFoundException ex) {
-			return Response.status(404).entity("{\"error\":\"" + operation + " not found\"}").build();
+			return Response.status(404).entity("{\"error\":\"" + laborCode + " not found\"}").build();
 		} catch (DatabaseException ex ) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
@@ -148,11 +173,5 @@ public NokonaOperationResource() throws DatabaseException  {
 		
 		return Response.status(200).entity("{\"Success\":\"200\"}").build();
 	}
-//	private void getDB() throws DatabaseException {
-//
-//		if (db == null) {
-//			db = (NokonaDatabaseOperation) NokonaDAOManager.getDAO(DAOType.OPERATION);
-//		}
-//	}
 
 }

@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.inject.Default;
+
 import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
@@ -15,7 +17,7 @@ import com.nokona.formatter.EmployeeFormatter;
 import com.nokona.model.Employee;
 import com.nokona.validator.EmployeeValidator;
 
-
+@Default
 public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 	public NokonaDAOEmployee() throws DatabaseException {
 		super();
@@ -59,7 +61,7 @@ public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 	}
 
 	@Override
-	public Employee getEmployee(long key) throws DatabaseException {
+	public Employee getEmployeeByKey(long key) throws DatabaseException {
 		Employee emp = null;
 		if (psGetEmployeeByKey == null) {
 			try {
@@ -158,7 +160,7 @@ public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
 			}
-			return getEmployee(formattedEmployee.getKey());
+			return getEmployeeByKey(formattedEmployee.getKey());
 			
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -200,7 +202,7 @@ public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 			try (ResultSet generatedKeys = psAddEmployee.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
 					newEmp.setKey(generatedKeys.getLong(1));
-					return getEmployee(generatedKeys.getLong(1));
+					return getEmployeeByKey(generatedKeys.getLong(1));
 				} else {
 					throw new SQLException("Creating user failed, no ID obtained.");
 				}
@@ -211,10 +213,10 @@ public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 		}
 	}
 	@Override
-	public void deleteEmployee(long key) throws DatabaseException {
+	public void deleteEmployeeByKey(long key) throws DatabaseException {
 		if (psDelEmployeeByKey == null) {
 			try {
-				psDelEmployeeByKey = conn.prepareStatement("Delete From Employee where Key = ?");
+				psDelEmployeeByKey = conn.prepareStatement("Delete From Employee where Employee.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -263,6 +265,8 @@ public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 			throw new DatabaseException(e.getMessage(), e);
 		}
 	}
+
+
 
 
 

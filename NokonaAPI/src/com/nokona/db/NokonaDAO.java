@@ -20,7 +20,7 @@ public class NokonaDAO {
 		connectToDB();
 	}
 
-	protected Connection getConn() {
+	public Connection getConn() {
 		return conn;
 	}
 
@@ -41,6 +41,22 @@ public class NokonaDAO {
 				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage(), e);
 			}
+		}
+	}
+	public void rollback() {
+		try {
+			conn.rollback();
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+	}
+	public void commit()  {
+		try {
+			conn.commit();
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
 		}
 	}
 

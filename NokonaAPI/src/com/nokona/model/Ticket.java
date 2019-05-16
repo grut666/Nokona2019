@@ -1,63 +1,37 @@
 package com.nokona.model;
 
-import java.util.Date;
-
-import com.nokona.enums.TicketStatus;
+import java.util.List;
 
 public class Ticket {
-	private long key;
-	private String model;
-	private Date dateCreated;
-	private TicketStatus ticketStatus;
-	private Date dateStatus;
-	private int quantity;
+	private TicketHeader ticketHeader;
+	private List<TicketDetail> ticketDetails;
+	
 	public Ticket() {
-		
+		super();
 	}
-	public Ticket(long key, String model, Date dateCreated, TicketStatus ticketStatus, Date dateStatus, int quantity) {
-		this.setKey(key);
-		this.setModel(model);
-		this.setDateCreated(dateCreated);
-		this.setTicketStatus(ticketStatus);
-		this.setDateStatus(dateStatus);
-		this.setQuantity(quantity);
+	public Ticket(TicketHeader ticketHeader, List<TicketDetail> ticketDetails) {
+		super();
+		this.setTicketHeader(ticketHeader);
+		this.setTicketDetails(ticketDetails);
 	}
-	public long getKey() {
-		return key;
+	public TicketHeader getTicketHeader() {
+		return ticketHeader;
 	}
-	public void setKey(long key) {
-		this.key = key;
+	public void setTicketHeader(TicketHeader ticketHeader) {
+		this.ticketHeader = ticketHeader;
 	}
-	public String getModel() {
-		return model;
+	public List<TicketDetail> getTicketDetails() {
+		return ticketDetails;
 	}
-	public void setModel(String model) {
-		this.model = model;
+	public void setTicketDetails(List<TicketDetail> ticketDetails) {
+		this.ticketDetails = ticketDetails;
 	}
-	public Date getDateCreated() {
-		return dateCreated;
+	@Override
+	public String toString() {
+		return "Ticket [ticketHeader=" + ticketHeader + ", ticketDetails=" + ticketDetails + "]";
 	}
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
-	}
-	public TicketStatus getTicketStatus() {
-		return ticketStatus;
-	}
-	public void setTicketStatus(TicketStatus ticketStatus) {
-		this.ticketStatus = ticketStatus;
-	}
-	public Date getDateStatus() {
-		return dateStatus;
-	}
-	public void setDateStatus(Date dateStatus) {
-		this.dateStatus = dateStatus;
-	}
-	public int getQuantity() {
-		return quantity;
-	}
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
+	
+	
 	
 	
 }

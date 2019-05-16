@@ -21,6 +21,7 @@ import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.model.Employee;
 import com.nokona.model.Ticket;
+import com.nokona.model.TicketHeader;
 
 @Path("/tickets")
 
@@ -36,44 +37,81 @@ private NokonaDatabaseTicket db;
 		
 	}
 
-//	@GET
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Path("/{ticket}")
-//	public Response getTicket(@PathParam("ticket") String ticketIn) {
-//		
-//		Ticket ticket;
-//		
-//		try {
-//				ticket = db.getTicket(ticketIn);
-//	
-//		} catch (DataNotFoundException ex) {
-//			return Response.status(404).entity("{\"error\":\"" + ticketIn + " not found\"}").build();
-//		} catch (DatabaseException ex ) {
-//			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-//		}
-//		catch (Exception ex) {
-//			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
-//		}
-//		
-//		return Response.status(200).entity(ticket).build();
-//	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{key}")
+	public Response getTicket(@PathParam("key") int key) {
+		
+		Ticket ticket;
+		
+		try {
+				ticket = db.getTicketByKey(key);
+	
+		} catch (DataNotFoundException ex) {
+			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
+		} catch (DatabaseException ex ) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+		catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		}
+		
+		return Response.status(200).entity(ticket).build();
+	}
 
-//	@GET
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Path("/")
-//	public Response getTickets() {
-//
-//		try {
-//			return Response.status(200).entity(db.getTickets()).build();
-//		} catch (DatabaseException ex) {
-//			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-//		}
-//		catch (Exception ex) {
-//			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() +  db +"\"}").build();
-//		}
-//		
-//		
-//	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/")
+	public Response getTickets() {
+
+		try {
+			return Response.status(200).entity(db.getTickets()).build();
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+		catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() +  db +"\"}").build();
+		}
+		
+		
+	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/ticketheaders")
+	public Response getTicketHeaderss() {
+
+		try {
+			return Response.status(200).entity(db.getTicketHeaders()).build();
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+		catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() +  db +"\"}").build();
+		}
+		
+		
+	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/ticketheaders/{key}")
+	public Response getTicketHeaderByKey(@PathParam("key") long key) {
+		
+		TicketHeader ticketHeader;
+		
+		try {
+				ticketHeader = db.getTicketHeaderByKey(key);
+	
+		} catch (DataNotFoundException ex) {
+			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
+		} catch (DatabaseException ex ) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+		catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		}
+//		String year = ticketHeader.getDateCreated().toString();
+		return Response.status(200).entity(ticketHeader).build();
+	}
 
 //	@PUT
 //	@Produces(MediaType.APPLICATION_JSON)

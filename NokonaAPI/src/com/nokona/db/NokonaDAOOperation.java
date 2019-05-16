@@ -32,7 +32,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 
 	
 	@Override
-	public Operation getOperation(long key) throws DataNotFoundException {
+	public Operation getOperationByKey(long key) throws DataNotFoundException {
 		Operation operation = null;
 		if (psGetOperationByKey == null) {
 			try {
@@ -139,7 +139,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
 			}
-			return getOperation(formattedOperation.getKey());
+			return getOperationByKey(formattedOperation.getKey());
 			
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -181,7 +181,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			try (ResultSet generatedKeys = psAddOperation.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
 					newOp.setKey(generatedKeys.getLong(1));
-					return getOperation(generatedKeys.getLong(1));
+					return getOperationByKey(generatedKeys.getLong(1));
 				} else {
 					throw new SQLException("Creating operation failed, no ID obtained.");
 				}
@@ -193,7 +193,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 	}
 
 	@Override
-	public void deleteOperation(long key) throws DatabaseException {
+	public void deleteOperationByKey(long key) throws DatabaseException {
 		if (psDelOperationByKey == null) {
 			try {
 				psDelOperationByKey = conn.prepareStatement("Delete From Operation where Key = ?");
@@ -253,7 +253,8 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 		double hourlyRateSAH = rs.getDouble("HourlyRateSAH");
 		int laborCode = rs.getInt("LaborCode");
 		int lastStudyYear = rs.getInt("LastStudyYear");
+		boolean active = rs.getString("Active").equals("Y") ? true : false;
 
-		return new Operation(opCode, description, hourlyRateSAH, laborCode, key, lastStudyYear);
+		return new Operation(opCode, description, hourlyRateSAH, laborCode, key, lastStudyYear, active);
 	}
 }

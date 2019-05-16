@@ -7,17 +7,26 @@ public class Operation {
 	private double hourlyRateSAH;
 	private int laborCode;
 	private int lastStudyYear;
+	private boolean active;
 	
 	public Operation() {
-		this("", "", 0, 0, 0, 0);
+		this("", "", 0, 0, 0, 0, false);
 	}
-	public Operation(String opCode, String description, double hourlyRateSAH, int laborCode, int key, int lastStudyYear) {
+	public Operation(String opCode, String description, double hourlyRateSAH, int laborCode, long key, int lastStudyYear, boolean active) {
 		this.setOpCode(opCode);
 		this.setDescription(description);
 		this.setHourlyRateSAH(hourlyRateSAH);
 		this.setLaborCode(laborCode);
 		this.setKey(key);
 		this.setLastStudyYear(lastStudyYear);
+		this.setActive(active);
+		
+	}
+	public boolean isActive() {
+		return active;
+	}
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 	public String getOpCode() {
 		return opCode;

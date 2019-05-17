@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.db.NokonaDAOEmployee;
 import com.nokona.exceptions.DataNotFoundException;
+import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.model.Employee;
@@ -171,6 +172,42 @@ class TestEmployeeDB {
 		db.deleteEmployeeByKey(562);
 		assertEquals(startingCount - 1, db.getEmployees().size());
 
+	}
+	@Test
+	void testAddEmployee() throws DatabaseException {
+		List<Employee> employees = db.getEmployees();
+		int startingCount = employees.size();
+		db.deleteEmployeeByKey(562);
+		assertEquals(startingCount - 1, db.getEmployees().size());
+
+	}
+	@Test
+	void testAddEmployeeDupeBarCodeIDException() throws DatabaseException {
+		Employee employee = new Employee(-1, "HITLER", "ADOLPH", 587, 7, "HIT666", true);
+		Assertions.assertThrows(DuplicateDataException.class, () -> {
+			db.addEmployee(employee);
+		});
+	}
+	@Test
+	void testAddEmployeeDupeEmpIDException() throws DatabaseException {
+		Employee employee = new Employee(-1, "HITLER", "ADOLPH", 6666, 7, "BOG10", true);
+		Assertions.assertThrows(DuplicateDataException.class, () -> {
+			db.addEmployee(employee);
+		});
+	}
+	@Test
+	void testAddEmployeeInvalidLaborCodeException() throws DatabaseException {
+		Employee employee = new Employee(-1,  "HITLER", "ADOLPH", 6666, 666, "HIT666", true);
+		Assertions.assertThrows(DataNotFoundException.class, () -> {
+			db.addEmployee(employee);
+		});
+	}
+	@Test
+	void testAddEmployeeNullException() throws DatabaseException {
+		
+		Assertions.assertThrows(NullInputDataException.class, () -> {
+			db.addEmployee(null);
+		});
 	}
 
 }

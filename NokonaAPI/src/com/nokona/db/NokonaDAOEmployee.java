@@ -18,16 +18,18 @@ import com.nokona.model.Employee;
 import com.nokona.validator.EmployeeValidator;
 
 @Default
-public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
+public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 	public NokonaDAOEmployee() throws DatabaseException {
 		super();
-		
+
 	}
 
 	PreparedStatement psGetEmployeeByKey;
 	PreparedStatement psGetEmployeeByEmpId;
 	PreparedStatement psGetEmployees;
 	PreparedStatement psAddEmployee;
+	PreparedStatement psAddEmployeeDupeCheck;
+	PreparedStatement psAddEmployeeLaborCodeCheck;
 	PreparedStatement psUpdateEmployee;
 
 	PreparedStatement psGetOperationByKey;
@@ -37,7 +39,6 @@ public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 	PreparedStatement psDelEmployeeByKey;
 	PreparedStatement psDelEmployeeByEmpId;
 
-	
 	@Override
 	public List<Employee> getEmployees() throws DatabaseException {
 		List<Employee> employees = new ArrayList<Employee>();
@@ -134,8 +135,8 @@ public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 		if (psUpdateEmployee == null) {
 			try {
 				psUpdateEmployee = conn.prepareStatement(
-						"Update Employee Set LastName = ?, FirstName = ?, BarCodeID = ?, LaborCode = ?, EmpID = ?, Active = ? " +
-							"WHERE Employee.KEY = ?");
+						"Update Employee Set LastName = ?, FirstName = ?, BarCodeID = ?, LaborCode = ?, EmpID = ?, Active = ? "
+								+ "WHERE Employee.KEY = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -144,7 +145,7 @@ public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 		}
 		Employee formattedEmployee = EmployeeFormatter.format(employeeIn);
 		String validateMessage = EmployeeValidator.validateUpdate(formattedEmployee, conn);
-		if (! "".equals(validateMessage)) {
+		if (!"".equals(validateMessage)) {
 			throw new DatabaseException(validateMessage);
 		}
 		try {
@@ -161,15 +162,63 @@ public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
 			}
 			return getEmployeeByKey(formattedEmployee.getKey());
-			
+
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DuplicateDataException(e.getMessage(), e);
 		}
 	}
+
 	@Override
 	public Employee addEmployee(Employee employeeIn) throws DatabaseException {
+		// Dupe Data Check
+		if (employeeIn == null) {
+			throw new NullInputDataException("Employee cannot be null");
+		}
+		Employee formattedEmployee = EmployeeFormatter.format(employeeIn);
+		if (psAddEmployeeDupeCheck == null) {
+			try {
+				psAddEmployeeDupeCheck = conn
+						.prepareStatement("Select * from Employee where BarCodeID = ? or EmpID = ?");
 
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DatabaseException(e.getMessage());
+			}
+		}
+		try {
+		psAddEmployeeDupeCheck.setInt(1, formattedEmployee.getBarCodeID());
+		psAddEmployeeDupeCheck.setString(2, formattedEmployee.getEmpId());
+		ResultSet rs = psAddEmployeeDupeCheck.executeQuery();
+		if (rs.next()) {
+			throw new DuplicateDataException("BarCodeID or EmpID is already in use");
+		}
+		}
+		catch(SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DuplicateDataException(e.getMessage(), e);
+		}
+		// LaborCode Check
+		if (psAddEmployeeLaborCodeCheck == null) {
+			try {
+				psAddEmployeeLaborCodeCheck = conn.prepareStatement("Select * from LaborCode where LaborCode = ?");
+
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DatabaseException(e.getMessage());
+			}
+		}
+		try {
+			psAddEmployeeLaborCodeCheck.setInt(1, formattedEmployee.getLaborCode());
+			ResultSet rs2 = psAddEmployeeLaborCodeCheck.executeQuery();
+			if (!rs2.next()) {
+				throw new DataNotFoundException("Invalid Labor Code " + employeeIn.getLaborCode());
+			}
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DuplicateDataException(e.getMessage(), e);
+
+		}
 		if (psAddEmployee == null) {
 			try {
 				psAddEmployee = conn.prepareStatement(
@@ -181,7 +230,7 @@ public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 				throw new DatabaseException(e.getMessage());
 			}
 		}
-		Employee formattedEmployee = EmployeeFormatter.format(employeeIn);
+
 		String validateMessage = EmployeeValidator.validateAdd(formattedEmployee, conn);
 		if (!"".equals(validateMessage)) {
 			throw new DatabaseException(validateMessage);
@@ -212,6 +261,7 @@ public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 			throw new DuplicateDataException(e.getMessage(), e);
 		}
 	}
+
 	@Override
 	public void deleteEmployeeByKey(long key) throws DatabaseException {
 		if (psDelEmployeeByKey == null) {
@@ -265,9 +315,5 @@ public class NokonaDAOEmployee extends NokonaDAO  implements NokonaDatabaseEmp {
 			throw new DatabaseException(e.getMessage(), e);
 		}
 	}
-
-
-
-
 
 }

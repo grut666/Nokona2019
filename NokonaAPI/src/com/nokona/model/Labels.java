@@ -16,6 +16,7 @@ public class Labels {
 		this.labels = labels;
 	}
 	protected void generateLabels(Employee emp) {
+		StringBuilder sb = new StringBuilder("");
 		labels = "Label Stuff Will Be Here";
 	}
 }

@@ -1,6 +1,8 @@
 package com.nokona.testing;
 
+import javax.print.Doc;
 import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -20,6 +22,11 @@ public class PrintMain {
 		aset.add(new Copies(2));
 		PrintService[] service = PrintServiceLookup.lookupPrintServices(null, aset);
 		System.out.println(service.length);
+		for (PrintService svc: service) {
+			System.out.println(svc.getName() + ":" + svc.getAttributes());
+
+			
+		}
 	}
 
 }

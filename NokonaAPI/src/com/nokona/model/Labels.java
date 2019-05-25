@@ -30,6 +30,7 @@ public class Labels {
 		int pointSize = 30;
 		int tailEnd = page_quantity * 10;
 		String fBarCode = emp.getBarCodeID() + "";
+		fBarCode = BarCodeUtilities.formatBarCode(fBarCode);
 		String employee = (emp.getFirstName() + " " + emp.getLastName() + " - " + emp.getEmpId()).replaceAll(" ", "_");
 		String cvtBarCode = BarCodeUtilities.convertBarCode2of5(fBarCode);
 		StringBuilder sb = new StringBuilder("");

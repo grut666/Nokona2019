@@ -166,6 +166,12 @@ private NokonaDatabaseEmp db;
 		
 		return Response.status(200).entity(labels).build();
 	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/labels/{user}")
+	public Response getEmployeeLabelsDefaultOnePage(@PathParam("user") String user) {		
+		return getEmployeeLabels(user, 1);
+	}
 
 
 

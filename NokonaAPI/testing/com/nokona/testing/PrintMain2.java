@@ -19,6 +19,9 @@ import javax.print.attribute.standard.Copies;
 import javax.print.event.PrintJobAdapter;
 import javax.print.event.PrintJobEvent;
 
+import com.nokona.model.Employee;
+import com.nokona.model.Labels;
+
 public class PrintMain2 {
 
 	public static void main(String[] args) throws PrintException, IOException {
@@ -33,16 +36,18 @@ public class PrintMain2 {
 				break;
 			}
 		}
-		
+	
+		Employee emp = new Employee(518, "FULKERSON", "DOUGLAS", 851,8,"FUL10", true);
+		Labels labels = new Labels(emp);
 		// prints the famous hello world! plus a form feed
-		InputStream is = new ByteArrayInputStream("hello world!\f".getBytes("UTF8"));
+		InputStream is = new ByteArrayInputStream(labels.getLabels().getBytes("UTF8"));
 
 		PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 		pras.add(new Copies(1));
 
 		DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
 		Doc doc = new SimpleDoc(is, flavor, null);
-		DocPrintJob job = service.createPrintJob();
+		DocPrintJob job = barCodePrinter.createPrintJob();
 
 		PrintJobWatcher pjw = new PrintJobWatcher(job);
 		job.print(doc, pras);

@@ -23,10 +23,17 @@ public class PrintMain2 {
 
 	public static void main(String[] args) throws PrintException, IOException {
 
-		String defaultPrinter = PrintServiceLookup.lookupDefaultPrintService().getName();
-		System.out.println("Default printer: " + defaultPrinter);
-		PrintService service = PrintServiceLookup.lookupDefaultPrintService();
-
+//		String defaultPrinter = PrintServiceLookup.lookupDefaultPrintService().getName();
+//		System.out.println("Default printer: " + defaultPrinter);
+		PrintService [] services = PrintServiceLookup.lookupPrintServices(null, null);
+		PrintService barCodePrinter = null;
+		for (PrintService service : services) {
+			if (service.getName().contains("P3010")) {
+				barCodePrinter = service;
+				break;
+			}
+		}
+		
 		// prints the famous hello world! plus a form feed
 		InputStream is = new ByteArrayInputStream("hello world!\f".getBytes("UTF8"));
 

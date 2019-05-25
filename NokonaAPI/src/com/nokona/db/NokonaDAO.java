@@ -11,7 +11,7 @@ import com.nokona.exceptions.DatabaseException;
 
 public class NokonaDAO {
 	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-	private static String DB_URL = "jdbc:mysql://localhost:3306/Nokona?serverTimeZone=UTC";
+	private static String DB_URL = "jdbc:mysql://localhost:3306/Nokona?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 	private static String USER_NAME = "root";
 	private static String PASSWORD = "xyz";
 	protected Connection conn;

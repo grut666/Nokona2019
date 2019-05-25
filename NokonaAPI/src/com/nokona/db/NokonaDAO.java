@@ -13,11 +13,14 @@ public class NokonaDAO {
 	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 	private static String DB_URL = "jdbc:mysql://localhost:3306/Nokona?serverTimeZone=UTC";
 	private static String USER_NAME = "root";
-	private static String PASSWORD = "xyz123";
+	private static String PASSWORD = "xyz";
 	protected Connection conn;
 	// SuperClass for all DAO classes
 	public NokonaDAO() throws DatabaseException {
-		connectToDB();
+		connectToDB(USER_NAME, PASSWORD);
+	}
+	public NokonaDAO(String userName, String password) throws DatabaseException {
+		connectToDB(userName, password);
 	}
 
 	public Connection getConn() {
@@ -28,11 +31,11 @@ public class NokonaDAO {
 		this.conn = conn;
 	}
 
-	private void connectToDB() throws DatabaseException {
+	private void connectToDB(String userName, String password) throws DatabaseException {
 		if (conn == null) {
 			try {
 				Class.forName(JDBC_DRIVER);
-				conn = DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD);
+				conn = DriverManager.getConnection(DB_URL, userName, password);
 				conn.setAutoCommit(true);
 			} catch (ClassNotFoundException e) {
 				System.err.println("Class not found: " + e.getMessage());

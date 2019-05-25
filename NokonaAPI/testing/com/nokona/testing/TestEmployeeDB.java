@@ -26,7 +26,7 @@ class TestEmployeeDB {
 
 	@BeforeAll
 	private static void setup() throws DatabaseException, SQLException {
-		db = new NokonaDAOEmployee();
+		db = new NokonaDAOEmployee("root", "xyz");
 		conn = db.getConn();
 		conn.setAutoCommit(false);
 	}

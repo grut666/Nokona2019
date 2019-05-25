@@ -19,7 +19,8 @@ public class BarCodeUtilities {
 	public static String convertBarCode2of5(String strIn) {
 		StringBuilder strBarCode = new StringBuilder("");
 		for (int i = 0; i < strIn.length(); i += 2) {
-			if (Integer.parseInt(strIn.substring(i,  2)) == 0) {
+			String subStr = strIn.substring(i,  i + 2);
+			if (Integer.parseInt(subStr) == 0) {
 				strBarCode.append("!");
 			} else {
 				strBarCode.append(strCodeTable[i]);

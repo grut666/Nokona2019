@@ -23,6 +23,10 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 		super();
 
 	}
+	public NokonaDAOEmployee(String userName, String password) throws DatabaseException {
+		super(userName, password);
+
+	}
 
 	PreparedStatement psGetEmployeeByKey;
 	PreparedStatement psGetEmployeeByEmpId;

@@ -15,11 +15,13 @@ public class PrintMain {
 	public static void main(String[] args) {
 
 		// DocFlavor flavor = DocFlavor.;
-		PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-		aset.add(MediaSizeName.ISO_A4);
-		aset.add(new Copies(2));
-		PrintService[] service = PrintServiceLookup.lookupPrintServices(null, aset);
-		System.out.println(service.length);
+//		PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+//		aset.add(MediaSizeName.ISO_A4);
+//		aset.add(new Copies(2));
+//		PrintService[] service = PrintServiceLookup.lookupPrintServices(null, aset);
+//		System.out.println(service.length);
+		System.out.println((char) 0x1b);
+		System.out.println((int)0x1b);
 	}
 
 }

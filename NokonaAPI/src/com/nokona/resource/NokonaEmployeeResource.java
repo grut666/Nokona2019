@@ -2,6 +2,7 @@ package com.nokona.resource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -20,6 +21,7 @@ import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.model.Employee;
 import com.nokona.model.Labels;
+import com.nokona.utilities.BarCodeUtilities;
 
 @Path("/employees")
 
@@ -147,6 +149,7 @@ private NokonaDatabaseEmp db;
 	}
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/labels/{user}/{quantity}")
 	public Response getEmployeeLabels(@PathParam("user") String user, @PathParam("quantity") int quantity) {
 		
@@ -154,8 +157,9 @@ private NokonaDatabaseEmp db;
 		Labels labels;
 		try {
 				Employee emp = db.getEmployee(user);
-				labels = new Labels(emp);
-				labels.generateLabels(emp, quantity);
+				labels = new Labels();
+				labels.setLabels(BarCodeUtilities.generateLabels(emp, quantity));
+
 	
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + user + " not found\"}").build();

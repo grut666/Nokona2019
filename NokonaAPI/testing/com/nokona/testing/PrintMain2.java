@@ -15,12 +15,14 @@ import javax.print.attribute.standard.Copies;
 import javax.print.event.PrintJobAdapter;
 import javax.print.event.PrintJobEvent;
 
+import com.nokona.exceptions.NullInputDataException;
 import com.nokona.model.Employee;
 import com.nokona.model.Labels;
+import com.nokona.utilities.BarCodeUtilities;
 
 public class PrintMain2 {
 
-	public static void main(String[] args) throws PrintException, IOException {
+	public static void main(String[] args) throws PrintException, IOException, NullInputDataException {
 
 //		String defaultPrinter = PrintServiceLookup.lookupDefaultPrintService().getName();
 //		System.out.println("Default printer: " + defaultPrinter);
@@ -34,7 +36,8 @@ public class PrintMain2 {
 		}
 	
 		Employee emp = new Employee(518, "FULKERSON", "DOUGLAS", 851,8,"FUL10", true);
-		Labels labels = new Labels(emp);
+		Labels labels = new Labels();
+		labels.setLabels(BarCodeUtilities.generateLabels(emp, 1));
 		// prints the famous hello world! plus a form feed
 //		InputStream is = new ByteArrayInputStream(labels.getLabels().getBytes("UTF8"));
 		String labelOutput = labels.getLabels();

@@ -105,20 +105,21 @@ private NokonaDatabaseEmp db;
 	}
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 
 	@Path("/")
-	public Response addEmployee(String empIn) {
+	public Response addEmployee(Employee empIn) {
 
 		Gson gson;
 		Employee emp;
+//		try {
+//			gson = new Gson();
+//			emp = gson.fromJson(empIn, Employee.class);
+//		} catch (JsonSyntaxException jse) {
+//			return Response.status(400).entity(jse.getMessage()).build();
+//		}
 		try {
-			gson = new Gson();
-			emp = gson.fromJson(empIn, Employee.class);
-		} catch (JsonSyntaxException jse) {
-			return Response.status(400).entity(jse.getMessage()).build();
-		}
-		try {
-			emp = db.addEmployee(emp);
+			emp = db.addEmployee(empIn);
 		} catch (DuplicateDataException e) {
 			return Response.status(400).entity(e.getMessage()).build();
 		}catch (DatabaseException ex) {

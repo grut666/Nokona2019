@@ -1,5 +1,8 @@
 package com.nokona.utilities;
 
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+
 public class BarCodeUtilities {
 	public static final int DEFAULT_PAGE_QUANTITY = 1;
 	public static char[] strCodeTable = new char[99];
@@ -43,7 +46,18 @@ public class BarCodeUtilities {
 			strCodeTable[index++] = (char) i;
 		}
 	}
-	private static void printToBarCodePrinter(byte [] bytes) {
-		
+
+	public static PrintService getBarCodePrinter() {
+		PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
+		PrintService barCodePrinter = null;
+		if (services != null) {
+			for (PrintService service : services) {
+				if (service.getName().contains("P3010")) {
+					barCodePrinter = service;
+					break;
+				}
+			}
+		}
+		return barCodePrinter;
 	}
 }

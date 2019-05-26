@@ -8,6 +8,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.nokona.utilities.BarCodeUtilities;
+
 @Path("/printers")
 public class NokonaPrintersResource {
 	@GET
@@ -15,22 +17,12 @@ public class NokonaPrintersResource {
 	@Path("/barcodeprinter")
 	public Response getBarCodePrinter() {
 
-		PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
-		PrintService barCodePrinter = null;
-		if (services != null) {
-			for (PrintService service : services) {
-				if (service.getName().contains("P3010")) {
-					barCodePrinter = service;
-					break;
-				}
-			}
-		}
-
+		
+		PrintService barCodePrinter = BarCodeUtilities.getBarCodePrinter();
 		if (barCodePrinter == null) {
 
 			return Response.status(404).entity("{\"error\":\"" + "Could Not Find Barcode Printer" + "\"}").build();
 		}
-
 		return Response.status(200).entity(barCodePrinter).build();
 	}
 

@@ -17,10 +17,12 @@ public class NokonaPrintersResource {
 
 		PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
 		PrintService barCodePrinter = null;
-		for (PrintService service : services) {
-			if (service.getName().contains("P3010")) {
-				barCodePrinter = service;
-				break;
+		if (services != null) {
+			for (PrintService service : services) {
+				if (service.getName().contains("P3010")) {
+					barCodePrinter = service;
+					break;
+				}
 			}
 		}
 
@@ -31,13 +33,13 @@ public class NokonaPrintersResource {
 
 		return Response.status(200).entity(barCodePrinter).build();
 	}
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/")
 	public Response getAllPrinters() {
 
 		PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
-		
 
 		if (services == null) {
 

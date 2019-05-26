@@ -1,54 +1,49 @@
-package com.nokona.testing;
-
-import java.io.IOException;
+package com.nokona.resource;
 
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
 import javax.print.PrintException;
 import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.print.event.PrintJobAdapter;
 import javax.print.event.PrintJobEvent;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import com.nokona.model.Employee;
-import com.nokona.model.Labels;
+@Path("/labels")
+public class NokonaLabelsResource {
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/")
+	public Response printEmployeeLabels(PrintService printer, String labels) {
 
-public class PrintMain2 {
-
-	public static void main(String[] args) throws PrintException, IOException {
-
-//		String defaultPrinter = PrintServiceLookup.lookupDefaultPrintService().getName();
-//		System.out.println("Default printer: " + defaultPrinter);
-		PrintService [] services = PrintServiceLookup.lookupPrintServices(null, null);
-		PrintService barCodePrinter = null;
-		for (PrintService service : services) {
-			if (service.getName().contains("P3010")) {
-				barCodePrinter = service;
-				break;
-			}
+		try {
+			printIt(printer, labels);
+			return Response.status(200).entity("{\"Success\":\"" + "Success" + "\"}").build();
+		} catch (PrintException e) {
+			return Response.status(404).entity("{\"error\":\"" + "Could Not Find Barcode Printer" + "\"}").build();
 		}
-	
-		Employee emp = new Employee(518, "FULKERSON", "DOUGLAS", 851,8,"FUL10", true);
-		Labels labels = new Labels(emp);
-		// prints the famous hello world! plus a form feed
-//		InputStream is = new ByteArrayInputStream(labels.getLabels().getBytes("UTF8"));
-		String labelOutput = labels.getLabels();
+	}
+
+	private void printIt(PrintService printer, String labels) throws PrintException {
+
 		PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 		pras.add(new Copies(1));
 
 		DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
-		Doc doc = new SimpleDoc(labelOutput.getBytes(), flavor, null);
-		DocPrintJob job = barCodePrinter.createPrintJob();
+		Doc doc = new SimpleDoc(labels.getBytes(), flavor, null);
+		DocPrintJob job = printer.createPrintJob();
 
 		PrintJobWatcher pjw = new PrintJobWatcher(job);
 		job.print(doc, pras);
 		pjw.waitForDone();
-//		is.close();
 	}
 }
 

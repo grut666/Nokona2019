@@ -17,29 +17,31 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.nokona.model.Labels;
+
 @Path("/labels")
 public class NokonaLabelsResource {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response printEmployeeLabels(PrintService printer, String labels) {
+	public Response printEmployeeLabels(Labels labels) {
 
 		try {
-			printIt(printer, labels);
+			printIt(labels);
 			return Response.status(200).entity("{\"Success\":\"" + "Success" + "\"}").build();
 		} catch (PrintException e) {
 			return Response.status(404).entity("{\"error\":\"" + "Could Not Find Barcode Printer" + "\"}").build();
 		}
 	}
 
-	private void printIt(PrintService printer, String labels) throws PrintException {
+	private void printIt(Labels labels) throws PrintException {
 
 		PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 		pras.add(new Copies(1));
 
 		DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
-		Doc doc = new SimpleDoc(labels.getBytes(), flavor, null);
-		DocPrintJob job = printer.createPrintJob();
+		Doc doc = new SimpleDoc(labels.getLabels().getBytes(), flavor, null);
+		DocPrintJob job = labels.getPrintService().createPrintJob();
 
 		PrintJobWatcher pjw = new PrintJobWatcher(job);
 		job.print(doc, pras);

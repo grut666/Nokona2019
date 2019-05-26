@@ -1,8 +1,11 @@
 package com.nokona.model;
 
+import javax.print.PrintService;
+
 import com.nokona.utilities.BarCodeUtilities;
 
 public class Labels {
+	private PrintService printService;
 	private String labels;
 
 	public Labels() {
@@ -24,8 +27,20 @@ public class Labels {
 	public void setLabels(String labels) {
 		this.labels = labels;
 	}
+	
+
+	public PrintService getPrintService() {
+		return printService;
+	}
+
+	public void setPrintService(PrintService printService) {
+		this.printService = printService;
+	}
 
 	protected void generateLabels(Employee emp, int page_quantity) {
+		if (printService == null) {
+			printService = BarCodeUtilities.getBarCodePrinter();
+		}
 		char esc = 0x1b;
 		int pointSize = 30;
 		int tailEnd = page_quantity * 10;

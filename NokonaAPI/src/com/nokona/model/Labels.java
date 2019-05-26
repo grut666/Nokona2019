@@ -9,14 +9,19 @@ public class Labels {
 	private String labels;
 
 	public Labels() {
-		super();
+		
+		this(null);
 	}
 
 	public Labels(Employee emp) {
-		generateLabels(emp, BarCodeUtilities.DEFAULT_PAGE_QUANTITY);
+		this(emp, BarCodeUtilities.DEFAULT_PAGE_QUANTITY);
 	}
 
 	public Labels(Employee emp, int page_quantity) {
+		super();
+		if (printService == null) {
+			printService = BarCodeUtilities.getBarCodePrinter();
+		}
 		generateLabels(emp, page_quantity);
 	}
 
@@ -37,10 +42,8 @@ public class Labels {
 		this.printService = printService;
 	}
 
-	protected void generateLabels(Employee emp, int page_quantity) {
-		if (printService == null) {
-			printService = BarCodeUtilities.getBarCodePrinter();
-		}
+	private void generateLabels(Employee emp, int page_quantity) {
+		
 		char esc = 0x1b;
 		int pointSize = 30;
 		int tailEnd = page_quantity * 10;

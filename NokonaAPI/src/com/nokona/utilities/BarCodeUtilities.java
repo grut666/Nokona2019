@@ -22,10 +22,11 @@ public class BarCodeUtilities {
 		StringBuilder strBarCode = new StringBuilder("");
 		for (int i = 0; i < strIn.length(); i += 2) {
 			String subStr = strIn.substring(i, i + 2);
-			if (Integer.parseInt(subStr) == 0) {
+			int index = Integer.parseInt(subStr);
+			if (index == 0) {
 				strBarCode.append("!");
 			} else {
-				strBarCode.append(strCodeTable[i]);
+				strBarCode.append(strCodeTable[index - 1]);
 			}
 		}
 		strBarCode.insert(0, (char) 171).append((char) 172);

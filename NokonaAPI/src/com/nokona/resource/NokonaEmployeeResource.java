@@ -149,7 +149,6 @@ private NokonaDatabaseEmp db;
 	}
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/labels/{user}/{quantity}")
 	public Response getEmployeeLabels(@PathParam("user") String user, @PathParam("quantity") int quantity) {
 		

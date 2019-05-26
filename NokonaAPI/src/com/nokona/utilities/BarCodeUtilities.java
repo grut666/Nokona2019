@@ -43,4 +43,7 @@ public class BarCodeUtilities {
 			strCodeTable[index++] = (char) i;
 		}
 	}
+	private static void printToBarCodePrinter(byte [] bytes) {
+		
+	}
 }

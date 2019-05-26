@@ -153,7 +153,9 @@ private NokonaDatabaseEmp db;
 
 		Labels labels;
 		try {
-				labels = new Labels(db.getEmployee(user));
+				Employee emp = db.getEmployee(user);
+				labels = new Labels(emp);
+				labels.generateLabels(emp, quantity);
 	
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + user + " not found\"}").build();

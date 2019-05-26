@@ -2,6 +2,7 @@ package com.nokona.model;
 
 import javax.print.PrintService;
 
+import com.nokona.exceptions.NullInputDataException;
 import com.nokona.utilities.BarCodeUtilities;
 
 public class Labels {
@@ -21,8 +22,7 @@ public class Labels {
 		super();
 		if (printService == null) {
 			printService = BarCodeUtilities.getBarCodePrinter();
-		}
-		generateLabels(emp, page_quantity);
+		}	
 	}
 
 	public String getLabels() {
@@ -42,8 +42,10 @@ public class Labels {
 		this.printService = printService;
 	}
 
-	private void generateLabels(Employee emp, int page_quantity) {
-		
+	public void generateLabels(Employee emp, int page_quantity) throws NullInputDataException {
+		if (emp == null) {
+			throw new NullInputDataException("Employee cannot be null");
+		}
 		char esc = 0x1b;
 		int pointSize = 30;
 		int tailEnd = page_quantity * 10;

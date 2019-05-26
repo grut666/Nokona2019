@@ -40,10 +40,11 @@ public class Labels {
 		sb.append(esc).append("&a1R"); // Set Vertical Coordinate
 		sb.append(esc).append("&a1C"); // Set Horizontal Coordinate
 		sb.append(esc).append("&k330H").append(esc).append("&l48C"); // Column width and vertical height)
+		String formattedEmpID = fBarCode.substring(fBarCode.length() - 4);
 		for (int intY = 0; intY < tailEnd; intY++) {
 			for (int intX = 0 ; intX < 3; intX++) {
-				sb.append(esc).append("&a").append(intX + 0.4).append("C").append(esc).append("&a").append(intY)
-				.append(0.6).append("R").append(fBarCode.substring(fBarCode.length() - 4)); //  Row 0, Column 0
+				sb.append(esc).append("&a").append(intX + 0.4).append("C").append(esc).append("&a").append(intY + 0.6)
+				.append("R").append(formattedEmpID); //  Row 0, Column 0
 			}
 		}
 		sb.append(esc).append("&a0R"); // Set vertical coordinate

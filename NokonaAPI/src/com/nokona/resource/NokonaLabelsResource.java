@@ -18,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.nokona.model.Labels;
+import com.nokona.utilities.BarCodeUtilities;
 
 @Path("/labels")
 public class NokonaLabelsResource {
@@ -41,7 +42,7 @@ public class NokonaLabelsResource {
 
 		DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
 		Doc doc = new SimpleDoc(labels.getLabels().getBytes(), flavor, null);
-		DocPrintJob job = labels.getPrintService().createPrintJob();
+		DocPrintJob job = BarCodeUtilities.getBarCodePrinter().createPrintJob();
 
 		PrintJobWatcher pjw = new PrintJobWatcher(job);
 		job.print(doc, pras);

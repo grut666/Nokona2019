@@ -4,8 +4,9 @@ public class BarCodeUtilities {
 	public static final int DEFAULT_PAGE_QUANTITY = 1;
 	public static char[] strCodeTable = new char[99];
 	public static boolean isBuilt = false;
+
 	public static String formatBarCode(String strIn) {
-		if (! isBuilt) {
+		if (!isBuilt) {
 			loadStrCodeTable();
 		}
 		int strLen = strIn.length();
@@ -16,19 +17,21 @@ public class BarCodeUtilities {
 		}
 		return strIn;
 	}
+
 	public static String convertBarCode2of5(String strIn) {
 		StringBuilder strBarCode = new StringBuilder("");
 		for (int i = 0; i < strIn.length(); i += 2) {
-			String subStr = strIn.substring(i,  i + 2);
+			String subStr = strIn.substring(i, i + 2);
 			if (Integer.parseInt(subStr) == 0) {
 				strBarCode.append("!");
 			} else {
 				strBarCode.append(strCodeTable[i]);
 			}
 		}
-		
+		strBarCode.insert(0, (char) 171).append((char) 172);
 		return strBarCode.toString();
 	}
+
 	private static void loadStrCodeTable() {
 		int index = 0;
 
@@ -40,4 +43,3 @@ public class BarCodeUtilities {
 		}
 	}
 }
-

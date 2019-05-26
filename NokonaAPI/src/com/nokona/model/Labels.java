@@ -26,7 +26,7 @@ public class Labels {
 	}
 
 	protected void generateLabels(Employee emp, int page_quantity) {
-		int esc = 0x1b;
+		char esc = 0x1b;
 		int pointSize = 30;
 		int tailEnd = page_quantity * 10;
 		String fBarCode = emp.getBarCodeID() + "";

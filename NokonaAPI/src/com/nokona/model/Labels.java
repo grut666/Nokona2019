@@ -1,12 +1,13 @@
 package com.nokona.model;
 
 import javax.print.PrintService;
+import javax.print.StreamPrintService;
 
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.utilities.BarCodeUtilities;
 
 public class Labels {
-	private PrintService printService;
+	private StreamPrintService printService;
 	private String labels;
 
 	public Labels() {
@@ -21,7 +22,7 @@ public class Labels {
 	public Labels(Employee emp, int page_quantity) {
 		super();
 		if (printService == null) {
-			printService = BarCodeUtilities.getBarCodePrinter();
+			printService = (StreamPrintService) BarCodeUtilities.getBarCodePrinter();
 		}	
 	}
 
@@ -38,7 +39,7 @@ public class Labels {
 		return printService;
 	}
 
-	public void setPrintService(PrintService printService) {
+	public void setPrintService(StreamPrintService printService) {
 		this.printService = printService;
 	}
 

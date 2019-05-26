@@ -33,6 +33,7 @@ public class Labels {
 		fBarCode = BarCodeUtilities.formatBarCode(fBarCode);
 		String employee = (emp.getFirstName() + " " + emp.getLastName() + " - " + emp.getEmpId()).replaceAll(" ", "_");
 		String cvtBarCode = BarCodeUtilities.convertBarCode2of5(fBarCode);
+		System.out.println(cvtBarCode + " : " + cvtBarCode.length());
 		StringBuilder sb = new StringBuilder("");
 		sb.append(esc).append( "&l0E"); // Top of Page is 0 lines down
 		sb.append(esc).append("(0U").append(esc).append("(s1p10v0s0b16602T");

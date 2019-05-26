@@ -40,19 +40,19 @@ public class PrintMain2 {
 		Employee emp = new Employee(518, "FULKERSON", "DOUGLAS", 851,8,"FUL10", true);
 		Labels labels = new Labels(emp);
 		// prints the famous hello world! plus a form feed
-		InputStream is = new ByteArrayInputStream(labels.getLabels().getBytes("UTF8"));
-
+//		InputStream is = new ByteArrayInputStream(labels.getLabels().getBytes("UTF8"));
+		String labelOutput = labels.getLabels();
 		PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 		pras.add(new Copies(1));
 
-		DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
-		Doc doc = new SimpleDoc(is, flavor, null);
+		DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
+		Doc doc = new SimpleDoc(labelOutput.getBytes(), flavor, null);
 		DocPrintJob job = barCodePrinter.createPrintJob();
 
 		PrintJobWatcher pjw = new PrintJobWatcher(job);
 		job.print(doc, pras);
 		pjw.waitForDone();
-		is.close();
+//		is.close();
 	}
 }
 

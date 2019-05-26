@@ -2,6 +2,7 @@ package com.nokona.utilities;
 
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
+import javax.print.StreamPrintService;
 
 public class BarCodeUtilities {
 	public static final int DEFAULT_PAGE_QUANTITY = 1;

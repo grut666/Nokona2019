@@ -268,6 +268,8 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 
 	@Override
 	public void deleteEmployeeByKey(long key) throws DatabaseException {
+		// TODO Set active status to false instead?
+		
 		if (psDelEmployeeByKey == null) {
 			try {
 				psDelEmployeeByKey = conn.prepareStatement("Delete From Employee where Employee.Key = ?");

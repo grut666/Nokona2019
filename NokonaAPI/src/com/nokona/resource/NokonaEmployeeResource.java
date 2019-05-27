@@ -110,7 +110,7 @@ private NokonaDatabaseEmp db;
 	@Path("/")
 	public Response addEmployee(Employee empIn) {
 
-		Gson gson;
+//		Gson gson;
 		Employee emp;
 //		try {
 //			gson = new Gson();

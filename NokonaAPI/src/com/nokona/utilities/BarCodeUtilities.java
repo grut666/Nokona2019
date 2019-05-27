@@ -2,7 +2,6 @@ package com.nokona.utilities;
 
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
-import javax.print.StreamPrintService;
 
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.model.Employee;

@@ -16,6 +16,7 @@ import com.nokona.formatter.TicketHeaderFormatter;
 import com.nokona.model.Ticket;
 import com.nokona.model.TicketDetail;
 import com.nokona.model.TicketHeader;
+import com.nokona.utilities.DateUtilities;
 
 
 public class NokonaDAOTicket extends NokonaDAO  implements NokonaDatabaseTicket {
@@ -383,8 +384,8 @@ private TicketHeader convertTicketHeaderFromResultSet(ResultSet rs) throws SQLEx
 	int key = rs.getInt("Key");
 	String model = rs.getString("Model"); // 
 	//java.util.Date newDate = result.getTimestamp("VALUEDATE");
-	Date dateCreated = convertSQLDateToUtilDate(rs.getDate("DateCreated"));
-	Date dateStatus = convertSQLDateToUtilDate(rs.getDate("DateOfStatus"));
+	Date dateCreated = DateUtilities.convertSQLDateToUtilDate(rs.getDate("DateCreated"));
+	Date dateStatus = DateUtilities.convertSQLDateToUtilDate(rs.getDate("DateOfStatus"));
 	String ticketStatusString = rs.getString("Status");
 	TicketStatus ticketStatus = TicketStatus.UNKNOWN;
 	if ("C".equals(ticketStatusString) || "P".equals(ticketStatusString)) {
@@ -396,8 +397,6 @@ private TicketHeader convertTicketHeaderFromResultSet(ResultSet rs) throws SQLEx
 	
 	return TicketHeaderFormatter.format(new TicketHeader(key, model, dateCreated, ticketStatus, dateStatus, quantity));  
 }
-private Date convertSQLDateToUtilDate(java.sql.Date sqlDate) {
-    return new java.util.Date(sqlDate.getTime());
-}
+
 
 }

@@ -14,12 +14,10 @@ import javax.ws.rs.core.Response;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nokona.data.NokonaDatabaseLaborCode;
-import com.nokona.data.NokonaDatabaseOperation;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.model.LaborCode;
-import com.nokona.model.Operation;
 
 @Path("/laborcodes")
 public class NokonaLaborCodeResource {

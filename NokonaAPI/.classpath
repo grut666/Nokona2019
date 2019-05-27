@@ -10,7 +10,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="Library/gson-2.8.1.jar"/>
 	<classpathentry kind="lib" path="Library/javaee-api-7.0-1 - Copy.jar"/>
 	<classpathentry kind="lib" path="Library/mysql-connector-java-8.0.13.jar"/>
 	<classpathentry kind="lib" path="Library/slf4j-api-1.7.21 - Copy.jar"/>

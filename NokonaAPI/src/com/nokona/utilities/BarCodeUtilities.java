@@ -63,7 +63,7 @@ public class BarCodeUtilities {
 		}
 		return barCodePrinter;
 	}
-	public static String generateLabels(Employee emp, int page_quantity) throws NullInputDataException {
+	public static String generateEmployeeLabels(Employee emp, int page_quantity) throws NullInputDataException {
 		if (emp == null) {
 			throw new NullInputDataException("Employee cannot be null");
 		}
@@ -108,6 +108,16 @@ public class BarCodeUtilities {
 			}
 		}
 		sb.append(esc).append("E");
+		return sb.toString();
+	}
+	public static String generateTicketLabels(String modelID, int quantity) throws NullInputDataException {
+		if (modelID == null) {
+			throw new NullInputDataException("ModelID cannot be null");
+		}
+		
+		StringBuilder sb = new StringBuilder("");
+		// Put Ticket printing code here
+		sb.append("Model is : " + modelID + "  Quantity is : " + quantity);
 		return sb.toString();
 	}
 }

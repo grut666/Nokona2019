@@ -2,6 +2,7 @@ package com.nokona.resource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -16,12 +17,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.data.NokonaDatabaseTicket;
+import com.nokona.dto.TicketDTOIn;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.model.Employee;
+import com.nokona.model.Labels;
 import com.nokona.model.Ticket;
 import com.nokona.model.TicketHeader;
+import com.nokona.utilities.BarCodeUtilities;
 
 @Path("/tickets")
 
@@ -112,6 +116,28 @@ private NokonaDatabaseTicket db;
 //		String year = ticketHeader.getDateCreated().toString();
 		return Response.status(200).entity(ticketHeader).build();
 	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/labels/")
+	public Response getEmployeeLabels(TicketDTOIn ticketDTOIn) {
+		
+		String model = ticketDTOIn.getModelId();
+		int quantity = ticketDTOIn.getQuantity();
+		Labels labels;
+		try {
+				labels = new Labels();
+				labels.setLabels(BarCodeUtilities.generateTicketLabels(model, quantity));
+
+		}  catch (DatabaseException ex ) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+		catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		}
+		
+		return Response.status(200).entity(labels).build();
+	}
+	
 
 //	@PUT
 //	@Produces(MediaType.APPLICATION_JSON)
@@ -185,5 +211,21 @@ private NokonaDatabaseTicket db;
 //		return Response.status(200).entity("{\"Success\":\"200\"}").build();
 //	}
 
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/")
+	public Response generateTicket(TicketDTOIn ticketDTO) {
 
+		Ticket ticket;
+		try {
+			ticket = db.addTicket(ticketDTO);
+		} catch (JsonSyntaxException jse) {
+			return Response.status(400).entity(jse.getMessage()).build();
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+		
+		return Response.status(200).entity(ticket).build();
+	}
 }

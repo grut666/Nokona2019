@@ -126,7 +126,7 @@ class TestEmployeeDB {
 	@Test
 	void testGetEmployeesFromDB() throws DatabaseException {
 		List<Employee> emps = db.getEmployees();
-		assertEquals(267, emps.size());
+		assertEquals(269, emps.size());
 
 	}
 

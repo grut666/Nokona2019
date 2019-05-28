@@ -158,7 +158,7 @@ private NokonaDatabaseEmp db;
 		try {
 				Employee emp = db.getEmployee(user);
 				labels = new Labels();
-				labels.setLabels(BarCodeUtilities.generateLabels(emp, quantity));
+				labels.setLabels(BarCodeUtilities.generateEmployeeLabels(emp, quantity));
 
 	
 		} catch (DataNotFoundException ex) {

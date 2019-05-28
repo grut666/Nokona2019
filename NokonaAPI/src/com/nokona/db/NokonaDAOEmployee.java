@@ -48,7 +48,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 		List<Employee> employees = new ArrayList<Employee>();
 		if (psGetEmployees == null) {
 			try {
-				psGetEmployees = getConn().prepareStatement("Select * from Employee order by EmpID");
+				psGetEmployees = getConn().prepareStatement("Select * from Employee order by EmpID where isDeleted != 'T'");
 
 			} catch (SQLException e) {
 				throw new DatabaseException(e.getMessage(), e);
@@ -70,7 +70,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 		Employee emp = null;
 		if (psGetEmployeeByKey == null) {
 			try {
-				psGetEmployeeByKey = conn.prepareStatement("Select * from Employee where Employee.key = ?");
+				psGetEmployeeByKey = conn.prepareStatement("Select * from Employee where Employee.key = ? and isDeleted != 'T'");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -101,7 +101,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 		Employee emp = null;
 		if (psGetEmployeeByEmpId == null) {
 			try {
-				psGetEmployeeByEmpId = conn.prepareStatement("Select * from Employee where Employee.EmpID = ?");
+				psGetEmployeeByEmpId = conn.prepareStatement("Select * from Employee where Employee.EmpID = ? and isDeleted != 'T'");
 
 			} catch (SQLException e) {
 				throw new DatabaseException(e.getMessage(), e);

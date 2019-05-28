@@ -1,7 +1,7 @@
 package com.nokona.enums;
 
 public enum TicketStatus {
-	PRODUCTION("P"), COMPLETE("C"), UNKNOWN(" "), P("P"), C("C"), U(""),;
+	PRODUCTION("P"), COMPLETE("C"), NEW(" "), P("P"), C("C");
 	private String ticketStatus;
 
 	TicketStatus(String ticketStatus) {

@@ -3,25 +3,19 @@ package com.nokona.resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.data.NokonaDatabaseTicket;
 import com.nokona.dto.TicketDTOIn;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
-import com.nokona.exceptions.DuplicateDataException;
-import com.nokona.model.Employee;
 import com.nokona.model.Labels;
 import com.nokona.model.Ticket;
 import com.nokona.model.TicketHeader;
@@ -118,15 +112,14 @@ private NokonaDatabaseTicket db;
 	}
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/labels/")
-	public Response getEmployeeLabels(TicketDTOIn ticketDTOIn) {
+	@Path("/labels/{modelId}/{quantity}")
+	public Response getTicketLabels(@PathParam("modelId") String modelId, @PathParam("quantity") int quantity) {
 		
-		String model = ticketDTOIn.getModelId();
-		int quantity = ticketDTOIn.getQuantity();
+
 		Labels labels;
 		try {
 				labels = new Labels();
-				labels.setLabels(BarCodeUtilities.generateTicketLabels(model, quantity));
+				labels.setLabels(BarCodeUtilities.generateTicketLabels(modelId, quantity));
 
 		}  catch (DatabaseException ex ) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();

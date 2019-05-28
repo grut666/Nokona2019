@@ -14,15 +14,12 @@ import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.NullInputDataException;
-import com.nokona.formatter.EmployeeFormatter;
 import com.nokona.formatter.TicketFormatter;
 import com.nokona.formatter.TicketHeaderFormatter;
-import com.nokona.model.Employee;
 import com.nokona.model.Ticket;
 import com.nokona.model.TicketDetail;
 import com.nokona.model.TicketHeader;
 import com.nokona.utilities.DateUtilities;
-import com.nokona.validator.EmployeeValidator;
 
 public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	private PreparedStatement psGetTicketByKey;
@@ -315,24 +312,29 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		}
 		TicketHeader formattedTicketHeader = new TicketHeader(dtoIn);
 		formattedTicketHeader = TicketHeaderFormatter.format(formattedTicketHeader);
-		if (psAddTicketHeader == null) {
+		try {
+			if (psAddTicketHeader == null) {
 				conn.prepareStatement(
 						"Insert into TicketHeader (ModelID, DateCreated, Status, StatusDate, Quantity, IsDeleted, DeleteDate) values (?,?,?,?,?,?,?)",
 						PreparedStatement.RETURN_GENERATED_KEYS);
 			}
+			if (psGetSegmentOp == null) {
+				conn.prepareStatement("Select * from SegmentOp where segment = ? order by Sequence");
+			}
+			if (psAddTicketDetail == null) {
+				conn.prepareStatement(
+						"Insert into TicketDetail (LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) values (?,?,?,?,?,?)");
+			}
+		} catch(SQLException ex) {
+			throw new DatabaseException("Prepare Statements failed");
+		}
 
-		if (psGetSegmentOp == null) {
-			conn.prepareStatement("Select * from SegmentOp where segment = ? order by Sequence");
-		}
-		if (psAddTicketDetail == null) {
-			conn.prepareStatement("Insert into TicketDetail (LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) values (?,?,?,?,?,?) )
-		}
-		
 		// Should not need any validation so not validating
 		TicketHeader newTicketHeader;
 		try {
 			psAddTicketHeader.setString(1, formattedTicketHeader.getModel());
-			psAddTicketHeader.setDate(2, DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateCreated()));
+			psAddTicketHeader.setDate(2,
+					DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateCreated()));
 			psAddTicketHeader.setString(3, formattedTicketHeader.getTicketStatus().getTicketStatus());
 			psAddTicketHeader.setDate(4, DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateStatus()));
 			psAddTicketHeader.setInt(5, formattedTicketHeader.getQuantity());
@@ -347,7 +349,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			try (ResultSet generatedKeys = psAddTicketHeader.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
 					newTicketHeader.setKey(generatedKeys.getLong(1));
-					
+
 				} else {
 					throw new SQLException("Creating user failed, no ID obtained.");
 				}
@@ -357,36 +359,35 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			throw new DuplicateDataException(e.getMessage(), e);
 		}
 		List<TicketDetail> newTicketDetails = new ArrayList<TicketDetail>();
-		
+
 		// Get the detail records generated.
 		if (psGetModelSegment == null) {
 			try {
-				psGetModelSegment = conn.prepareStatement("Select * from ModelSegment where modelId = ? order by Sequence");
+				psGetModelSegment = conn
+						.prepareStatement("Select * from ModelSegment where modelId = ? order by Sequence");
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage());
 			}
-			
-				try {
-					psGetModelSegment.setString(1, formattedTicketHeader.getModel());
-					ResultSet rs = psGetModelSegment.executeQuery();
-					while (rs.next()) {
-						String segmentName = rs.getString("SegmentName");
-						ResultSet rsSegment = psGetSegmentOp.executeQuery();
-						int sequenceCounter = 0;
-						while (rsSegment.next()) {
-							
-						}
-					}
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			} 
 
-		
-		
+			try {
+				psGetModelSegment.setString(1, formattedTicketHeader.getModel());
+				ResultSet rs = psGetModelSegment.executeQuery();
+				while (rs.next()) {
+					String segmentName = rs.getString("SegmentName");
+					ResultSet rsSegment = psGetSegmentOp.executeQuery();
+					int sequenceCounter = 0;
+					while (rsSegment.next()) {
+
+					}
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
 		return new Ticket(newTicketHeader, newTicketDetails);
 	}
 

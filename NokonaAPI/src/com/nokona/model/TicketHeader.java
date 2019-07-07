@@ -8,6 +8,7 @@ import com.nokona.enums.TicketStatus;
 public class TicketHeader {
 	private long key;
 	private String model;
+	private String description;
 	private Date dateCreated;
 	private TicketStatus ticketStatus;
 	private Date dateStatus;
@@ -15,14 +16,18 @@ public class TicketHeader {
 	private boolean deleted;
 	private Date deleteDate;
 	public TicketHeader() {
-		
+		this(-1, "", "", new Date(), TicketStatus.NEW, new Date(), 0, false, null);
 	}
+//	public TicketHeader(int ticketID) {
+//		this(-1, "", "", new Date(), TicketStatus.NEW, new Date(), 0, false, null);
+//	}
 	public TicketHeader(TicketDTOIn ticketDTOIn) {
-		this(-1, ticketDTOIn.getModelId(), new Date(), TicketStatus.NEW, new Date(), ticketDTOIn.getQuantity(), false, null);
+		this(-1, ticketDTOIn.getModelId(), ticketDTOIn.getDescription(), new Date(), TicketStatus.NEW, new Date(), ticketDTOIn.getQuantity(), false, null);
 	}
-	public TicketHeader(long key, String model, Date dateCreated, TicketStatus ticketStatus, Date dateStatus, int quantity, boolean deleted, Date deleteDate) {
+	public TicketHeader(long key, String model, String description, Date dateCreated, TicketStatus ticketStatus, Date dateStatus, int quantity, boolean deleted, Date deleteDate) {
 		this.setKey(key);
 		this.setModel(model);
+		this.setDescription(description);
 		this.setDateCreated(dateCreated);
 		this.setTicketStatus(ticketStatus);
 		this.setDateStatus(dateStatus);
@@ -39,6 +44,13 @@ public class TicketHeader {
 	}
 	public void setModel(String model) {
 		this.model = model;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public Date getDateCreated() {
 		return dateCreated;

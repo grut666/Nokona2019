@@ -20,7 +20,7 @@ import com.nokona.model.Employee;
 import com.nokona.model.Labels;
 import com.nokona.utilities.BarCodeUtilities;
 
-public class PrintMain2 {
+public class PrintEmployeeLabels {
 
 	public static void main(String[] args) throws PrintException, IOException, NullInputDataException {
 
@@ -29,15 +29,15 @@ public class PrintMain2 {
 		PrintService [] services = PrintServiceLookup.lookupPrintServices(null, null);
 		PrintService barCodePrinter = null;
 		for (PrintService service : services) {
-			if (service.getName().contains("P3010")) {
+			if (service.getName().contains("P3010") || service.getName().contains("P3015")) {
 				barCodePrinter = service;
 				break;
 			}
 		}
-	
+		System.out.println("Bar Code Printer is " + barCodePrinter);
 		Employee emp = new Employee(518, "FULKERSON", "DOUGLAS", 851,8,"FUL10", true);
 		Labels labels = new Labels();
-		labels.setLabels(BarCodeUtilities.generateLabels(emp, 1));
+		labels.setLabels(BarCodeUtilities.generateEmployeeLabels(emp, 1));
 		// prints the famous hello world! plus a form feed
 //		InputStream is = new ByteArrayInputStream(labels.getLabels().getBytes("UTF8"));
 		String labelOutput = labels.getLabels();
@@ -55,43 +55,5 @@ public class PrintMain2 {
 	}
 }
 
-class PrintJobWatcher {
-	boolean done = false;
 
-	PrintJobWatcher(DocPrintJob job) {
-		job.addPrintJobListener(new PrintJobAdapter() {
-			public void printJobCanceled(PrintJobEvent pje) {
-				allDone();
-			}
 
-			public void printJobCompleted(PrintJobEvent pje) {
-				allDone();
-			}
-
-			public void printJobFailed(PrintJobEvent pje) {
-				allDone();
-			}
-
-			public void printJobNoMoreEvents(PrintJobEvent pje) {
-				allDone();
-			}
-
-			void allDone() {
-				synchronized (PrintJobWatcher.this) {
-					done = true;
-					System.out.println("Printing done ...");
-					PrintJobWatcher.this.notify();
-				}
-			}
-		});
-	}
-
-	public synchronized void waitForDone() {
-		try {
-			while (!done) {
-				wait();
-			}
-		} catch (InterruptedException e) {
-		}
-	}
-}

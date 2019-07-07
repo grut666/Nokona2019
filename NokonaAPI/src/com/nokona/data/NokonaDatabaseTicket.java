@@ -8,7 +8,7 @@ import com.nokona.model.Ticket;
 import com.nokona.model.TicketDetail;
 import com.nokona.model.TicketHeader;
 
-public interface NokonaDatabaseTicket  {
+public interface NokonaDatabaseTicket extends NokonaDatabase {
 	
 	List<Ticket> getTickets() throws DatabaseException;
 	Ticket getTicketByKey(long headerKey) throws DatabaseException;

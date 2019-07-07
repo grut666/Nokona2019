@@ -2,36 +2,37 @@ package com.nokona.model;
 
 import java.util.Date;
 
+import com.nokona.enums.OperationStatus;
 import com.nokona.enums.TicketStatus;
 
 public class TicketDetail {
 	private long key;
 	private String operation;
+	private String operationDescription;
 	private int sequenceOriginal;
 	private int sequenceUpdated;
 	private Date statusDate;
-	private TicketStatus operationStatus;
+	private OperationStatus operationStatus;
 	private int quantity;
-	private double rate;
+	private double hourlyRateSAH;
 	private int barCodeID;
-	private double laborRate;
 	
 	public TicketDetail() {
 		super();
 	}
-	public TicketDetail(long key, String operation, int sequenceOriginal, int sequenceUpdated, Date statusDate,
-			TicketStatus operationStatus, int quantity, double rate, int barCodeID, double laborRate) {
+	public TicketDetail(long key, String operation, String operationDescription, OperationStatus operationStatus, int sequenceOriginal, int sequenceUpdated, Date statusDate,
+			int quantity, double hourlyRateSAH, int barCodeID) {
 		super();
 		this.setKey(key);
 		this.setOperation(operation);
 		this.setSequenceOriginal(sequenceOriginal);
-		this.setSequenceOriginal(sequenceOriginal);
+		this.setOperationDescription(operationDescription);
+		this.setSequenceUpdated(sequenceUpdated);
 		this.setStatusDate(statusDate);
 		this.setOperationStatus(operationStatus);
 		this.setQuantity(quantity);
-		this.setRate(laborRate);
-		this.setBarCodeID(barCodeID);
-		this.setLaborRate(laborRate);		
+		this.setHourlyRateSAH(hourlyRateSAH);
+		this.setBarCodeID(barCodeID);		
 	}
 	public long getKey() {
 		return key;
@@ -44,6 +45,19 @@ public class TicketDetail {
 	}
 	public void setOperation(String operation) {
 		this.operation = operation;
+	}
+	
+	public String getOperationDescription() {
+		return operationDescription;
+	}
+	public void setOperationDescription(String operationDescription) {
+		this.operationDescription = operationDescription;
+	}
+	public double getHourlyRateSAH() {
+		return hourlyRateSAH;
+	}
+	public void setHourlyRateSAH(double hourlyRateSAH) {
+		this.hourlyRateSAH = hourlyRateSAH;
 	}
 	public int getSequenceOriginal() {
 		return sequenceOriginal;
@@ -63,10 +77,10 @@ public class TicketDetail {
 	public void setStatusDate(Date statusDate) {
 		this.statusDate = statusDate;
 	}
-	public TicketStatus getOperationStatus() {
+	public OperationStatus getOperationStatus() {
 		return operationStatus;
 	}
-	public void setOperationStatus(TicketStatus operationStatus) {
+	public void setOperationStatus(OperationStatus operationStatus) {
 		this.operationStatus = operationStatus;
 	}
 	public int getQuantity() {
@@ -75,30 +89,22 @@ public class TicketDetail {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
-	public double getRate() {
-		return rate;
-	}
-	public void setRate(double rate) {
-		this.rate = rate;
-	}
+	
 	public int getBarCodeID() {
 		return barCodeID;
 	}
 	public void setBarCodeID(int barCodeID) {
 		this.barCodeID = barCodeID;
 	}
-	public double getLaborRate() {
-		return laborRate;
-	}
-	public void setLaborRate(double laborRate) {
-		this.laborRate = laborRate;
-	}
 	@Override
 	public String toString() {
-		return "TicketDetail [key=" + key + ", operation=" + operation + ", sequenceOriginal=" + sequenceOriginal
-				+ ", sequenceUpdated=" + sequenceUpdated + ", statusDate=" + statusDate + ", operationStatus="
-				+ operationStatus + ", quantity=" + quantity + ", rate=" + rate + ", barCodeID=" + barCodeID
-				+ ", laborRate=" + laborRate + "]";
+		return "TicketDetail [key=" + key + ", operation=" + operation + ", operationDescription="
+				+ operationDescription + ", sequenceOriginal=" + sequenceOriginal + ", sequenceUpdated="
+				+ sequenceUpdated + ", statusDate=" + statusDate + ", operationStatus=" + operationStatus
+				+ ", quantity=" + quantity + ", hourlyRateSAH=" + hourlyRateSAH + ", barCodeID=" + barCodeID + "]";
 	}
+	
+
+
 	
 }

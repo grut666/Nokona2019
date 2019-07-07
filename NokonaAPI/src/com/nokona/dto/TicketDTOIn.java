@@ -2,12 +2,14 @@ package com.nokona.dto;
 
 public class TicketDTOIn {
 	private String modelId;
+	private String description;
 	private int quantity;
 	public TicketDTOIn() {
 		
 	}
-	public TicketDTOIn(String modelId, int quantity) {
+	public TicketDTOIn(String modelId, String description, int quantity) {
 		this.setModelId(modelId);
+		this.setDescription(description);
 		this.setQuantity(quantity);
 	}
 	public String getModelId() {
@@ -15,6 +17,13 @@ public class TicketDTOIn {
 	}
 	public void setModelId(String modelId) {
 		this.modelId = modelId;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public int getQuantity() {
 		return quantity;

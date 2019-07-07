@@ -27,7 +27,7 @@ public class NokonaLabelsResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response printEmployeeLabels(Labels labels) {
+	public Response printLabels(Labels labels) {
 
 		try {
 			printIt(labels);
@@ -37,7 +37,7 @@ public class NokonaLabelsResource {
 		}
 	}
 
-	private void printIt(Labels labels) throws PrintException {
+	public void printIt(Labels labels) throws PrintException {
 
 		PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 		pras.add(new Copies(1));

@@ -72,7 +72,7 @@ public class NokonaTicketResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/ticketheaders")
-	public Response getTicketHeaderss() {
+	public Response getTicketHeaders() {
 
 		try {
 			return Response.status(200).entity(db.getTicketHeaders()).build();
@@ -104,16 +104,35 @@ public class NokonaTicketResource {
 		// String year = ticketHeader.getDateCreated().toString();
 		return Response.status(200).entity(ticketHeader).build();
 	}
-
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/labels/{modelId}/{quantity}")
-	public Response getTicketLabels(@PathParam("modelId") String modelId, @PathParam("quantity") int quantity) {
+	@Path("/tickets/{key}")
+	public Response getTicketByKey(@PathParam("key") long key) {
+
+		Ticket ticket;
+
+		try {
+			ticket = db.getTicketByKey(key);
+
+		} catch (DataNotFoundException ex) {
+			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		}
+		// String year = ticketHeader.getDateCreated().toString();
+		return Response.status(200).entity(ticket).build();
+	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/labels/{ticket}")
+	public Response getTicketLabels(@PathParam("ticket") Ticket ticketIn) {
 
 		Labels labels;
 		try {
 			labels = new Labels();
-			labels.setLabels(BarCodeUtilities.generateTicketLabels(modelId, quantity));
+			labels.setLabels(BarCodeUtilities.generateTicketLabels(ticketIn));
 
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();

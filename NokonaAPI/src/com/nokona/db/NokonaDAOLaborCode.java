@@ -17,8 +17,11 @@ import com.nokona.validator.LaborCodeValidator;
 
 public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLaborCode {
 	public NokonaDAOLaborCode() throws DatabaseException {
-		super();
-		
+		super();	
+	}
+	public NokonaDAOLaborCode(String userName, String password) throws DatabaseException {
+		super(userName, password);
+
 	}
 
 	PreparedStatement psGetLaborCode;
@@ -36,7 +39,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 		LaborCode laborCode = null;
 		if (psGetLaborCodeByKey == null) {
 			try {
-				psGetLaborCodeByKey = conn.prepareStatement("Select * from Operation where LaborCode.key = ?");
+				psGetLaborCodeByKey = conn.prepareStatement("Select * from LaborCode where LaborCode.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -62,7 +65,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 		LaborCode laborCode = null;
 		if (psGetLaborCode == null) {
 			try {
-				psGetLaborCode = conn.prepareStatement("Select * from Operation where LaborCode.LaborCode = ?");
+				psGetLaborCode = conn.prepareStatement("Select * from LaborCode where LaborCode = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());

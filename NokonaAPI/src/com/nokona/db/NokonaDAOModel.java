@@ -11,6 +11,7 @@ import com.nokona.data.NokonaDatabaseModel;
 import com.nokona.enums.ModelType;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
+import com.nokona.model.LaborCode;
 import com.nokona.model.Model;
 import com.nokona.utilities.DateUtilities;
 
@@ -25,7 +26,7 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 	}
 
 	PreparedStatement psGetModelByKey;
-	PreparedStatement psGetModelByOpModelId;
+	PreparedStatement psGetModelByModelId;
 	PreparedStatement psGetModels;
 	PreparedStatement psAddModel;
 	PreparedStatement psUpdateModel;
@@ -35,61 +36,56 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 
 	@Override
 	public Model getModelByKey(long key) throws DataNotFoundException {
-		// Model model = null;
-		// if (psGetModelByKey == null) {
-		// try {
-		// psGetModelByKey = conn.prepareStatement("Select * from Model where Model.key
-		// = ?");
-		//
-		// } catch (SQLException e) {
-		// System.err.println(e.getMessage());
-		// throw new DataNotFoundException(e.getMessage());
-		// }
-		// }
-		// try {
-		// psGetModelByKey.setLong(1, key);
-		// ResultSet rs = psGetModelByKey.executeQuery();
-		// if (rs.next()) {
-		// model = convertModelFromResultSet(rs);
-		// } else {
-		// throw new DataNotFoundException("Model key " + key + " is not in DB");
-		// }
-		// } catch (SQLException e) {
-		// System.err.println(e.getMessage());
-		// throw new DataNotFoundException(e.getMessage(), e);
-		// }
-		// return model;
-		return null;
+		Model model = null;
+		if (psGetModelByKey == null) {
+			try {
+				psGetModelByKey = conn.prepareStatement("Select * from Model where Model.Key = ?");
+
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DataNotFoundException(e.getMessage());
+			}
+		}
+		try {
+			psGetModelByKey.setLong(1, key);
+			ResultSet rs = psGetModelByKey.executeQuery();
+			if (rs.next()) {
+				model = convertModelFromResultSet(rs);
+			} else {
+				throw new DataNotFoundException("Model key " + key + " is not in DB");
+			}
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DataNotFoundException(e.getMessage(), e);
+		}
+		return model;
 	}
 
 	@Override
-	public Model getModel(String modelId) throws DataNotFoundException {
-		// Operation operation = null;
-		// if (psGetOperationByOpCode == null) {
-		// try {
-		// psGetOperationByOpCode = conn.prepareStatement("Select * from Operation where
-		// Operation.OpCode = ?");
-		//
-		// } catch (SQLException e) {
-		// System.err.println(e.getMessage());
-		// throw new DataNotFoundException(e.getMessage());
-		// }
-		// }
-		// try {
-		// psGetOperationByOpCode.setString(1, opCode);
-		// ResultSet rs = psGetOperationByOpCode.executeQuery();
-		// if (rs.next()) {
-		// operation = convertOperationFromResultSet(rs);
-		// } else {
-		// throw new DataNotFoundException("Operation OPCode " + opCode + " is not in
-		// DB");
-		// }
-		// } catch (SQLException e) {
-		// System.err.println(e.getMessage());
-		// throw new DataNotFoundException(e.getMessage(), e);
-		// }
-		// return operation;
-		return null;
+	public Model getModel(String modelID) throws DataNotFoundException {
+		Model model = null;
+		if (psGetModelByModelId == null) {
+			try {
+				psGetModelByModelId = conn.prepareStatement("Select * from Model where ModelID = ?");
+
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DataNotFoundException(e.getMessage());
+			}
+		}
+		try {
+			psGetModelByModelId.setString(1, modelID);
+			ResultSet rs = psGetModelByModelId.executeQuery();
+			if (rs.next()) {
+				model = convertModelFromResultSet(rs);
+			} else {
+				throw new DataNotFoundException("Model ModelID " + modelID + " is not in DB");
+			}
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DataNotFoundException(e.getMessage(), e);
+		}
+		return model;
 	}
 
 	@Override

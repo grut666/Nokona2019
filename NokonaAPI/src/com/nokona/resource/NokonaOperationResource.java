@@ -55,6 +55,30 @@ public NokonaOperationResource() throws DatabaseException  {
 		
 		return Response.status(200).entity(op).build();
 	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/bykey/{operation}")
+	public Response getOperationByKey(@PathParam("operation") long key) {
+		
+		Operation op;
+		
+		try {
+//			getDB();
+			
+				op = db.getOperationByKey(key);
+	
+		} catch (DataNotFoundException ex) {
+			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
+		} catch (DatabaseException ex ) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+		catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+		
+		return Response.status(200).entity(op).build();
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

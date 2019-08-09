@@ -8,11 +8,15 @@ public class LaborCodeFormatter {
 	// May be used for formatting in the future
 	public static LaborCode format(LaborCode laborCode) {
 		laborCode.setCode(formatLaborCode(laborCode.getCode()));
+		laborCode.setDescription(formatDescription(laborCode.getDescription()));
 		return laborCode;
 	}
 
 	public static int formatLaborCode(int laborCode) {
 		return laborCode;
+	}
+	public static String formatDescription(String description) {
+		return description.trim().toUpperCase();
 	}
 
 }

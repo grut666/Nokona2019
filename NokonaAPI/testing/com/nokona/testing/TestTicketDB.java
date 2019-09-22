@@ -59,8 +59,8 @@ class TestTicketDB {
 		Ticket ticket = db.getTicketByKey(35965);
 		assertEquals(35965, ticket.getTicketHeader().getKey());
 		assertEquals("11.25\" BUFFALO/BUCKSIN MOD TRAP GLOVE\"", ticket.getTicketHeader().getDescription());
-		assertEquals("Tue Jan 29 18:00:00 CST 2019", ticket.getTicketHeader().getDateCreated().toString());
-		assertEquals("Tue Jan 29 18:00:00 CST 2019", ticket.getTicketHeader().getDateStatus().toString());
+		assertEquals("Tue Jan 29 17:00:00 MST 2019", ticket.getTicketHeader().getDateCreated().toString());
+		assertEquals("Tue Jan 29 17:00:00 MST 2019", ticket.getTicketHeader().getDateStatus().toString());
 		assertEquals("P", ticket.getTicketHeader().getTicketStatus().getTicketStatus());
 		assertEquals(null, ticket.getTicketHeader().getDeleteDate());
 		assertEquals("S-200M-LH", ticket.getTicketHeader().getModel());

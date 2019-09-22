@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
 
 public class NokonaDAO {
@@ -13,10 +14,10 @@ public class NokonaDAO {
 	private static String PASSWORD = "xyz";
 	protected Connection conn;
 	// SuperClass for all DAO classes
-	public NokonaDAO() throws DatabaseException {
+	public NokonaDAO() throws DatabaseConnectionException {
 		connectToDB(USER_NAME, PASSWORD);
 	}
-	public NokonaDAO(String userName, String password) throws DatabaseException {
+	public NokonaDAO(String userName, String password) throws DatabaseConnectionException {
 		connectToDB(userName, password);
 	}
 
@@ -28,18 +29,18 @@ public class NokonaDAO {
 		this.conn = conn;
 	}
 
-	private void connectToDB(String userName, String password) throws DatabaseException {
+	private void connectToDB(String userName, String password) throws DatabaseConnectionException {
 		if (conn == null) {
 			try {
 				Class.forName(JDBC_DRIVER);
 				conn = DriverManager.getConnection(DB_URL, userName, password);
 				conn.setAutoCommit(true);
 			} catch (ClassNotFoundException e) {
-				System.err.println("Class not found: " + e.getMessage());
+				throw new DatabaseConnectionException(e.getMessage(), e);
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage(), e);
+				throw new DatabaseConnectionException(e.getMessage(), e);
 			}
 		}
 	}

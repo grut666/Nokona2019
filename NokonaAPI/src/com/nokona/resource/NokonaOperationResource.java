@@ -1,6 +1,7 @@
 package com.nokona.resource;
 
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,26 +22,21 @@ import com.nokona.model.Operation;
 
 @Path("/operations")
 public class NokonaOperationResource {
-//	@Inject
-//	private NokonaDAOManager dbMgr;
-//	@Inject @Named("x")
+
 @Inject
 	private NokonaDatabaseOperation db;
 public NokonaOperationResource() throws DatabaseException  {
-//	db =  (NokonaDatabaseOperation) dbMgr.getDAO(DAOType.OPERATION);
-//	db = new NokonaDAOOperation();
+
 	
 }
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{operation}")
-	public Response getOperation(@PathParam("operation") String operation) {
-		
-		Operation op;
-		
+	public Response getOperation(@PathParam("operation") String operation) {		
+		Operation op;		
 		try {
-//			getDB();
+
 			
 				op = db.getOperation(operation);
 	
@@ -64,7 +60,6 @@ public NokonaOperationResource() throws DatabaseException  {
 		Operation op;
 		
 		try {
-//			getDB();
 			
 				op = db.getOperationByKey(key);
 	
@@ -97,21 +92,14 @@ public NokonaOperationResource() throws DatabaseException  {
 
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	// @Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response updateOperation(String opIn) {
+	public Response updateOperation(Operation opIn) {
 
-		Gson gson;
+
 		Operation op;
 		try {
-			gson = new Gson();
-			op = gson.fromJson(opIn, Operation.class);
-		} catch (JsonSyntaxException jse) {
-			return Response.status(400).entity(jse.getMessage()).build();
-		}
-		try {
-//			getDB();
-			op = db.updateOperation(op);
+			op = db.updateOperation(opIn);
 		} catch (DuplicateDataException e) {
 			return Response.status(400).entity(e.getMessage()).build();
 		}catch (DatabaseException ex) {
@@ -125,22 +113,12 @@ public NokonaOperationResource() throws DatabaseException  {
 	}
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	// @Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response addOperation(String opIn) {
-
-		
-		Gson gson;
+	public Response addOperation(Operation opIn) {
 		Operation op;
 		try {
-			gson = new Gson();
-			op = gson.fromJson(opIn, Operation.class);
-		} catch (JsonSyntaxException jse) {
-			return Response.status(400).entity(jse.getMessage()).build();
-		}
-		try {
-//			getDB();
-			op = db.addOperation(op);
+			op = db.addOperation(opIn);
 		} catch (DuplicateDataException e) {
 			return Response.status(400).entity(e.getMessage()).build();
 		}catch (DatabaseException ex) {

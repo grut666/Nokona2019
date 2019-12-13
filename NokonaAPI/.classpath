@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="lib" path="Library/mockito-core-3.2.0.jar"/>
+	<classpathentry kind="lib" path="Library/byte-buddy-1.10.4.jar"/>
+	<classpathentry kind="lib" path="Library/objenesis-3.1.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="testing"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="Library/javaee-api-7.0-1 - Copy.jar"/>
 	<classpathentry kind="lib" path="Library/mysql-connector-java-8.0.13.jar"/>
 	<classpathentry kind="lib" path="Library/slf4j-api-1.7.21 - Copy.jar"/>
@@ -31,5 +28,11 @@
 	<classpathentry kind="lib" path="Library/tomee-loader-7.0.2 - Copy.jar"/>
 	<classpathentry kind="lib" path="Library/tomee-webapp-7.0.2.jar"/>
 	<classpathentry kind="lib" path="Library/tomee-webservices-7.0.2 - Copy.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="lib" path="Library/jersey-client-2.29.1.jar"/>
+	<classpathentry kind="lib" path="Library/jersey-common-2.29.1.jar"/>
+	<classpathentry kind="lib" path="Library/jersey-server-2.29.1.jar"/>
+	<classpathentry kind="lib" path="Library/geronimo-osgi-locator-1.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -18,6 +18,7 @@ import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
+import com.nokona.exceptions.UnknownDatabaseException;
 import com.nokona.model.Employee;
 import com.nokona.model.Labels;
 import com.nokona.utilities.BarCodeUtilities;
@@ -48,8 +49,8 @@ public class NokonaEmployeeResource {
 			return Response.status(404).entity("{\"error\":\"" + user + " not found\"}").build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		} catch (Exception ex) {
-			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		} catch (DatabaseException ex) {
+			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
 		}
 
 		return Response.status(200).entity(emp).build();
@@ -64,8 +65,8 @@ public class NokonaEmployeeResource {
 			return Response.status(200).entity(db.getEmployees()).build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		} catch (Exception ex) {
-			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		} catch (DatabaseException ex) {
+			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
 		}
 
 	}
@@ -85,8 +86,8 @@ public class NokonaEmployeeResource {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		} catch (Exception ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (DatabaseException ex) {
+			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 	}
 
@@ -103,8 +104,8 @@ public class NokonaEmployeeResource {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		} catch (Exception ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (DatabaseException ex) {
+			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 		return Response.status(201).entity(emp).build();
 	}
@@ -121,8 +122,8 @@ public class NokonaEmployeeResource {
 			return Response.status(404).entity("{\"error\":\"" + user + " not found\"}").build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		} catch (Exception ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (DatabaseException ex) {
+			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 
 	}
@@ -142,8 +143,8 @@ public class NokonaEmployeeResource {
 			return Response.status(404).entity("{\"error\":\"" + user + " not found\"}").build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		} catch (Exception ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		} catch (DatabaseException ex) {
+			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
 		}
 
 		return Response.status(200).entity(labels).build();

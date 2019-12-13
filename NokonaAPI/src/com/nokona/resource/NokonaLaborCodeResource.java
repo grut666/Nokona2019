@@ -24,7 +24,7 @@ public class NokonaLaborCodeResource {
 //	@Inject
 //	private NokonaDAOManager dbMgr;
 //	@Inject @Named("x")
-@Inject
+	@Inject
 	private NokonaDatabaseLaborCode db;
 public NokonaLaborCodeResource() throws DatabaseException  {
 //	db =  (NokonaDatabaseOperation) dbMgr.getDAO(DAOType.OPERATION);

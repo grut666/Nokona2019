@@ -81,7 +81,7 @@ public class NokonaDAOSegment extends NokonaDAO implements NokonaDatabaseSegment
 			try {
 				psGetSegmentByName = getConn().prepareStatement(
 						"Select * from SegmentHeader SH join SegmentDetail SD on SH.segmentName = SD.segmentName "
-								+ "where SH.segmentName = ? SD.sequence");
+								+ "where SH.segmentName = ? order by SD.sequence");
 
 			} catch (SQLException e) {
 				throw new DatabaseException(e.getMessage(), e);

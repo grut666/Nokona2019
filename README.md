@@ -65,7 +65,7 @@ List of all segments
         "segmentDescription": "CLASSIC 100, I-WEB - LEFT",\
         "segmentName": "100ICLASSIC-LH"\
     }\
- ]\
+ ]
         
 ### Get /segments/segmentHeaders/{segmentName} # Get 1 SegmentHeader by its unique identifer, segmentName
 #### In
@@ -75,7 +75,7 @@ List of all segments
     "deleted": false,\
     "segmentDescription": "11.75 IN GLOVE H WEB - LEFT",\
     "segmentName": "1175H-LH"\
-}\
+}
         
 ### Get /segments/segmentDetails/{segmentName} # Get all SegmentDetails for a unique identifer, segmentName
 #### In
@@ -97,5 +97,5 @@ List of all segments
         "opCode": "333",\
         "segmentName": "100I-LH"\
     }\
-]\
+]
 

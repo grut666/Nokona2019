@@ -33,6 +33,6 @@ public class TicketDTOIn {
 	}
 	@Override
 	public String toString() {
-		return "ModelDTOIn [modelId=" + modelId + ", quantity=" + quantity + "]";
+		return "TicketDTOIn [modelId=" + modelId + ", quantity=" + quantity + "]";
 	}
 }

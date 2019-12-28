@@ -1,5 +1,6 @@
 package com.nokona.resource;
 
+import javax.annotation.security.PermitAll;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -18,13 +19,13 @@ import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
-import com.nokona.exceptions.UnknownDatabaseException;
 import com.nokona.model.Employee;
 import com.nokona.model.Labels;
 import com.nokona.utilities.BarCodeUtilities;
 
-@Path("/employees")
 
+@Path("/employees")
+@PermitAll
 public class NokonaEmployeeResource {
 	@ApplicationScoped
 
@@ -36,6 +37,7 @@ public class NokonaEmployeeResource {
 	}
 
 	@GET
+	
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{user}")
 	public Response getEmployee(@PathParam("user") String user) {

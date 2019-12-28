@@ -16,7 +16,7 @@ public interface NokonaDatabaseTicket extends NokonaDatabase {
 	Ticket addTicket(TicketDTOIn dtoIn)  throws DatabaseException;
 	Ticket updateTicket (Ticket ticket) throws DatabaseException;
 
-	Ticket deleteTicketByKey (Ticket ticket) throws DatabaseException;
+	Ticket deleteTicketByKey (long key) throws DatabaseException;
 	
 	List<TicketHeader> getTicketHeaders() throws DatabaseException;
 	TicketHeader getTicketHeaderByKey(long headerKey) throws DatabaseException;

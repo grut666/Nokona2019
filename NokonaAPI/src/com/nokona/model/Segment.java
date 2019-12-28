@@ -1,50 +1,49 @@
 package com.nokona.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Segment {
-	private long key;
-	private String segmentName;
-	private String segmentDescription;
-	private List<SegmentDetail> details;
-	
+	private SegmentHeader segmentHeader;
+	private List<SegmentDetail> segmentDetails;
+
 	public Segment() {
+		this(null, null);
+	}
+
+	public Segment(SegmentHeader segmentHeader, List<SegmentDetail> segmentDetails) {
 		super();
+		if (segmentHeader == null) {
+			this.setSegmentHeader(new SegmentHeader());
+		} else {
+			this.setSegmentHeader(segmentHeader);
+		}
+		if (segmentDetails == null) {
+			this.setSegmentDetails(new ArrayList<SegmentDetail>());
+		} else {
+			this.setSegmentDetails(segmentDetails);
+		}
 	}
-	public Segment(long key, String segmentName, String segmentDescription, List<SegmentDetail> details) {
-		super();
-		this.setKey(key);
-		this.setSegmentName(segmentName);
-		this.setSegmentDescription(segmentDescription);
-		this.setDetails(details);
+
+	public SegmentHeader getSegmentHeader() {
+		return segmentHeader;
 	}
-	public long getKey() {
-		return key;
+
+	public void setSegmentHeader(SegmentHeader segmentHeader) {
+		this.segmentHeader = segmentHeader;
 	}
-	public void setKey(long key) {
-		this.key = key;
+
+	public List<SegmentDetail> getSegmentDetails() {
+		return segmentDetails;
 	}
-	public String getSegmentName() {
-		return segmentName;
+
+	public void setSegmentDetails(List<SegmentDetail> segmentDetails) {
+		this.segmentDetails = segmentDetails;
 	}
-	public void setSegmentName(String segmentName) {
-		this.segmentName = segmentName;
-	}
-	public String getSegmentDescription() {
-		return segmentDescription;
-	}
-	public void setSegmentDescription(String segmentDescription) {
-		this.segmentDescription = segmentDescription;
-	}
-	public List<SegmentDetail> getDetails() {
-		return details;
-	}
-	public void setDetails(List<SegmentDetail> details) {
-		this.details = details;
-	}
+
 	@Override
 	public String toString() {
-		return "Segment [key=" + key + ", segmentName=" + segmentName + ", segmentDescription=" + segmentDescription
-				+ ", details=" + details + "]";
-	}	
+		return "Segment [SegmentHeader=" + segmentHeader + ", SegmentDetails=" + segmentDetails + "]";
+	}
+
 }

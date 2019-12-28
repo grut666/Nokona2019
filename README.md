@@ -23,7 +23,7 @@ List of all segments
 #### Out
 {\
     "segmentHeader": {\
-        "deleted": false,\  
+        "deleted": false,\
         "segmentDescription": "10.5 IN, I WEB - LEFT",\
         "segmentName": "100I-LH"\
     },\
@@ -43,7 +43,7 @@ List of all segments
             "opCode": "C206",\
             "segmentName": "100I-LH"\
         }\
-    ]\      
+    ]\
         
 ### Get /segments/segmentHeaders # Get all SegmentHeaders
 #### In
@@ -65,17 +65,17 @@ List of all segments
         "segmentDescription": "CLASSIC 100, I-WEB - LEFT",\
         "segmentName": "100ICLASSIC-LH"\
     }\
- ]\  
+ ]\
         
 ### Get /segments/segmentHeaders/{segmentName} # Get 1 SegmentHeader by its unique identifer, segmentName
 #### In
 /segments/segmentHeaders/1175H-LH
 #### Out
-{\  
-    "deleted": false,\  
-    "segmentDescription": "11.75 IN GLOVE H WEB - LEFT",\  
-    "segmentName": "1175H-LH"\  
-}\  
+{\
+    "deleted": false,\
+    "segmentDescription": "11.75 IN GLOVE H WEB - LEFT",\
+    "segmentName": "1175H-LH"\
+}\
         
 ### Get /segments/segmentDetails/{segmentName} # Get all SegmentDetails for a unique identifer, segmentName
 #### In
@@ -97,5 +97,5 @@ List of all segments
         "opCode": "333",\
         "segmentName": "100I-LH"\
     }\
-]\  
+]\
 

@@ -39,16 +39,16 @@ public class NokonaEmployeeResource {
 	@GET
 	
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{user}")
-	public Response getEmployee(@PathParam("user") String user) {
+	@Path("/{empId}")
+	public Response getEmployee(@PathParam("empId") String empId) {
 
 		Employee emp;
 
 		try {
-			emp = db.getEmployee(user);
+			emp = db.getEmployee(empId);
 
 		} catch (DataNotFoundException ex) {
-			return Response.status(404).entity("{\"error\":\"" + user + " not found\"}").build();
+			return Response.status(404).entity("{\"error\":\"" + empId + " not found\"}").build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (DatabaseException ex) {

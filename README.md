@@ -21,29 +21,29 @@ List of all segments
 #### In
 /segments/100I-LH
 #### Out
-{
-    "segmentHeader": {
-        "deleted": false,
-        "segmentDescription": "10.5 IN, I WEB - LEFT",
-        "segmentName": "100I-LH"
-    },
-    "segmentDetails": [
-        {
-            "sequence": 1,
-            "opCode": "222",
-            "segmentName": "100I-LH"
-        },
-        {
-            "sequence": 2,
-            "opCode": "333",
-            "segmentName": "100I-LH"
-        },
-        {
-            "sequence": 3,
-            "opCode": "C206",
-            "segmentName": "100I-LH"
-        }
-    ]    
+{  
+    "segmentHeader": {  
+        "deleted": false,  
+        "segmentDescription": "10.5 IN, I WEB - LEFT",  
+        "segmentName": "100I-LH"  
+    },  
+    "segmentDetails": [  
+        {  
+            "sequence": 1,  
+            "opCode": "222",  
+            "segmentName": "100I-LH"  
+        },  
+        {  
+            "sequence": 2,  
+            "opCode": "333",  
+            "segmentName": "100I-LH"  
+        },  
+        {  
+            "sequence": 3,  
+            "opCode": "C206",  
+            "segmentName": "100I-LH"  
+        }  
+    ]      
         
 ### Get /segments/segmentHeaders # Get all SegmentHeaders
 #### In

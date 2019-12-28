@@ -12,6 +12,11 @@
 
 ## Segment - Contains a wrapped SegmentHeader and a list of all SegmentDetail records for a given segmentName
 ### Get /segments # Get all Segments
+#### In
+
+#### Out
+
+
 ### Get /segments/{segmentName} # Get 1 Segment by its unique identifer, segmentName
 ### Get /segments/secondHeaders # Get all SegmentHeaders
 ### Get /segments/secondHeaders/{segmentName} # Get 1 SegmentHeader by its unique identifer, segmentName

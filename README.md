@@ -21,12 +21,12 @@ List of all segments
 #### In
 /segments/100I-LH
 #### Out
-{\  
-    "segmentHeader": { \ 
+{\
+    "segmentHeader": {\
         "deleted": false,\  
-        "segmentDescription": "10.5 IN, I WEB - LEFT",\  
-        "segmentName": "100I-LH"\ 
-    },\  
+        "segmentDescription": "10.5 IN, I WEB - LEFT",\
+        "segmentName": "100I-LH"\
+    },\
     "segmentDetails": [\
         {\
             "sequence": 1,\

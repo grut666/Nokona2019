@@ -43,7 +43,7 @@ List of all segments
             "opCode": "C206",\
             "segmentName": "100I-LH"\
         }\
-    ]\
+    ]
         
 ### Get /segments/segmentHeaders # Get all SegmentHeaders
 #### In

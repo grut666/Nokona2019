@@ -1,22 +1,22 @@
 package com.nokona.resource;
 
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.google.gson.JsonSyntaxException;
 import com.nokona.data.NokonaDatabaseSegment;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.model.Segment;
 import com.nokona.model.SegmentHeader;
+import com.nokona.model.SegmentDetail;
 
 @Path("/segments")
 
@@ -29,14 +29,27 @@ public class NokonaSegmentResource {
 	public NokonaSegmentResource() throws DatabaseException {
 
 	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/")
+	public Response getSegments() {
+
+		try {
+			return Response.status(200).entity(db.getSegments()).build();
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		}
+
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{segmentName}")
-	public Response getSegmentByKey(@PathParam("segmentName") String segmentName) {
+	public Response getSegmentByName(@PathParam("segmentName") String segmentName) {
 
 		Segment segment;
-
 		try {
 			segment = db.getSegmentByName(segmentName);
 
@@ -53,43 +66,8 @@ public class NokonaSegmentResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{name}")
-	public Response getSegmentByName(@PathParam("name") String name) {
-
-		Segment segment;
-		try {
-			segment = db.getSegmentByName(name);
-
-		} catch (DataNotFoundException ex) {
-			return Response.status(404).entity("{\"error\":\"" + name + " not found\"}").build();
-		} catch (DatabaseException ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		} catch (Exception ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
-		}
-
-		return Response.status(200).entity(segment).build();
-	}
-
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/")
-	public Response getTickets() {
-
-		try {
-			return Response.status(200).entity(db.getSegments()).build();
-		} catch (DatabaseException ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		} catch (Exception ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
-		}
-
-	}
-
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/segmentheaders")
-	public Response getTicketHeaders() {
+	@Path("/segmentHeaders")
+	public Response getSegmentHeaders() {
 
 		try {
 			return Response.status(200).entity(db.getSegmentHeaders()).build();
@@ -102,7 +80,7 @@ public class NokonaSegmentResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/segmentheaders/{segmentName}")
+	@Path("/segmentHeaders/{segmentName}")
 	public Response getSegmentHeaderByName(@PathParam("segmentName") String segmentName) {
 
 		SegmentHeader segmentHeader;
@@ -118,6 +96,26 @@ public class NokonaSegmentResource {
 		}
 
 		return Response.status(200).entity(segmentHeader).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/segmentDetails/{segmentName}")
+	public Response getSegmentDetailByName(@PathParam("segmentName") String segmentName) {
+
+		List<SegmentDetail> segmentDetails;
+
+		try {
+			segmentDetails = db.getSegmentDetailsByName(segmentName);
+		} catch (DataNotFoundException ex) {
+			return Response.status(404).entity("{\"error\":\"" + segmentName + " not found\"}").build();
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		}
+
+		return Response.status(200).entity(segmentDetails).build();
 	}
 
 //	@POST

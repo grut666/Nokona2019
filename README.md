@@ -13,7 +13,7 @@
 ## Segment - Contains a wrapped SegmentHeader and a list of all SegmentDetail records for a given segmentName
 ### Get /segments # Get all Segments
 #### In
-/segments/100I-LH
+/segments
 #### Out
 List of all segments
 
@@ -47,7 +47,7 @@ List of all segments
         
 ### Get /segments/segmentHeaders # Get all SegmentHeaders
 #### In
-/segments/segmentDetails/100I-LH
+/segments/segmentHeaders
 #### Out
 [
     {

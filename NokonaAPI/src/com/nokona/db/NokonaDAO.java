@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import com.nokona.exceptions.DatabaseConnectionException;
-import com.nokona.exceptions.DatabaseException;
 
 public class NokonaDAO {
 	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";

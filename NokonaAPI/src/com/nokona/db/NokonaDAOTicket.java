@@ -50,6 +50,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		super();
 
 	}
+
 	public NokonaDAOTicket(String userName, String password) throws DatabaseException {
 		super(userName, password);
 
@@ -86,7 +87,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			try {
 				psGetTicketByKey = conn.prepareStatement(
 						"Select * from ticketheader join ticketdetail on ticketheader.key = ticketdetail.key  "
-								+ "join operation on operation = opcode " 
+								+ "join operation on operation = opcode "
 								+ "join model on ticketheader.modelid = model.modelid "
 								+ "where ticketheader.key = ? order by sequenceOriginal");
 
@@ -409,7 +410,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	}
 
 	@Override
-	public Ticket deleteTicketByKey(Ticket ticket) throws DatabaseException {
+	public Ticket deleteTicketByKey(long key) throws DatabaseException {
 		// TODO Auto-generated method stub
 		return null;
 	}

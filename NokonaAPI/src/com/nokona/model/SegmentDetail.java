@@ -1,29 +1,30 @@
 package com.nokona.model;
 
 public class SegmentDetail {
-	private long segmentKey;
-	private String operation;
+	private String segmentName;
+	private String opCode;
 	private int sequence;
 	public SegmentDetail() {
 		super();
 	}
-	public SegmentDetail(long segmentKey, String operation, int sequence) {
+	public SegmentDetail(String segmentName, String opCode, int sequence) {
 		super();
-		this.setSegmentKey(segmentKey);
-		this.setOperation(operation);
+		this.setSegmentName(segmentName);
+		this.setOperation(opCode);
 		this.setSequence(sequence);
 	}
-	public long getSegmentKey() {
-		return segmentKey;
+
+	public String getSegmentName() {
+		return segmentName;
 	}
-	public void setSegmentKey(long segmentKey) {
-		this.segmentKey = segmentKey;
+	public void setSegmentName(String segmentName) {
+		this.segmentName = segmentName;
 	}
-	public String getOperation() {
-		return operation;
+	public String getOpCode() {
+		return opCode;
 	}
-	public void setOperation(String operation) {
-		this.operation = operation;
+	public void setOperation(String opCode) {
+		this.opCode = opCode;
 	}
 	public int getSequence() {
 		return sequence;
@@ -33,8 +34,10 @@ public class SegmentDetail {
 	}
 	@Override
 	public String toString() {
-		return "SegmentDetail [segmentKey=" + segmentKey + ", operation=" + operation + ", sequence=" + sequence + "]";
+		return "SegmentDetail [segmentName=" + segmentName + ", opCode=" + opCode + ", sequence=" + sequence
+				+ "]";
 	}
+
 	
 	
 }

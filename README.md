@@ -34,7 +34,7 @@
         "active": false,\
         "key": 316\
     }\
-]\
+]
 
 ### Get /employee/{employeeID} # Get 1 employee by their unique identifer, employeeID
 #### In
@@ -48,7 +48,7 @@
     "laborCode": 11,\
     "active": false,\
     "key": 483\
-}\
+}
         
 ### Put /employees/{empID} # Update one employee
 #### In
@@ -62,7 +62,7 @@ Body:
     "laborCode": 11,\
     "active": false,\
     "key": 483\
-}\
+}
 #### Out
 {\
     "lastName": "Williams",\
@@ -72,7 +72,7 @@ Body:
     "laborCode": 11,\
     "active": false,\
     "key": 483\
-}\
+}
         
 ### Post /employees # Add 1 employee
 #### In
@@ -86,7 +86,7 @@ Body:
     "laborCode": 12,\
     "active": true,\
     "key": 0\
-}\
+}
 #### Out
 {\
     "lastName": "MORALES",\
@@ -96,7 +96,7 @@ Body:
     "laborCode": 12,\
     "active": true,\
     "key": 6789\
-}\
+}
 
 ### Delete /employees/{empID} # Add 1 employee
 #### In
@@ -105,7 +105,7 @@ Body:
 #### Out
 {\
     "Success": "200"\
-}\
+}
 
 ## Labor Code
 

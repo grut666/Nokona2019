@@ -98,7 +98,7 @@ Body:
     "key": 6789\
 }
 
-### Delete /employees/{empID} # Add 1 employee
+### Delete /employees/{empID} # Delete 1 employee record
 #### In
 /employees/BAR10
 
@@ -107,8 +107,108 @@ Body:
     "Success": "200"\
 }
 
-## Labor Code
+## Labor Code - Describes one Labor Code Record
 
+### Get /laborcodes # Get all Labor Codes
+#### In
+/laborcodes
+#### Out
+[\
+    {
+        "rate": 10.75,\
+        "laborCode": 1,\
+        "description": "EMBROIDERY",\
+        "key": 33\
+    },\
+    {\
+        "rate": 8.0,\
+        "laborCode": 2,\
+        "description": "GLUE TABLE~ GREASE",\
+        "key": 2\
+    },\
+    {\
+        "rate": 11.0,\
+        "laborCode": 3,\
+        "description": "STAMPING",\
+        "key": 3\
+    }
+]
+
+### Get /laborcodes/{laborCode} # Get 1 Labor Code by the unique LaborCode
+#### In
+/laborcodes/3
+#### Out
+{\
+    "rate": 11.0,\
+    "laborCode": 3,\
+    "description": "STAMPING",\
+    "key": 3\
+}
+
+### Get /laborcodes/{key} # Get 1 Labor Code by the unique Database Key
+#### In
+/laborcodes/bykey/30
+#### Out
+{\
+    "rate": 8.0,\
+    "laborCode": 16,\
+    "description": "LAY OFF GLOVES",\
+    "key": 30\
+}
+        
+### Put /laborcodes/{laborCode} # Update one Labor Code Record
+#### In
+/laborcodes/16
+Body:
+{\
+    "rate": 12.0,\
+    "laborCode": 16,\
+    "description": "LAYOFF GLOVES",\
+    "key": 30\
+}
+#### Out
+{\
+    "rate": 12.0,\
+    "laborCode": 16,\
+    "description": "LAYOFF GLOVES",\
+    "key": 30\
+}
+        
+### Post /laborcodes # Add 1 Labor Code Record
+#### In
+Body:
+
+{\
+    "rate": 9.0,\
+    "laborCode": 66,\
+    "description": "Do Some Cool Stuff",\
+    "key": 0\
+}
+#### Out
+{\
+    "rate": 9.0,\
+    "laborCode": 66,\
+    "description": "Do Some Cool Stuff",\
+    "key": 40\
+}
+
+### Delete /laborcodes/{laborCode} # Delete 1 Labor Code Record by the unique laborCode
+#### In
+/laborcodes/66
+
+#### Out
+{\
+    "Success": "200"\
+}
+
+### Delete /laborcodes/{laborCode} # Delete 1 Labor Code Record by the unique Database key
+#### In
+/laborcodes/bykey/40
+
+#### Out
+{\
+    "Success": "200"\
+}
 ## Labels
 
 ## Operation

@@ -172,7 +172,7 @@ public class NokonaDAOSegment extends NokonaDAO implements NokonaDatabaseSegment
 
 	@Override
 	public List<SegmentHeader> getSegmentHeaders() throws DatabaseException {
-		List<SegmentHeader> SegmentHeaders = new ArrayList<SegmentHeader>();
+		List<SegmentHeader> segmentHeaders = new ArrayList<SegmentHeader>();
 		if (psGetSegmentHeaders == null) {
 			try {
 				psGetSegmentHeaders = conn.prepareStatement("Select * from SegmentHeader order by segmentName");
@@ -185,13 +185,13 @@ public class NokonaDAOSegment extends NokonaDAO implements NokonaDatabaseSegment
 		try {
 			ResultSet rs = psGetSegmentHeaders.executeQuery();
 			while (rs.next()) {
-				SegmentHeaders.add(convertSegmentHeaderFromResultSet(rs));
+				segmentHeaders.add(convertSegmentHeaderFromResultSet(rs));
 			}
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
 		}
-		return SegmentHeaders;
+		return segmentHeaders;
 	}
 
 	@Override

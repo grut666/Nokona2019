@@ -2,16 +2,16 @@ package com.nokona.model;
 
 public class LaborCode {
 	private long key;
-	private int code;
+	private int laborCode;
 	private String description;
 	private double rate;
 	
 	public LaborCode() {
 		this(0, 0,"",0);
 	}
-	public LaborCode(long key, int code, String description, double rate) {
+	public LaborCode(long key, int laborCode, String description, double rate) {
 		this.setKey(key);
-		this.setCode(code);
+		this.setLaborCode(laborCode);
 		this.setDescription(description);
 		this.setRate(rate);
 	}
@@ -21,11 +21,11 @@ public class LaborCode {
 	public void setKey(long key) {
 		this.key = key;
 	}
-	public int getCode() {
-		return code;
+	public int getLaborCode() {
+		return laborCode;
 	}
-	public void setCode(int code) {
-		this.code = code;
+	public void setLaborCode(int laborCode) {
+		this.laborCode = laborCode;
 	}
 	public String getDescription() {
 		return description;
@@ -41,7 +41,7 @@ public class LaborCode {
 	}
 	@Override
 	public String toString() {
-		return "LaborCode [key=" + key + ", code=" + code + ", description=" + description + ", rate=" + rate + "]";
+		return "LaborCode [key=" + key + ", laborCode=" + laborCode + ", description=" + description + ", rate=" + rate + "]";
 	}
 	
 	

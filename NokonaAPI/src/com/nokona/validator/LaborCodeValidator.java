@@ -19,13 +19,13 @@ public class LaborCodeValidator {
 		if (addPS == null) {
 			try {
 				addPS = conn.prepareStatement(
-						"Select LaborCode.key from LaborCode where LaborCode = ?");
+						"Select LaborCode.Key from LaborCode where LaborCode = ?");
 			} catch (SQLException e) {
 				errors += e.getMessage() + "\n";
 			}	
 		} else {
 				try {
-					addPS.setInt(1, laborCodeIn.getCode());
+					addPS.setInt(1, laborCodeIn.getLaborCode());
 					ResultSet rs = addPS.executeQuery();
 					if (rs.next()) {
 						errors += "Add: Labor Code ID already in use\n";
@@ -43,14 +43,14 @@ public class LaborCodeValidator {
 		if (updatePS == null) {
 			try {
 				updatePS = conn.prepareStatement(
-						"Select LaborCode.key from Operation where LaborCode.key <> ? and (LaborCode = ?)");
+						"Select LaborCode.Key from LaborCode where LaborCode.Key <> ? and (LaborCode = ?)");
 			} catch (SQLException e) {
 				errors += e.getMessage() + "\n";
 			}	
 		} else {
 				try {
 					updatePS.setLong(1, laborCodeIn.getKey());
-					updatePS.setInt(2, laborCodeIn.getCode());
+					updatePS.setInt(2, laborCodeIn.getLaborCode());
 					ResultSet rs = updatePS.executeQuery();
 					if (rs.next()) {
 						errors += "Update:LaborCode already in use\n";

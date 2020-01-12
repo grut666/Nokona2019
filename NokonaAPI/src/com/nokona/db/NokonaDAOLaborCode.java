@@ -117,7 +117,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			try {
 				psUpdateLaborCode = conn.prepareStatement(
 						"Update LaborCode Set LaborCode = ?, Description = ?, LaborRate = ? " +
-							"WHERE LaborCode.KEY = ?");
+							"WHERE LaborCode.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -130,14 +130,14 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			throw new DatabaseException(validateMessage);
 		}
 		try {
-			psUpdateLaborCode.setInt(1, formattedLaborCode.getCode());
+			psUpdateLaborCode.setInt(1, formattedLaborCode.getLaborCode());
 			psUpdateLaborCode.setString(2, formattedLaborCode.getDescription());
 			psUpdateLaborCode.setDouble(3, formattedLaborCode.getRate());
 			psUpdateLaborCode.setLong(4, formattedLaborCode.getKey());
 			int rowCount = psUpdateLaborCode.executeUpdate();
 
 			if (rowCount != 1) {
-				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
+				throw new DatabaseException("Error.  Updated " + rowCount + " rows");
 			}
 			return getLaborCodeByKey(formattedLaborCode.getKey());
 			
@@ -152,7 +152,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 		if (psAddLaborCode == null) {
 			try {
 				psAddLaborCode = conn.prepareStatement(
-						"Insert into LaborCode (LaborCode, Description, LaborRate, Key) values (?,?,?,?)",
+						"Insert into LaborCode (LaborCode, Description, LaborRate, LaborCode.Key) values (?,?,?,?)",
 						PreparedStatement.RETURN_GENERATED_KEYS);
 
 			} catch (SQLException e) {
@@ -166,10 +166,10 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			throw new DatabaseException(validateMessage);
 		}
 		try {
-			psAddLaborCode.setInt(1, formattedLaborCode.getCode());
+			psAddLaborCode.setInt(1, formattedLaborCode.getLaborCode());
 			psAddLaborCode.setString(2, formattedLaborCode.getDescription());
 			psAddLaborCode.setDouble(3, formattedLaborCode.getRate());
-			psAddLaborCode.setLong(5, formattedLaborCode.getKey());
+			psAddLaborCode.setLong(4, formattedLaborCode.getKey());
 
 			int rowCount = psAddLaborCode.executeUpdate();
 
@@ -195,7 +195,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 	public void deleteLaborCodeByKey(long key) throws DatabaseException {
 		if (psDelLaborCodeByKey == null) {
 			try {
-				psDelLaborCodeByKey = conn.prepareStatement("Delete From LaborCode where Key = ?");
+				psDelLaborCodeByKey = conn.prepareStatement("Delete From LaborCode where LaborCode.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());

@@ -145,7 +145,7 @@ Body:
     "key": 3\
 }
 
-### Get /laborcodes/{key} # Get 1 Labor Code by the unique Database Key
+### Get /laborcodes/bykey/{key} # Get 1 Labor Code by the unique Database Key
 #### In
 /laborcodes/bykey/30
 #### Out
@@ -201,7 +201,7 @@ Body:
     "Success": "200"\
 }
 
-### Delete /laborcodes/{laborCode} # Delete 1 Labor Code Record by the unique Database key
+### Delete /laborcodes/bykey/{key} # Delete 1 Labor Code Record by the unique Database key
 #### In
 /laborcodes/bykey/40
 
@@ -213,6 +213,115 @@ Body:
 
 ## Operation
 
+### Get /operations # Get all Operations
+#### In
+/operations
+#### Out
+[
+{\
+        "lastStudyYear": 0,\
+        "hourlyRateSAH": 0.0036,\
+        "description": "SPLIT LINING                  CATCHERS MITT                 ",\
+        "laborCode": 7,\
+        "active": false,\
+        "opCode": "Z97",\
+        "key": 12791\
+    },\
+    {\
+        "lastStudyYear": 0,\
+        "hourlyRateSAH": 0.04,\
+        "description": "STAMP PALM                    CATCHERS MITT                 ",\
+        "laborCode": 7,\
+        "active": false,\
+        "opCode": "Z98",\
+        "key": 12792\
+    },\
+    {\
+        "lastStudyYear": 0,\
+        "hourlyRateSAH": 0.06,\
+        "description": "STAMP MITT                                                  ",\
+        "laborCode": 7,\
+        "active": false,\
+        "opCode": "ZA3",\
+        "key": 12796\
+    }\
+] 
+
+### Get /operations/{opcode} # Get 1 Operation by unique opCode
+#### In
+/operations/Z98
+#### Out
+{\
+        "lastStudyYear": 0,\
+        "hourlyRateSAH": 0.04,\
+        "description": "STAMP PALM                    CATCHERS MITT                 ",\
+        "laborCode": 7,\
+        "active": false,\
+        "opCode": "Z98",\
+        "key": 12792\
+}
+### Get /operations/bykey/{opcode} # Get 1 Operation by unique key
+#### In
+/operations/bykey/13315
+#### Out
+{\
+    "lastStudyYear": 0,\
+    "hourlyRateSAH": 0.0033,\
+    "description": "CLICK GENUINE BLACK SHEEP - WRIST",\
+    "laborCode": 7,\
+    "active": false,\
+    "opCode": "B21B",\
+    "key": 13315\
+}
+### Put /operations/{opCode} # Update one Operation Record
+#### In
+/operations/B21B
+Body:
+{\
+    "lastStudyYear": 0,\
+    "hourlyRateSAH": 0.0036,\
+    "description": "CLICK GENUINE WHITE SHEEP - WRIST",\
+    "laborCode": 7,\
+    "active": false,\
+    "opCode": "B21B",\
+    "key": 13315\
+}
+#### Out
+{\
+    "lastStudyYear": 0,\
+    "hourlyRateSAH": 0.0036,\
+    "description": "CLICK GENUINE WHITE SHEEP - WRIST",\
+    "laborCode": 7,\
+    "active": false,\
+    "opCode": "B21B",\
+    "key": 13315\
+}
+        
+### Post /operations # Add 1 Operation Record
+#### In
+Body:
+
+
+#### Out
+
+
+### Delete /operations/{opCode} # Delete 1 Operation Record by the unique opCode
+#### In
+/operations/B21B
+
+#### Out
+{\
+    "Success": "200"\
+}
+
+### Delete /operations/bykey/{key} # Delete 1 Operation Record by the unique Database key
+#### In
+/operations/bykey/13315
+
+#### Out
+{\
+    "Success": "200"\
+}
 ## Model
 
 ## Segment - Contains a wrapped SegmentHeader and a list of all SegmentDetail records for a given segmentName

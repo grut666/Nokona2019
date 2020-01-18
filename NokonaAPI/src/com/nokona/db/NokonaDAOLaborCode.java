@@ -152,7 +152,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 		if (psAddLaborCode == null) {
 			try {
 				psAddLaborCode = conn.prepareStatement(
-						"Insert into LaborCode (LaborCode, Description, LaborRate, LaborCode.Key) values (?,?,?,?)",
+						"Insert into LaborCode (LaborCode, Description, LaborRate) values (?,?,?)",
 						PreparedStatement.RETURN_GENERATED_KEYS);
 
 			} catch (SQLException e) {
@@ -169,7 +169,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			psAddLaborCode.setInt(1, formattedLaborCode.getLaborCode());
 			psAddLaborCode.setString(2, formattedLaborCode.getDescription());
 			psAddLaborCode.setDouble(3, formattedLaborCode.getRate());
-			psAddLaborCode.setLong(4, formattedLaborCode.getKey());
+	//		psAddLaborCode.setLong(4, formattedLaborCode.getKey());
 
 			int rowCount = psAddLaborCode.executeUpdate();
 

@@ -260,7 +260,7 @@ Body:
         "opCode": "Z98",\
         "key": 12792\
 }
-### Get /operations/bykey/{opcode} # Get 1 Operation by unique key
+### Get /operations/bykey/{key} # Get 1 Operation by unique key
 #### In
 /operations/bykey/13315
 #### Out
@@ -339,6 +339,123 @@ operations/XYZ1
     "Success": "200"\
 }
 ## Model
+
+### Get /models # Get all Models
+#### In
+/models
+#### Out
+[
+ {\
+        "deleted": false,\
+        "modelId": "AMG700K-CW-LH",\
+        "description": "WAL/TAN KANG 13.5 IN CLSD WEB, LEFT",\
+        "modelType": "B",\
+        "key": 5694,\
+        "standardQuantity": 10\
+    },\
+    {\
+        "deleted": false,\
+        "modelId": "AMG700W-CW-LH",\
+        "description": "WALNUT 13.5 IN CLSD WEB - LEFT",\
+        "modelType": "B",\
+        "key": 5689,\
+        "standardQuantity": 10\
+    },\
+    {\
+        "deleted": false,\
+        "modelId": "BB-1175I-LH",\
+        "description": "11.75\" BUCKAROO AMG1175 I-WEB\"",\
+        "modelType": "B",\
+        "key": 5174,\
+        "standardQuantity": 10\
+    }\
+] 
+
+### Get /models/{modelId} # Get 1 Model by unique modelId
+#### In
+/models/BC-1200C-RH
+#### Out
+{\
+    "deleted": false,\
+    "modelId": "BC-1200C-RH",\
+    "description": "12\" BUFFALO COMBO CLOSED WEB\"",\
+    "modelType": "B",\
+    "key": 5253,\
+    "standardQuantity": 10\
+}
+### Get /models/bykey/{key} # Get 1 Model by unique key
+#### In
+/models/bykey/5565
+#### Out
+{\
+    "deleted": false,\
+    "modelId": "BC-1150M-LH",\
+    "description": "BUFFALO COMBO 11.5 IN MOD TRAP - LEFT",\
+    "modelType": "B",\
+    "key": 5565,\
+    "standardQuantity": 10\
+}
+### Put /models/{modelId} # Update one Model Record
+#### In
+/models/BF1125
+Body:
+{\
+    "deleted": false,\
+    "modelId": "BF1125",\
+    "description": "11.25\" Buffalo GLOVE OPEN WEB\"",\
+    "modelType": "B",\
+    "key": 4304,\
+    "standardQuantity": 10\
+}
+#### Out
+{\
+    "deleted": false,\
+    "modelId": "BF1125",\
+    "description": "11.25\" BUFFALO GLOVE OPEN WEB\"",\
+    "modelType": "B",\
+    "key": 4304,\
+    "standardQuantity": 10\
+}
+        
+### Post /models # Add 1 Model Record
+#### In
+Body:
+{\
+    "deleted": false,\
+    "modelId": "BXXX123",\
+    "description": "12.25\" Human Skin GLOVE OPEN WEB\"",\
+    "modelType": "B",\
+    "key": 0,\
+    "standardQuantity": 15\
+}
+
+#### Out
+{\
+    "deleted": false,\
+    "modelId": "BXXX123",\
+    "description": "12.25\" HUMAN SKIN GLOVE OPEN WEB\"",\
+    "modelType": "B",\
+    "key": 9733,\
+    "standardQuantity": 15\
+}
+
+### Delete /models/{modelId} # Delete 1 Model Record by the unique ModelId
+#### In
+models/BXXX123
+
+#### Out
+{\
+    "Success": "200"\
+}
+
+### Delete /models/bykey/{key} # Delete 1 Model Record by the unique Database key
+#### In
+/models/bykey/9733
+
+#### Out
+{\
+    "Success": "200"\
+}
 
 ## Segment - Contains a wrapped SegmentHeader and a list of all SegmentDetail records for a given segmentName
 ### Get /segments # Get all Segments

@@ -300,14 +300,30 @@ Body:
 ### Post /operations # Add 1 Operation Record
 #### In
 Body:
-
+{\
+    "lastStudyYear": 0,\
+    "hourlyRateSAH": 0.0033,\
+    "description": "TEST Operation",\
+    "laborCode": 7,\
+    "active": false,\
+    "opCode": "XYZ2",\
+    "key": 0\
+}
 
 #### Out
-
+{\
+    "lastStudyYear": 0,\
+    "hourlyRateSAH": 0.0033,\
+    "description": "TEST Operation",\
+    "laborCode": 7,\
+    "active": false,\
+    "opCode": "XYZ2",\
+    "key": 13343\
+}
 
 ### Delete /operations/{opCode} # Delete 1 Operation Record by the unique opCode
 #### In
-/operations/B21B
+operations/XYZ1
 
 #### Out
 {\

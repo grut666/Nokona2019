@@ -46,7 +46,7 @@ public class EmployeeValidator {
 		if (updatePS == null) {
 			try {
 				updatePS = conn.prepareStatement(
-						"Select Employee.key from Employee where Employee.key <> ? and (BarCodeID = ? or EmpID = ?)");
+						"Select Employee.key from Employee where Employee.key <> ? and active = 1 and (BarCodeID = ? or EmpID = ?)");
 			} catch (SQLException e) {
 				errors += e.getMessage() + "\n";
 			}	

@@ -152,7 +152,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 		if (psAddOperation == null) {
 			try {
 				psAddOperation = conn.prepareStatement(
-						"Insert into Operation (OpCode, Description, HourlyRateSAH, LaborCode, Key, LastStudyYear) values (?,?,?,?,?,?)",
+						"Insert into Operation (OpCode, Description, HourlyRateSAH, LaborCode, LastStudyYear) values (?,?,?,?,?)",
 						PreparedStatement.RETURN_GENERATED_KEYS);
 
 			} catch (SQLException e) {
@@ -170,8 +170,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			psAddOperation.setString(2, formattedOperation.getDescription());
 			psAddOperation.setDouble(3, formattedOperation.getHourlyRateSAH());
 			psAddOperation.setInt(4, formattedOperation.getLaborCode());
-			psAddOperation.setLong(5, formattedOperation.getKey());
-			psAddOperation.setInt(6, formattedOperation.getLastStudyYear());
+			psAddOperation.setInt(5, formattedOperation.getLastStudyYear());
 			int rowCount = psAddOperation.executeUpdate();
 
 			if (rowCount != 1) {
@@ -196,7 +195,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 	public void deleteOperationByKey(long key) throws DatabaseException {
 		if (psDelOperationByKey == null) {
 			try {
-				psDelOperationByKey = conn.prepareStatement("Delete From Operation where Key = ?");
+				psDelOperationByKey = conn.prepareStatement("Delete From Operation where Operation.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());

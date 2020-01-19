@@ -11,9 +11,13 @@ import com.nokona.data.NokonaDatabaseModel;
 import com.nokona.enums.ModelType;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
-import com.nokona.model.LaborCode;
+import com.nokona.exceptions.DuplicateDataException;
+import com.nokona.exceptions.NullInputDataException;
+import com.nokona.formatter.ModelFormatter;
+import com.nokona.model.Employee;
 import com.nokona.model.Model;
 import com.nokona.utilities.DateUtilities;
+import com.nokona.validator.ModelValidator;
 
 public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 	public NokonaDAOModel() throws DatabaseException {
@@ -29,6 +33,7 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 	PreparedStatement psGetModelByModelId;
 	PreparedStatement psGetModels;
 	PreparedStatement psAddModel;
+	PreparedStatement psAddModelDupeCheck;
 	PreparedStatement psUpdateModel;
 
 	PreparedStatement psDelModelByKey;
@@ -112,148 +117,171 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 
 	@Override
 	public Model updateModel(Model modelIn) throws DatabaseException {
-		// if (psUpdateModel == null) {
-		// try {
-		// psUpdateModel = conn.prepareStatement(
-		// "Update Operation Set OpCode = ?, Description = ?, HourlyRateSAH = ?,
-		// LaborCode = ?, LastStudyYear = ? " +
-		// "WHERE Operation.KEY = ?");
-		//
-		// } catch (SQLException e) {
-		// System.err.println(e.getMessage());
-		// throw new DatabaseException(e.getMessage());
-		// }
-		// }
-		// Operation formattedOperation = OperationFormatter.format(operationIn);
-		// String validateMessage =
-		// OperationValidator.validateUpdate(formattedOperation, conn);
-		// if (! "".equals(validateMessage)) {
-		// throw new DatabaseException(validateMessage);
-		// }
-		// try {
-		// psUpdateOperation.setString(1, formattedOperation.getOpCode());
-		// psUpdateOperation.setString(2, formattedOperation.getDescription());
-		// psUpdateOperation.setDouble(3, formattedOperation.getHourlyRateSAH());
-		// psUpdateOperation.setInt(4, formattedOperation.getLaborCode());
-		// psUpdateOperation.setInt(5, formattedOperation.getLastStudyYear());
-		// psUpdateOperation.setLong(6, formattedOperation.getKey());
-		// int rowCount = psUpdateOperation.executeUpdate();
-		//
-		// if (rowCount != 1) {
-		// throw new DatabaseException("Error. Inserted " + rowCount + " rows");
-		// }
-		// return getOperationByKey(formattedOperation.getKey());
-		//
-		// } catch (SQLException e) {
-		// System.err.println(e.getMessage());
-		// throw new DuplicateDataException(e.getMessage(), e);
-		// }
-		return null;
+
+		if (psUpdateModel == null) {
+			try {
+				psUpdateModel = conn.prepareStatement(
+						"Update Model Set modelId = ?, Description = ?, StandardQuantity = ?, Type = ?, IsDeleted = ?, deleteDate = ? "
+								+ "WHERE Model.KEY = ?");
+
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DatabaseException(e.getMessage());
+			}
+		}
+		Model formattedModel = ModelFormatter.format(modelIn);
+		String validateMessage = ModelValidator.validateUpdate(formattedModel, conn);
+		if (!"".equals(validateMessage)) {
+			throw new DatabaseException(validateMessage);
+		}
+		try {
+			psUpdateModel.setString(1, formattedModel.getModelId());
+			psUpdateModel.setString(2, formattedModel.getDescription());
+			psUpdateModel.setInt(3, formattedModel.getStandardQuantity());
+			psUpdateModel.setString(4, formattedModel.getModelType().getModelType());
+			psUpdateModel.setString(5, formattedModel.isDeleted() ? "T" : "F");
+			psUpdateModel.setDate(6, DateUtilities.convertUtilDateToSQLDate(formattedModel.getDeletedDate()));
+			psUpdateModel.setLong(7, formattedModel.getKey());
+			int rowCount = psUpdateModel.executeUpdate();
+
+			if (rowCount != 1) {
+				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
+			}
+			return getModelByKey(formattedModel.getKey());
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DuplicateDataException(e.getMessage(), e);
+		}
 	}
+	
 
 	@Override
 	public Model addModel(Model modelIn) throws DatabaseException {
-		// if (psAddOperation == null) {
-		// try {
-		// psAddOperation = conn.prepareStatement(
-		// "Insert into Operation (OpCode, Description, HourlyRateSAH, LaborCode, Key,
-		// LastStudyYear) values (?,?,?,?,?,?)",
-		// PreparedStatement.RETURN_GENERATED_KEYS);
-		//
-		// } catch (SQLException e) {
-		// System.err.println(e.getMessage());
-		// throw new DatabaseException(e.getMessage());
-		// }
-		// }
-		// Operation formattedOperation = OperationFormatter.format(operationIn);
-		// String validateMessage = OperationValidator.validateAdd(operationIn, conn);
-		// if (!"".equals(validateMessage)) {
-		// throw new DatabaseException(validateMessage);
-		// }
-		// try {
-		// psAddOperation.setString(1, formattedOperation.getOpCode());
-		// psAddOperation.setString(2, formattedOperation.getDescription());
-		// psAddOperation.setDouble(3, formattedOperation.getHourlyRateSAH());
-		// psAddOperation.setInt(4, formattedOperation.getLaborCode());
-		// psAddOperation.setLong(5, formattedOperation.getKey());
-		// psAddOperation.setInt(6, formattedOperation.getLastStudyYear());
-		// int rowCount = psAddOperation.executeUpdate();
-		//
-		// if (rowCount != 1) {
-		// throw new DatabaseException("Error. Inserted " + rowCount + " rows");
-		// }
-		// Operation newOp = new Operation();
-		// try (ResultSet generatedKeys = psAddOperation.getGeneratedKeys()) {
-		// if (generatedKeys.next()) {
-		// newOp.setKey(generatedKeys.getLong(1));
-		// return getOperationByKey(generatedKeys.getLong(1));
-		// } else {
-		// throw new SQLException("Creating operation failed, no ID obtained.");
-		// }
-		// }
-		// } catch (SQLException e) {
-		// System.err.println(e.getMessage());
-		// throw new DuplicateDataException(e.getMessage(), e);
-		// }
-		return null;
-	}
+		// Dupe Data Check
+		
+				if (modelIn == null) {
+					throw new NullInputDataException("Model cannot be null");
+				}
+				Model formattedModel = ModelFormatter.format(modelIn);
+				if (psAddModelDupeCheck == null) {
+					try {
+						psAddModelDupeCheck = conn
+								.prepareStatement("Select * from Model where ModelID = ?");
+
+					} catch (SQLException e) {
+						System.err.println(e.getMessage());
+						throw new DatabaseException(e.getMessage());
+					}
+				}
+				try {
+				psAddModelDupeCheck.setString(1, formattedModel.getModelId());
+				ResultSet rs = psAddModelDupeCheck.executeQuery();
+				if (rs.next()) {
+					throw new DuplicateDataException("Model ID is already in use");
+				}
+				}
+				catch(SQLException e) {
+					System.err.println(e.getMessage());
+					throw new DuplicateDataException(e.getMessage(), e);
+				}
+				if (psAddModel == null) {
+					try {
+						psAddModel = conn.prepareStatement(
+								"Insert into Model (ModelId, Description, StandardQuantity, Type, IsDeleted, DeleteDate) values (?,?,?,?,?,?)",
+								PreparedStatement.RETURN_GENERATED_KEYS);
+
+					} catch (SQLException e) {
+						System.err.println(e.getMessage());
+						throw new DatabaseException(e.getMessage());
+					}
+				}
+				String validateMessage = ModelValidator.validateAdd(formattedModel, conn);
+				if (!"".equals(validateMessage)) {
+					throw new DatabaseException(validateMessage);
+				}
+				try {
+					psAddModel.setString(1, formattedModel.getModelId());
+					psAddModel.setString(2, formattedModel.getDescription());
+					psAddModel.setInt(3, formattedModel.getStandardQuantity());
+					psAddModel.setString(4, formattedModel.getModelType().getModelType());
+					psAddModel.setString(5, formattedModel.isDeleted() ? "T" : "F");
+					psAddModel.setDate(6, DateUtilities.convertUtilDateToSQLDate(formattedModel.getDeletedDate()));
+					int rowCount = psAddModel.executeUpdate();
+
+					if (rowCount != 1) {
+						throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
+					}
+					Employee newEmp = new Employee();
+					try (ResultSet generatedKeys = psAddModel.getGeneratedKeys()) {
+						if (generatedKeys.next()) {
+							newEmp.setKey(generatedKeys.getLong(1));
+							return getModelByKey(generatedKeys.getLong(1));
+						} else {
+							throw new SQLException("Creating user failed, no ID obtained.");
+						}
+					}
+				} catch (SQLException e) {
+					System.err.println(e.getMessage());
+					throw new DuplicateDataException(e.getMessage(), e);
+				}
+			}
+
 
 	@Override
 	public void deleteModelByKey(long key) throws DatabaseException {
-		// if (psDelOperationByKey == null) {
-		// try {
-		// psDelOperationByKey = conn.prepareStatement("Delete From Operation where Key
-		// = ?");
-		//
-		// } catch (SQLException e) {
-		// System.err.println(e.getMessage());
-		// throw new DatabaseException(e.getMessage());
-		// }
-		// }
-		// try {
-		// psDelOperationByKey.setLong(1, key);
-		// int rowCount = psDelOperationByKey.executeUpdate();
-		//
-		// if (rowCount == 0) {
-		// throw new DataNotFoundException("Error. Delete Operation Key " + key + "
-		// failed");
-		// }
-		//
-		// } catch (SQLException e) {
-		// System.err.println(e.getMessage());
-		// throw new DatabaseException(e.getMessage(), e);
-		// }
+		// TODO Set isdeleted status to false instead?
+		
+		if (psDelModelByKey == null) {
+			try {
+				psDelModelByKey = conn.prepareStatement("Delete From Model where Model.Key = ?");
+
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DatabaseException(e.getMessage());
+			}
+		}
+		try {
+			psDelModelByKey.setLong(1, key);
+			int rowCount = psDelModelByKey.executeUpdate();
+
+			if (rowCount == 0) {
+				throw new DataNotFoundException("Error.  Delete Model key " + key + " failed");
+			}
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage(), e);
+		}
+
 	}
 
 	@Override
-	public void deleteModel(String modelId) throws DatabaseException {
-		// if (opID == null) {
-		// throw new NullInputDataException("opID cannot be null");
-		// }
-		// if (psDelOperationByOpId == null) {
-		// try {
-		// psDelOperationByOpId = conn.prepareStatement("Delete From Operation where
-		// OpCode = ?");
-		//
-		// } catch (SQLException e) {
-		// System.err.println(e.getMessage());
-		// throw new DatabaseException(e.getMessage());
-		// }
-		// }
-		// try {
-		// psDelOperationByOpId.setString(1, opID);
-		// int rowCount = psDelOperationByOpId.executeUpdate();
-		//
-		// if (rowCount == 0) {
-		// throw new DataNotFoundException("Error. Delete Operation ID " + opID + "
-		// failed");
-		// }
-		//
-		// } catch (SQLException e) {
-		// System.err.println(e.getMessage());
-		// throw new DatabaseException(e.getMessage(), e);
-		// }
+	public void deleteModel(String modelID) throws DatabaseException {
+		if (modelID == null) {
+			throw new NullInputDataException("empID cannot be null");
+		}
+		if (psDelModelByModelId == null) {
+			try {
+				psDelModelByModelId = conn.prepareStatement("Delete From Model where ModelID = ?");
 
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DatabaseException(e.getMessage());
+			}
+		}
+		try {
+			psDelModelByModelId.setString(1, modelID);
+			int rowCount = psDelModelByModelId.executeUpdate();
+
+			if (rowCount == 0) {
+				throw new DataNotFoundException("Error.  Delete Emp ID " + modelID + " failed");
+			}
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage(), e);
+		}
 	}
 
 	private Model convertModelFromResultSet(ResultSet rs) throws SQLException {

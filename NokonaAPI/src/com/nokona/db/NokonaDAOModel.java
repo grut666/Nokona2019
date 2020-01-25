@@ -145,7 +145,7 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 			int rowCount = psUpdateModel.executeUpdate();
 
 			if (rowCount != 1) {
-				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
+				throw new DatabaseException("Error.  Updated " + rowCount + " rows");
 			}
 			return getModelByKey(formattedModel.getKey());
 

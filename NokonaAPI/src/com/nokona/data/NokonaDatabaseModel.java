@@ -15,9 +15,9 @@ public interface NokonaDatabaseModel extends NokonaDatabase {
 	ModelHeader updateModelHeader(ModelHeader modelHeader) throws DatabaseException;
 	ModelHeader addModelHeader(ModelHeader modelHeader) throws DatabaseException;
 	
-	ModelDetail getModelDetail(String modelId) throws DatabaseException;
-	ModelDetail updateModelDetail(ModelDetail modelDetail)throws DatabaseException;
-	ModelDetail addModelDetail(ModelDetail modelDetail) throws DatabaseException;
+	List<ModelDetail> getModelDetails(String modelId) throws DatabaseException;
+	List<ModelDetail> updateModelDetails(ModelDetail modelDetail)throws DatabaseException;
+	List<ModelDetail> addModelDetails(ModelDetail modelDetail) throws DatabaseException;
 	
 	Model getModel(String modelId) throws DatabaseException;
 	Model updateModel(Model model) throws DatabaseException;

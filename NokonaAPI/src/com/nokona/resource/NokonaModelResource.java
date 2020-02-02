@@ -1,5 +1,7 @@
 package com.nokona.resource;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -17,6 +19,7 @@ import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
+import com.nokona.model.ModelDetail;
 import com.nokona.model.ModelHeader;
 
 @Path("/models")
@@ -28,13 +31,14 @@ public class NokonaModelResource {
 	public NokonaModelResource() throws DatabaseException {
 
 	}
-
+	
+//  HEADERS
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/modelheaders")
-	public Response getModels() {
+	public Response getModelHeaders() {
 		try {
-
 			return Response.status(200).entity(db.getModelHeaders()).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
@@ -59,7 +63,7 @@ public class NokonaModelResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/modelheaders/bykey/{key}")
-	public Response getModelsByKey(@PathParam("key") long key ) {
+	public Response getModelHeadersByKey(@PathParam("key") long key ) {
 		try {
 
 			return Response.status(200).entity(db.getModelHeaderByKey(key)).build();
@@ -73,7 +77,7 @@ public class NokonaModelResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/modelheaders/{modelId}")
-	public Response updateModel(@PathParam("modelId") String modelId, ModelHeader modelHeaderIn) {
+	public Response updateModelHeader(@PathParam("modelId") String modelId, ModelHeader modelHeaderIn) {
 
 		if (!modelId.equals(modelHeaderIn.getModelId())) {
 			return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
@@ -95,9 +99,9 @@ public class NokonaModelResource {
 
 	@Path("/modelheaders")
 	public Response addModelHeader(ModelHeader modelHeaderIn) {
-		ModelHeader model;
+		ModelHeader modelHeader;
 		try {
-			model = db.addModelHeader(modelHeaderIn);
+			modelHeader = db.addModelHeader(modelHeaderIn);
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -105,9 +109,65 @@ public class NokonaModelResource {
 		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
-		return Response.status(201).entity(model).build();
+		return Response.status(201).entity(modelHeader).build();
 	}
 
+// DETAILS	
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/modeldetails/{model}")
+	public Response getModelDetailsByModel(@PathParam("model") String model) {
+		try {
+
+			return Response.status(200).entity(db.getModelDetails(model)).build();
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+	}
+	@PUT
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/modelheaders/{modelId}")
+	public Response updateModelDetail(@PathParam("modelId") String modelId, ModelDetail modelDetailIn) {
+
+		if (!modelId.equals(modelDetailIn.getModelId())) {
+			return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
+		}
+		try {
+			return Response.status(200).entity(db.updateModelDetails(modelDetailIn)).build();
+		} catch (DuplicateDataException e) {
+			return Response.status(422).entity(e.getMessage()).build();
+		} catch (DatabaseConnectionException ex) {
+			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (DatabaseException ex) {
+			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+	}
+
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+
+	@Path("/modeldetailss")
+	public Response addModelDetail(ModelDetail modelDetailIn) {
+		List<ModelDetail> modelDetails;
+		try {
+			modelDetails = db.addModelDetails(modelDetailIn);
+		} catch (DuplicateDataException e) {
+			return Response.status(422).entity(e.getMessage()).build();
+		} catch (DatabaseConnectionException ex) {
+			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (DatabaseException ex) {
+			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+		return Response.status(201).entity(modelDetails).build();
+	}
+	
+	
+	
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{modelId}")

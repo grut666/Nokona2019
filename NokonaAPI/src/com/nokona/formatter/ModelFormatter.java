@@ -1,13 +1,13 @@
 package com.nokona.formatter;
 
-import com.nokona.model.Model;
+import com.nokona.model.ModelHeader;
 
 public class ModelFormatter {
 
-	public static Model format(Model model) {
-		model.setModelId(formatModelId(model.getModelId()));
-		model.setDescription(formatDescription(model.getDescription()));
-		return model;
+	public static ModelHeader format(ModelHeader modelHeader) {
+		modelHeader.setModelId(formatModelId(modelHeader.getModelId()));
+		modelHeader.setDescription(formatDescription(modelHeader.getDescription()));
+		return modelHeader;
 	}
 
 	public static String formatModelId(String modelId) {

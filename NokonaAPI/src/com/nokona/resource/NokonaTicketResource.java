@@ -106,7 +106,7 @@ public class NokonaTicketResource {
 	}
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/tickets/{key}")
+	@Path("/{key}")
 	public Response getTicketByKey(@PathParam("key") long key) {
 
 		Ticket ticket;

@@ -438,6 +438,33 @@ Body:
     "key": 9733,\
     "standardQuantity": 15\
 }
+### Get /models/modeldetails/{modelId} # Get a List of Model Detail records by unique modelId
+#### In
+/models/modeldetails/BC-1200C-RH
+#### Out
+[\
+    {\
+        "sequence": 0,\
+        "modelId": "BC-1150M-LH",\
+        "opCode": "111"\
+    },\
+    {\
+        "sequence": 1,\
+        "modelId": "BC-1150M-LH",\
+        "opCode": "222"\
+    },\
+    {\
+        "sequence": 2,\
+        "modelId": "BC-1150M-LH",\
+        "opCode": "333"\
+    },\ 
+    {\
+        "sequence": 38,\
+        "modelId": "BC-1150M-LH",\
+        "opCode": "I28"\
+    }\
+]
+
 
 ### Delete /models/{modelId} # Delete 1 Model by the unique ModelId.  Deletes both header and detail
 #### In

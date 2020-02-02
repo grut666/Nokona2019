@@ -16,6 +16,8 @@ import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.ModelFormatter;
 import com.nokona.model.Employee;
 import com.nokona.model.Model;
+import com.nokona.model.ModelDetail;
+import com.nokona.model.ModelHeader;
 import com.nokona.utilities.DateUtilities;
 import com.nokona.validator.ModelValidator;
 
@@ -29,22 +31,22 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 		super(userName, password);
 	}
 
-	PreparedStatement psGetModelByKey;
-	PreparedStatement psGetModelByModelId;
-	PreparedStatement psGetModels;
-	PreparedStatement psAddModel;
-	PreparedStatement psAddModelDupeCheck;
-	PreparedStatement psUpdateModel;
+	PreparedStatement psGetModelHeaderByKey;
+	PreparedStatement psGetModelHeaderByModelId;
+	PreparedStatement psGetModelHeaders;
+	PreparedStatement psAddModelHeader;
+	PreparedStatement psAddModelHeaderDupeCheck;
+	PreparedStatement psUpdateModelHeader;
 
 	PreparedStatement psDelModelByKey;
 	PreparedStatement psDelModelByModelId;
 
 	@Override
-	public Model getModelByKey(long key) throws DataNotFoundException {
-		Model model = null;
-		if (psGetModelByKey == null) {
+	public ModelHeader getModelHeaderByKey(long key) throws DataNotFoundException {
+		ModelHeader model = null;
+		if (psGetModelHeaderByKey == null) {
 			try {
-				psGetModelByKey = conn.prepareStatement("Select * from Model where Model.Key = ?");
+				psGetModelHeaderByKey = conn.prepareStatement("Select * from Model where Model.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -52,8 +54,8 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 			}
 		}
 		try {
-			psGetModelByKey.setLong(1, key);
-			ResultSet rs = psGetModelByKey.executeQuery();
+			psGetModelHeaderByKey.setLong(1, key);
+			ResultSet rs = psGetModelHeaderByKey.executeQuery();
 			if (rs.next()) {
 				model = convertModelFromResultSet(rs);
 			} else {
@@ -67,11 +69,11 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 	}
 
 	@Override
-	public Model getModel(String modelID) throws DataNotFoundException {
-		Model model = null;
-		if (psGetModelByModelId == null) {
+	public ModelHeader getModelHeader(String modelID) throws DataNotFoundException {
+		ModelHeader model = null;
+		if (psGetModelHeaderByModelId == null) {
 			try {
-				psGetModelByModelId = conn.prepareStatement("Select * from Model where ModelID = ?");
+				psGetModelHeaderByModelId = conn.prepareStatement("Select * from ModelHeader where ModelID = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -79,8 +81,8 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 			}
 		}
 		try {
-			psGetModelByModelId.setString(1, modelID);
-			ResultSet rs = psGetModelByModelId.executeQuery();
+			psGetModelHeaderByModelId.setString(1, modelID);
+			ResultSet rs = psGetModelHeaderByModelId.executeQuery();
 			if (rs.next()) {
 				model = convertModelFromResultSet(rs);
 			} else {
@@ -94,18 +96,18 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 	}
 
 	@Override
-	public List<Model> getModels() {
-		List<Model> models = new ArrayList<Model>();
-		if (psGetModels == null) {
+	public List<ModelHeader> getModelHeaders() {
+		List<ModelHeader> models = new ArrayList<ModelHeader>();
+		if (psGetModelHeaders == null) {
 			try {
-				psGetModels = conn.prepareStatement("Select * from Model order by modelId");
+				psGetModelHeaders = conn.prepareStatement("Select * from ModelHeader order by modelId");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
 			}
 		}
 		try {
-			ResultSet rs = psGetModels.executeQuery();
+			ResultSet rs = psGetModelHeaders.executeQuery();
 			while (rs.next()) {
 				models.add(convertModelFromResultSet(rs));
 			}
@@ -116,38 +118,38 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 	}
 
 	@Override
-	public Model updateModel(Model modelIn) throws DatabaseException {
+	public ModelHeader updateModelHeader(ModelHeader modelHeaderIn) throws DatabaseException {
 
-		if (psUpdateModel == null) {
+		if (psUpdateModelHeader == null) {
 			try {
-				psUpdateModel = conn.prepareStatement(
-						"Update Model Set modelId = ?, Description = ?, StandardQuantity = ?, Type = ?, IsDeleted = ?, deleteDate = ? "
-								+ "WHERE Model.KEY = ?");
+				psUpdateModelHeader = conn.prepareStatement(
+						"Update ModelHeader Set modelId = ?, Description = ?, StandardQuantity = ?, Type = ?, IsDeleted = ?, deleteDate = ? "
+								+ "WHERE ModelHeader.KEY = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage());
 			}
 		}
-		Model formattedModel = ModelFormatter.format(modelIn);
+		ModelHeader formattedModel = ModelFormatter.format(modelHeaderIn);
 		String validateMessage = ModelValidator.validateUpdate(formattedModel, conn);
 		if (!"".equals(validateMessage)) {
 			throw new DatabaseException(validateMessage);
 		}
 		try {
-			psUpdateModel.setString(1, formattedModel.getModelId());
-			psUpdateModel.setString(2, formattedModel.getDescription());
-			psUpdateModel.setInt(3, formattedModel.getStandardQuantity());
-			psUpdateModel.setString(4, formattedModel.getModelType().getModelType());
-			psUpdateModel.setString(5, formattedModel.isDeleted() ? "T" : "F");
-			psUpdateModel.setDate(6, DateUtilities.convertUtilDateToSQLDate(formattedModel.getDeletedDate()));
-			psUpdateModel.setLong(7, formattedModel.getKey());
-			int rowCount = psUpdateModel.executeUpdate();
+			psUpdateModelHeader.setString(1, formattedModel.getModelId());
+			psUpdateModelHeader.setString(2, formattedModel.getDescription());
+			psUpdateModelHeader.setInt(3, formattedModel.getStandardQuantity());
+			psUpdateModelHeader.setString(4, formattedModel.getModelType().getModelType());
+			psUpdateModelHeader.setString(5, formattedModel.isDeleted() ? "T" : "F");
+			psUpdateModelHeader.setDate(6, DateUtilities.convertUtilDateToSQLDate(formattedModel.getDeletedDate()));
+			psUpdateModelHeader.setLong(7, formattedModel.getKey());
+			int rowCount = psUpdateModelHeader.executeUpdate();
 
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Updated " + rowCount + " rows");
 			}
-			return getModelByKey(formattedModel.getKey());
+			return getModelHeaderByKey(formattedModel.getKey());
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -157,17 +159,17 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 	
 
 	@Override
-	public Model addModel(Model modelIn) throws DatabaseException {
+	public ModelHeader addModelHeader(ModelHeader modelHeaderIn) throws DatabaseException {
 		// Dupe Data Check
 		
-				if (modelIn == null) {
-					throw new NullInputDataException("Model cannot be null");
+				if (modelHeaderIn == null) {
+					throw new NullInputDataException("Model Header cannot be null");
 				}
-				Model formattedModel = ModelFormatter.format(modelIn);
-				if (psAddModelDupeCheck == null) {
+				ModelHeader formattedModel = ModelFormatter.format(modelHeaderIn);
+				if (psAddModelHeaderDupeCheck == null) {
 					try {
-						psAddModelDupeCheck = conn
-								.prepareStatement("Select * from Model where ModelID = ?");
+						psAddModelHeaderDupeCheck = conn
+								.prepareStatement("Select * from ModelHeader where ModelID = ?");
 
 					} catch (SQLException e) {
 						System.err.println(e.getMessage());
@@ -175,8 +177,8 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 					}
 				}
 				try {
-				psAddModelDupeCheck.setString(1, formattedModel.getModelId());
-				ResultSet rs = psAddModelDupeCheck.executeQuery();
+				psAddModelHeaderDupeCheck.setString(1, formattedModel.getModelId());
+				ResultSet rs = psAddModelHeaderDupeCheck.executeQuery();
 				if (rs.next()) {
 					throw new DuplicateDataException("Model ID is already in use");
 				}
@@ -185,10 +187,10 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 					System.err.println(e.getMessage());
 					throw new DuplicateDataException(e.getMessage(), e);
 				}
-				if (psAddModel == null) {
+				if (psAddModelHeader == null) {
 					try {
-						psAddModel = conn.prepareStatement(
-								"Insert into Model (ModelId, Description, StandardQuantity, Type, IsDeleted, DeleteDate) values (?,?,?,?,?,?)",
+						psAddModelHeader = conn.prepareStatement(
+								"Insert into ModelHeader (ModelId, Description, StandardQuantity, Type, IsDeleted, DeleteDate) values (?,?,?,?,?,?)",
 								PreparedStatement.RETURN_GENERATED_KEYS);
 
 					} catch (SQLException e) {
@@ -201,22 +203,22 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 					throw new DatabaseException(validateMessage);
 				}
 				try {
-					psAddModel.setString(1, formattedModel.getModelId());
-					psAddModel.setString(2, formattedModel.getDescription());
-					psAddModel.setInt(3, formattedModel.getStandardQuantity());
-					psAddModel.setString(4, formattedModel.getModelType().getModelType());
-					psAddModel.setString(5, formattedModel.isDeleted() ? "T" : "F");
-					psAddModel.setDate(6, DateUtilities.convertUtilDateToSQLDate(formattedModel.getDeletedDate()));
-					int rowCount = psAddModel.executeUpdate();
+					psAddModelHeader.setString(1, formattedModel.getModelId());
+					psAddModelHeader.setString(2, formattedModel.getDescription());
+					psAddModelHeader.setInt(3, formattedModel.getStandardQuantity());
+					psAddModelHeader.setString(4, formattedModel.getModelType().getModelType());
+					psAddModelHeader.setString(5, formattedModel.isDeleted() ? "T" : "F");
+					psAddModelHeader.setDate(6, DateUtilities.convertUtilDateToSQLDate(formattedModel.getDeletedDate()));
+					int rowCount = psAddModelHeader.executeUpdate();
 
 					if (rowCount != 1) {
 						throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
 					}
 					Employee newEmp = new Employee();
-					try (ResultSet generatedKeys = psAddModel.getGeneratedKeys()) {
+					try (ResultSet generatedKeys = psAddModelHeader.getGeneratedKeys()) {
 						if (generatedKeys.next()) {
 							newEmp.setKey(generatedKeys.getLong(1));
-							return getModelByKey(generatedKeys.getLong(1));
+							return getModelHeaderByKey(generatedKeys.getLong(1));
 						} else {
 							throw new SQLException("Creating user failed, no ID obtained.");
 						}
@@ -284,7 +286,7 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 		}
 	}
 
-	private Model convertModelFromResultSet(ResultSet rs) throws SQLException {
+	private ModelHeader convertModelFromResultSet(ResultSet rs) throws SQLException {
 		int key = rs.getInt("Key");
 		String modelId = rs.getString("ModelID");
 		String description = rs.getString("Description");
@@ -301,6 +303,42 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 		}
 		boolean deleted = rs.getString("IsDeleted").equals("Y") ? true : false;
 
-		return new Model(modelId, description, standardQuantity, modelType, key, deleted, deleteDate);
+		return new ModelHeader(modelId, description, standardQuantity, modelType, key, deleted, deleteDate);
+	}
+
+	@Override
+	public ModelDetail getModelDetail(String modelId) throws DatabaseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ModelDetail updateModelDetail(ModelDetail modelDetail) throws DatabaseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ModelDetail addModelDetail(ModelDetail modelDetail) throws DatabaseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Model getModel(String modelId) throws DatabaseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Model updateModel(Model model) throws DatabaseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Model addModel(Model model) throws DatabaseException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

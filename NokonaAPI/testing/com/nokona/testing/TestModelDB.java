@@ -20,7 +20,7 @@ import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.model.Employee;
-import com.nokona.model.Model;
+import com.nokona.model.ModelHeader;
 
 class TestModelDB {
 
@@ -128,7 +128,7 @@ class TestModelDB {
 //
 	@Test
 	void testGetModelsFromDB() throws DatabaseException {
-		List<Model> models = db.getModels();
+		List<ModelHeader> models = db.getModelHeaders();
 		assertEquals(2067, models.size());
 
 	}

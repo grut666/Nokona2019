@@ -3,7 +3,6 @@ package com.nokona.model;
 import java.util.Date;
 
 import com.nokona.enums.OperationStatus;
-import com.nokona.enums.TicketStatus;
 
 public class TicketDetail {
 	private long key;

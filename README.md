@@ -340,9 +340,9 @@ operations/XYZ1
 }
 ## Model
 
-### Get /models # Get all Models
+### Get /models/modelheaders # Get all Model Headers
 #### In
-/models
+/models/modelheaders
 #### Out
 [
  {\
@@ -371,9 +371,9 @@ operations/XYZ1
     }\
 ] 
 
-### Get /models/{modelId} # Get 1 Model by unique modelId
+### Get /models/modelheaders/{modelId} # Get 1 Model Header by unique modelId
 #### In
-/models/BC-1200C-RH
+/models/modelheaders/BC-1200C-RH
 #### Out
 {\
     "deleted": false,\
@@ -383,9 +383,9 @@ operations/XYZ1
     "key": 5253,\
     "standardQuantity": 10\
 }
-### Get /models/bykey/{key} # Get 1 Model by unique key
+### Get /models/modelheaders/bykey/{key} # Get 1 Model Header by unique key
 #### In
-/models/bykey/5565
+/models/modelheaders/bykey/5565
 #### Out
 {\
     "deleted": false,\
@@ -395,9 +395,9 @@ operations/XYZ1
     "key": 5565,\
     "standardQuantity": 10\
 }
-### Put /models/{modelId} # Update one Model Record
+### Put /models/modelheaders/{modelId} # Update one Model Header Record
 #### In
-/models/BF1125
+/models/modelheaders/BF1125
 Body:
 {\
     "deleted": false,\
@@ -417,7 +417,7 @@ Body:
     "standardQuantity": 10\
 }
         
-### Post /models # Add 1 Model Record
+### Post /models/modelheaders # Add 1 Model Header Record
 #### In
 Body:
 {\
@@ -439,7 +439,7 @@ Body:
     "standardQuantity": 15\
 }
 
-### Delete /models/{modelId} # Delete 1 Model Record by the unique ModelId
+### Delete /models/{modelId} # Delete 1 Model by the unique ModelId.  Deletes both header and detail
 #### In
 models/BXXX123
 
@@ -448,7 +448,7 @@ models/BXXX123
     "Success": "200"\
 }
 
-### Delete /models/bykey/{key} # Delete 1 Model Record by the unique Database key
+### Delete /models/bykey/{key} # Delete 1 Model Record by the unique Database key.  Deletes both header and detail
 #### In
 /models/bykey/9733
 
@@ -456,6 +456,8 @@ models/BXXX123
 {\
     "Success": "200"\
 }
+
+xxxxxxx
 
 ## Segment - Contains a wrapped SegmentHeader and a list of all SegmentDetail records for a given segmentName
 ### Get /segments # Get all Segments

@@ -49,6 +49,20 @@
     "active": false,\
     "key": 483\
 }
+
+### Get /employee/bykey/{employeeID} # Get 1 employee by their unique numeric DB key
+#### In
+/employees/bykey/483
+#### Out
+{\
+    "lastName": "BARKER",\
+    "firstName": "BRANDY",\
+    "barCodeID": 6593,\
+    "empId": "BAR10",\
+    "laborCode": 11,\
+    "active": false,\
+    "key": 483\
+}
         
 ### Put /employees/{empID} # Update one employee
 #### In
@@ -98,9 +112,18 @@ Body:
     "key": 6789\
 }
 
-### Delete /employees/{empID} # Delete 1 employee record
+### Delete /employees/{empID} # Delete 1 employee record by EmpID
 #### In
 /employees/BAR10
+
+#### Out
+{\
+    "Success": "200"\
+}
+
+### Delete /employees/bykey/{empID} # Delete 1 employee record by numeric key
+#### In
+/employees/483
 
 #### Out
 {\

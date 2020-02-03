@@ -327,7 +327,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		try {
 			if (psAddTicketHeader == null) {
 				conn.prepareStatement(
-						"Insert into TicketHeader (ModelID, DateCreated, Status, StatusDate, Quantity, IsDeleted, DeleteDate) values (?,?,?,?,?,?,?)",
+						"Insert into TicketHeader (ModelID, DateCreated, Status, StatusDate, Quantity) values (?,?,?,?,?)",
 						PreparedStatement.RETURN_GENERATED_KEYS);
 			}
 			if (psGetSegmentOp == null) {
@@ -335,7 +335,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			}
 			if (psAddTicketDetail == null) {
 				conn.prepareStatement(
-						"Insert into TicketDetail (LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) values (?,?,?,?,?,?)");
+						"Insert into TicketDetail (x, x, x, x, x, x) values (?,?,?,?,?,?)");
 			}
 		} catch (SQLException ex) {
 			throw new DatabaseException("Prepare Statements failed");
@@ -350,8 +350,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			psAddTicketHeader.setString(3, formattedTicketHeader.getTicketStatus().getTicketStatus());
 			psAddTicketHeader.setDate(4, DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateStatus()));
 			psAddTicketHeader.setInt(5, formattedTicketHeader.getQuantity());
-			psAddTicketHeader.setString(6, formattedTicketHeader.isDeleted() ? "T" : "F");
-			psAddTicketHeader.setDate(6, DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDeleteDate()));
+
 			int rowCount = psAddTicketHeader.executeUpdate();
 
 			if (rowCount != 1) {
@@ -522,10 +521,9 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		}
 
 		int quantity = rs.getInt("Quantity");
-		boolean isDeleted = "T".equals(rs.getString("IsDeleted")) ? true : false;
-		Date dateDeleted = DateUtilities.convertSQLDateToUtilDate(rs.getDate("DeleteDate"));
+		
 		return TicketHeaderFormatter.format(new TicketHeader(key, model, description, dateCreated, ticketStatus,
-				dateStatus, quantity, isDeleted, dateDeleted));
+				dateStatus, quantity));
 	}
 
 	private TicketDetail convertTicketDetailFromResultSet(ResultSet rs) throws SQLException {

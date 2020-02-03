@@ -13,18 +13,14 @@ public class TicketHeader {
 	private TicketStatus ticketStatus;
 	private Date dateStatus;
 	private int quantity;
-	private boolean deleted;
-	private Date deleteDate;
 	public TicketHeader() {
-		this(-1, "", "", new Date(), TicketStatus.NEW, new Date(), 0, false, null);
+		this(-1, "", "", new Date(), TicketStatus.NEW, new Date(), 0);
 	}
-//	public TicketHeader(int ticketID) {
-//		this(-1, "", "", new Date(), TicketStatus.NEW, new Date(), 0, false, null);
-//	}
+
 	public TicketHeader(TicketDTOIn ticketDTOIn) {
-		this(-1, ticketDTOIn.getModelId(), ticketDTOIn.getDescription(), new Date(), TicketStatus.NEW, new Date(), ticketDTOIn.getQuantity(), false, null);
+		this(-1, ticketDTOIn.getModelId(), ticketDTOIn.getDescription(), new Date(), TicketStatus.NEW, new Date(), ticketDTOIn.getQuantity());
 	}
-	public TicketHeader(long key, String model, String description, Date dateCreated, TicketStatus ticketStatus, Date dateStatus, int quantity, boolean deleted, Date deleteDate) {
+	public TicketHeader(long key, String model, String description, Date dateCreated, TicketStatus ticketStatus, Date dateStatus, int quantity) {
 		this.setKey(key);
 		this.setModel(model);
 		this.setDescription(description);
@@ -76,23 +72,11 @@ public class TicketHeader {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
-	public boolean isDeleted() {
-		return deleted;
-	}
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
-	}
-	public Date getDeleteDate() {
-		return deleteDate;
-	}
-	public void setDeleteDate(Date deleteDate) {
-		this.deleteDate = deleteDate;
-	}
+	
 	@Override
 	public String toString() {
 		return "TicketHeader [key=" + key + ", model=" + model + ", dateCreated=" + dateCreated + ", ticketStatus="
-				+ ticketStatus + ", dateStatus=" + dateStatus + ", quantity=" + quantity + ", deleted=" + deleted
-				+ ", deleteDate=" + deleteDate + "]";
+				+ ticketStatus + ", dateStatus=" + dateStatus + ", quantity=" + quantity + "]";
 	}
 	
 	

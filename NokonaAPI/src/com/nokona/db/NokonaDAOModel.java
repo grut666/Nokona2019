@@ -125,7 +125,7 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 		if (psUpdateModelHeader == null) {
 			try {
 				psUpdateModelHeader = conn.prepareStatement(
-						"Update ModelHeader Set modelId = ?, Description = ?, StandardQuantity = ?, Type = ?, IsDeleted = ?, deleteDate = ? "
+						"Update ModelHeader Set modelId = ?, Description = ?, StandardQuantity = ?, Type = ? "
 								+ "WHERE ModelHeader.KEY = ?");
 
 			} catch (SQLException e) {
@@ -143,9 +143,8 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 			psUpdateModelHeader.setString(2, formattedModel.getDescription());
 			psUpdateModelHeader.setInt(3, formattedModel.getStandardQuantity());
 			psUpdateModelHeader.setString(4, formattedModel.getModelType().getModelType());
-			psUpdateModelHeader.setString(5, formattedModel.isDeleted() ? "T" : "F");
-			psUpdateModelHeader.setDate(6, DateUtilities.convertUtilDateToSQLDate(formattedModel.getDeletedDate()));
-			psUpdateModelHeader.setLong(7, formattedModel.getKey());
+
+			psUpdateModelHeader.setLong(5, formattedModel.getKey());
 			int rowCount = psUpdateModelHeader.executeUpdate();
 
 			if (rowCount != 1) {
@@ -189,7 +188,7 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 		if (psAddModelHeader == null) {
 			try {
 				psAddModelHeader = conn.prepareStatement(
-						"Insert into ModelHeader (ModelId, Description, StandardQuantity, Type, IsDeleted, DeleteDate) values (?,?,?,?,?,?)",
+						"Insert into ModelHeader (ModelId, Description, StandardQuantity, Type) values (?,?,?,?)",
 						PreparedStatement.RETURN_GENERATED_KEYS);
 
 			} catch (SQLException e) {
@@ -206,8 +205,7 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 			psAddModelHeader.setString(2, formattedModel.getDescription());
 			psAddModelHeader.setInt(3, formattedModel.getStandardQuantity());
 			psAddModelHeader.setString(4, formattedModel.getModelType().getModelType());
-			psAddModelHeader.setString(5, formattedModel.isDeleted() ? "T" : "F");
-			psAddModelHeader.setDate(6, DateUtilities.convertUtilDateToSQLDate(formattedModel.getDeletedDate()));
+
 			int rowCount = psAddModelHeader.executeUpdate();
 
 			if (rowCount != 1) {
@@ -230,7 +228,6 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 
 	@Override
 	public void deleteModelByKey(long key) throws DatabaseException {
-		// TODO Set isdeleted status to false instead?
 
 		if (psDelModelByKey == null) {
 			try {
@@ -356,9 +353,8 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 		if ("B".equals(modelTypeString) || "S".equals(modelTypeString)) {
 			modelType = ModelType.valueOf(modelTypeString);
 		}
-		boolean deleted = rs.getString("IsDeleted").equals("Y") ? true : false;
 
-		return new ModelHeader(modelId, description, standardQuantity, modelType, key, deleted, deleteDate);
+		return new ModelHeader(modelId, description, standardQuantity, modelType, key);
 	}
 
 	private List<ModelDetail> convertModelDetailsFromResultSet(ResultSet rs) throws SQLException {

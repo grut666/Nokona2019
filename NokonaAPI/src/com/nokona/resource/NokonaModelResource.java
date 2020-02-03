@@ -151,7 +151,7 @@ public class NokonaModelResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 
-	@Path("/modeldetailss")
+	@Path("/modeldetails")
 	public Response addModelDetail(ModelDetail modelDetailIn) {
 		List<ModelDetail> modelDetails;
 		try {

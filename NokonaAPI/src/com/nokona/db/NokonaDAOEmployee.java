@@ -12,6 +12,7 @@ import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
+import com.nokona.exceptions.InvalidInsertException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.EmployeeFormatter;
 import com.nokona.model.Employee;
@@ -40,6 +41,8 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 	PreparedStatement psGetOperationByOpCode;
 	PreparedStatement psGetOperations;
 
+	PreparedStatement psMoveDeletedEmployeeByKey;
+	PreparedStatement psMoveDeletedEmployeeByEmpId;
 	PreparedStatement psDelEmployeeByKey;
 	PreparedStatement psDelEmployeeByEmpId;
 
@@ -48,7 +51,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 		List<Employee> employees = new ArrayList<Employee>();
 		if (psGetEmployees == null) {
 			try {
-				psGetEmployees = getConn().prepareStatement("Select * from Employee where isDeleted <> 'T' order by EmpID");
+				psGetEmployees = getConn().prepareStatement("Select * from Employee order by EmpID");
 
 			} catch (SQLException e) {
 				throw new DatabaseException(e.getMessage(), e);
@@ -70,7 +73,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 		Employee emp = null;
 		if (psGetEmployeeByKey == null) {
 			try {
-				psGetEmployeeByKey = conn.prepareStatement("Select * from Employee where Employee.key = ? and isDeleted <> 'T'");
+				psGetEmployeeByKey = conn.prepareStatement("Select * from Employee where Employee.key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -101,7 +104,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 		Employee emp = null;
 		if (psGetEmployeeByEmpId == null) {
 			try {
-				psGetEmployeeByEmpId = conn.prepareStatement("Select * from Employee where Employee.EmpID = ? and isDeleted <> 'T'");
+				psGetEmployeeByEmpId = conn.prepareStatement("Select * from Employee where Employee.EmpID = ?");
 
 			} catch (SQLException e) {
 				throw new DatabaseException(e.getMessage(), e);
@@ -268,11 +271,13 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 
 	@Override
 	public void deleteEmployeeByKey(long key) throws DatabaseException {
-		// TODO Set active status to false instead?
+
 		
 		if (psDelEmployeeByKey == null) {
 			try {
 				psDelEmployeeByKey = conn.prepareStatement("Delete From Employee where Employee.Key = ?");
+				psMoveDeletedEmployeeByKey = conn.prepareStatement("INSERT INTO Deleted_Employee (Deleted_Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) " + 
+						"  SELECT Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active FROM Employee WHERE Employee.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -280,10 +285,16 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			}
 		}
 		try {
+			psMoveDeletedEmployeeByKey.setLong(1, key);
+			int rowCount = psMoveDeletedEmployeeByKey.executeUpdate();
+			if (rowCount == 0) {
+				throw new InvalidInsertException("Key "+ key + " could not be inserted into delete table");
+			}
 			psDelEmployeeByKey.setLong(1, key);
-			int rowCount = psDelEmployeeByKey.executeUpdate();
+			rowCount = psDelEmployeeByKey.executeUpdate();
 
 			if (rowCount == 0) {
+				conn.rollback();
 				throw new DataNotFoundException("Error.  Delete Employee key " + key + " failed");
 			}
 

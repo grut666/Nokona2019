@@ -369,7 +369,6 @@ operations/XYZ1
 #### Out
 [
  {\
-        "deleted": false,\
         "modelId": "AMG700K-CW-LH",\
         "description": "WAL/TAN KANG 13.5 IN CLSD WEB, LEFT",\
         "modelType": "B",\
@@ -377,7 +376,6 @@ operations/XYZ1
         "standardQuantity": 10\
     },\
     {\
-        "deleted": false,\
         "modelId": "AMG700W-CW-LH",\
         "description": "WALNUT 13.5 IN CLSD WEB - LEFT",\
         "modelType": "B",\
@@ -385,7 +383,6 @@ operations/XYZ1
         "standardQuantity": 10\
     },\
     {\
-        "deleted": false,\
         "modelId": "BB-1175I-LH",\
         "description": "11.75\" BUCKAROO AMG1175 I-WEB\"",\
         "modelType": "B",\
@@ -399,7 +396,6 @@ operations/XYZ1
 /models/modelheaders/BC-1200C-RH
 #### Out
 {\
-    "deleted": false,\
     "modelId": "BC-1200C-RH",\
     "description": "12\" BUFFALO COMBO CLOSED WEB\"",\
     "modelType": "B",\
@@ -411,7 +407,6 @@ operations/XYZ1
 /models/modelheaders/bykey/5565
 #### Out
 {\
-    "deleted": false,\
     "modelId": "BC-1150M-LH",\
     "description": "BUFFALO COMBO 11.5 IN MOD TRAP - LEFT",\
     "modelType": "B",\
@@ -423,7 +418,6 @@ operations/XYZ1
 /models/modelheaders/BF1125
 Body:
 {\
-    "deleted": false,\
     "modelId": "BF1125",\
     "description": "11.25\" Buffalo GLOVE OPEN WEB\"",\
     "modelType": "B",\
@@ -432,7 +426,6 @@ Body:
 }
 #### Out
 {\
-    "deleted": false,\
     "modelId": "BF1125",\
     "description": "11.25\" BUFFALO GLOVE OPEN WEB\"",\
     "modelType": "B",\
@@ -454,7 +447,6 @@ Body:
 
 #### Out
 {\
-    "deleted": false,\
     "modelId": "BXXX123",\
     "description": "12.25\" HUMAN SKIN GLOVE OPEN WEB\"",\
     "modelType": "B",\

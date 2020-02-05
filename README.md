@@ -390,6 +390,52 @@ operations/XYZ1
         "standardQuantity": 10\
     }\
 ] 
+### Get /models/{modelId} # Get 1 entire Model (Header and Detail) Object by unique modelId
+#### In
+/models/BFG
+#### Out
+{\
+    "header": {\
+        "modelId": "BFG",\
+        "description": "LACE BABY GLOVE",\
+        "modelType": "B",\
+        "key": 5040,\
+        "standardQuantity": 10\
+    },\
+    "details": [\
+        {\
+            "sequence": 0,\
+            "modelId": "BFG",\
+            "opCode": "111"\
+        },\
+        {\
+            "sequence": 1,\
+            "modelId": "BFG",\
+            "opCode": "222"\
+        },\
+        {\
+            "sequence": 2,\
+            "modelId": "BFG",\
+            "opCode": "GA7"\
+        },\
+        {\
+            "sequence": 3,\
+            "modelId": "BFG",\
+            "opCode": "GA8"\
+        },\
+        {\
+            "sequence": 4,\
+            "modelId": "BFG",\
+            "opCode": "GA9"\
+        },\
+        {\
+            "sequence": 5,\
+            "modelId": "BFG",\
+            "opCode": "GB3"\
+        }\
+    ]\
+}
+
 
 ### Get /models/modelheaders/{modelId} # Get 1 Model Header by unique modelId
 #### In

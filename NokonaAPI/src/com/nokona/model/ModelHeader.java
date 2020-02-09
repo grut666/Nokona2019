@@ -1,6 +1,5 @@
 package com.nokona.model;
 
-import java.util.Date;
 
 import com.nokona.enums.ModelType;
 

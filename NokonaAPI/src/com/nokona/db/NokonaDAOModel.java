@@ -48,7 +48,7 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 		ModelHeader model = null;
 		if (psGetModelHeaderByKey == null) {
 			try {
-				psGetModelHeaderByKey = conn.prepareStatement("Select * from Model where Model.Key = ?");
+				psGetModelHeaderByKey = conn.prepareStatement("Select * from ModelHeader where Model.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -78,7 +78,6 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 				psGetModelHeaderByModelId = conn.prepareStatement("Select * from ModelHeader where ModelID = ?");
 
 			} catch (SQLException e) {
-				System.err.println(e.getMessage());
 				throw new DataNotFoundException(e.getMessage());
 			}
 		}
@@ -88,7 +87,7 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 			if (rs.next()) {
 				model = convertModelHeaderFromResultSet(rs);
 			} else {
-				throw new DataNotFoundException("Model ModelID " + modelId + " is not in DB");
+				throw new DataNotFoundException("Model: ModelID " + modelId + " is not in DB");
 			}
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -299,7 +298,7 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 			ResultSet rs = psGetModelDetailByModelId.executeQuery();
 			details = convertModelDetailsFromResultSet(rs);
 			if (details.isEmpty()) {
-				throw new DataNotFoundException("Model ModelID " + modelId + " is not in DB");
+				throw new DataNotFoundException("Model: ModelID " + modelId + " is not in DB");
 			}
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -322,8 +321,8 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 
 	@Override
 	public Model getModel(String modelId) throws DatabaseException {
-		// TODO Auto-generated method stub
-		return null;
+		Model model = new Model(getModelHeader(modelId), getModelDetails(modelId));
+		return model;
 	}
 
 	@Override
@@ -342,12 +341,7 @@ public class NokonaDAOModel extends NokonaDAO implements NokonaDatabaseModel {
 		int key = rs.getInt("Key");
 		String modelId = rs.getString("ModelID");
 		String description = rs.getString("Description");
-		int standardQuantity = rs.getInt("standardQuantity");
-		java.sql.Date sqlDate = rs.getDate("deleteDate");
-		Date deleteDate = null;
-		if (sqlDate != null) {
-			deleteDate = DateUtilities.convertSQLDateToUtilDate(rs.getDate("deleteDate"));
-		}
+		int standardQuantity = rs.getInt("standardQuantity");		
 		String modelTypeString = rs.getString("Type");
 		ModelType modelType = ModelType.UNKNOWN;
 		if ("B".equals(modelTypeString) || "S".equals(modelTypeString)) {

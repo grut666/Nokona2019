@@ -49,10 +49,9 @@ public class NokonaModelResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/modelheaders/{model}")
-	public Response getModelHeadersByModel(@PathParam("model") String model) {
+	@Path("/modelheaders/{modelId}")
+	public Response getModelHeadersByModel(@PathParam("modelId") String model) {
 		try {
-
 			return Response.status(200).entity(db.getModelHeader(model)).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
@@ -127,10 +126,12 @@ public class NokonaModelResource {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 	}
+	
+	
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/modelheaders/{modelId}")
+	@Path("/modeldetails/{modelId}")
 	public Response updateModelDetail(@PathParam("modelId") String modelId, ModelDetail modelDetailIn) {
 
 		if (!modelId.equals(modelDetailIn.getModelId())) {
@@ -166,7 +167,21 @@ public class NokonaModelResource {
 		return Response.status(201).entity(modelDetails).build();
 	}
 	
-	
+// Model in its entirety
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{model}")
+	public Response getModelByModel(@PathParam("model") String model) {
+		try {
+
+			return Response.status(200).entity(db.getModel(model)).build();
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+	}
+
 	
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)

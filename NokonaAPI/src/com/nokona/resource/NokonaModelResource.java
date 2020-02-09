@@ -52,6 +52,7 @@ public class NokonaModelResource {
 	@Path("/modelheaders/{modelId}")
 	public Response getModelHeadersByModel(@PathParam("modelId") String model) {
 		try {
+
 			return Response.status(200).entity(db.getModelHeader(model)).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
@@ -132,6 +133,7 @@ public class NokonaModelResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/modeldetails/{modelId}")
+
 	public Response updateModelDetail(@PathParam("modelId") String modelId, ModelDetail modelDetailIn) {
 
 		if (!modelId.equals(modelDetailIn.getModelId())) {
@@ -167,6 +169,7 @@ public class NokonaModelResource {
 		return Response.status(201).entity(modelDetails).build();
 	}
 	
+
 // Model in its entirety
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -181,6 +184,7 @@ public class NokonaModelResource {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 	}
+
 
 	
 	@DELETE

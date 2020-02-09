@@ -35,11 +35,14 @@
 	<classpathentry kind="lib" path="Library/jersey-server-2.29.1.jar"/>
 	<classpathentry kind="lib" path="Library/geronimo-osgi-locator-1.1.jar"/>
 	<classpathentry kind="lib" path="Library/swagger-annotations-1.5.17.jar"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="Library/lombok.jar"/>
 	<classpathentry kind="lib" path="Library/JDBC_Library/commons-lang3-3.8.1.jar"/>
 	<classpathentry kind="lib" path="Library/JDBC_Library/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="Library/JDBC_Library/hsqldb-2.5.0.jar"/>
 	<classpathentry kind="lib" path="Library/JDBC_Library/jackcess-3.0.1.jar"/>
 	<classpathentry kind="lib" path="Library/JDBC_Library/ucanaccess-5.0.0.jar"/>
+=======
+>>>>>>> d49a12b42d6483065a68f9843841571f46a8f92c
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

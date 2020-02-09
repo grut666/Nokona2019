@@ -20,7 +20,9 @@ public class ModelValidator {
 		if (addPS == null) {
 			try {
 				addPS = conn.prepareStatement(
+
 						"Select Model.key from ModelHeader where ModelID = ?");
+
 			} catch (SQLException e) {
 				errors += e.getMessage() + "\n";
 			}	
@@ -45,7 +47,9 @@ public class ModelValidator {
 		if (updatePS == null) {
 			try {
 				updatePS = conn.prepareStatement(
+
 						"Select ModelHeader.key from ModelHeader where ModelHeader.key <> ? and modelID = ?");
+
 			} catch (SQLException e) {
 				errors += e.getMessage() + "\n";
 			}	

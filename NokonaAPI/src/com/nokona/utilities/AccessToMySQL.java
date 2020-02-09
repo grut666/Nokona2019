@@ -1,4 +1,4 @@
-package com.usaa.conversion.utilities;
+package com.nokona.utilities;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Data;
+import lombok.Data; 
 
 @Data
 public class AccessToMySQL {

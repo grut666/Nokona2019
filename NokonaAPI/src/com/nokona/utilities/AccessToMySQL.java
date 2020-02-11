@@ -10,9 +10,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Data; 
+//import lombok.Data; 
 
-@Data
+//@Data
 public class AccessToMySQL {
 	private static Connection accessConn;
 	private static Connection mySqlConn;
@@ -59,7 +59,7 @@ public class AccessToMySQL {
 	}
 
 	private static void connectToAccess() {
-		String accessDB = "jdbc:ucanaccess://C://codebase//Nokona2019//Data//Nokona.mdb";
+		String accessDB = "jdbc:ucanaccess://C://codebase//Data//nokona.mdb";
 		try {
 			accessConn = DriverManager.getConnection(accessDB);
 		} catch (SQLException e) {

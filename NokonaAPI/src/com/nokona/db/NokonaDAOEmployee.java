@@ -25,7 +25,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 
 	}
 	public NokonaDAOEmployee(String userName, String password) throws DatabaseException {
-		super(userName, password);
+		super(userName, password); 
 
 	}
 

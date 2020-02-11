@@ -1,9 +1,5 @@
 package com.nokona.model;
 
-
-import java.util.Date;
->>>>>>> d49a12b42d6483065a68f9843841571f46a8f92c
-
 import com.nokona.enums.ModelType;
 
 public class ModelHeader {

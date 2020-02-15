@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.nokona.data.NokonaDatabaseSegment;
-
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
@@ -17,7 +16,6 @@ import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.SegmentFormatter;
 import com.nokona.formatter.SegmentHeaderFormatter;
 import com.nokona.model.Segment;
-
 import com.nokona.model.SegmentDetail;
 import com.nokona.model.SegmentHeader;
 import com.nokona.utilities.DateUtilities;

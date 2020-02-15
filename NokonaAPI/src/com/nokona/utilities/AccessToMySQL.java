@@ -29,7 +29,8 @@ public class AccessToMySQL {
 	private static PreparedStatement psDelete;
 	private static PreparedStatement psInsert;
 	private static List<String> recordsIn;
-
+	
+	
 	public static void main(String[] args) throws SQLException {
 		long startTime = System.currentTimeMillis();
 		connect();
@@ -41,7 +42,8 @@ public class AccessToMySQL {
 		}
 		// doEmployees();
 		// doLaborCodes();
-		doOperations();
+		// doOperations();
+		doTickets();
 		long endTime = System.currentTimeMillis();
 		try {
 			mySqlConn.close();
@@ -97,11 +99,221 @@ public class AccessToMySQL {
 
 	}
 
-	public void loadTicket() {
+	public static void doTickets() {
+		doTicketHeaders();
+//		doTicketDetail();
+	}
+
+	private static void doTicketHeaders() {
+		try {
+			recordsIn = new ArrayList<>();
+			psSelect = accessConn.prepareStatement("Select * from TicketHeader Order By TicketHeader.Key");
+			ResultSet rs = psSelect.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columnCount = rsmd.getColumnCount();
+			for (int i = 1; i <= columnCount; i++) {
+				System.out.println(rsmd.getColumnName(i) + " - " + rsmd.getColumnType(i));
+			}
+//			Key - 4
+//			Job - 12
+//			DateCreated - 93
+//			Status - 12
+//			DateOfStatus - 93
+//			Quantity - 5
+			String key = rsmd.getColumnName(1);
+			String job = rsmd.getColumnName(2);
+			String dateCreated = rsmd.getColumnName(3);
+			String status = rsmd.getColumnName(4);
+			String dateOfStatus = rsmd.getColumnName(5);
+			String quantity = rsmd.getColumnName(6);
+
+
+			while (rs.next()) {
+				String record = rs.getInt(key) + "~" + rs.getString(job) + "~" + rs.getDate(dateCreated) + "~"
+						+ rs.getString(status) + "~" + rs.getDate(dateOfStatus) + "~" + rs.getInt(quantity);
+				System.out.println(record);
+				recordsIn.add(record);
+			}
+			System.out.println("Records In is " + recordsIn.size());
+			psSelect.close();
+		} catch (SQLException e) {
+
+			System.err.println(e.getMessage());
+			return;
+		}
+		System.out.println("Finished loading TicketHeaders.  Beginning deleting TicketHeaders");
+		try {
+			psDelete = mySqlConn.prepareStatement("Truncate TicketHeader");
+			rowsDeleted = psDelete.executeUpdate();
+			psDelete.close();
+		} catch (SQLException e) {
+			try {
+				mySqlConn.rollback();
+			} catch (SQLException e1) {
+				System.err.println("Failed rollback: " + e1.getMessage());
+			}
+			System.err.println(e.getMessage());
+			return;
+		}
+		System.out.println("Finished deleting " + rowsDeleted + " TicketHeaders.  Beginning storing TicketHeaders");
+		try {
+			psInsert = mySqlConn.prepareStatement(
+					"Insert into TicketHeader (TicketHeader.Key, ModelId, CreatedDate, Status, StatusDate, Quantity) "
+							+ "values (?,?,?,?,?,?)");
+			for (String record : recordsIn) {
+				System.out.println(record);
+				String[] fields = record.split("~");
+				psInsert.setLong(1, Long.parseLong(fields[0]));
+				psInsert.setString(2, fields[1]);
+				psInsert.setDate(3, DateUtilities.stringToSQLDate(fields[2]));
+				psInsert.setString(4, fields[3]);
+				psInsert.setDate(5, DateUtilities.stringToSQLDate(fields[4]));
+				psInsert.setLong(6, Long.parseLong(fields[5]));
+				psInsert.addBatch();
+			}
+			insertedRows = psInsert.executeBatch();
+			psInsert.close();
+		} catch (SQLException e) {
+			try {
+				System.err.println(e.getMessage());
+				mySqlConn.rollback();
+			} catch (SQLException e1) {
+				System.err.println("Failed rollback: " + e1.getMessage());
+			}
+		}
+		System.out.println("Finished Inserting: ");
+		for (int i : insertedRows) {
+			System.out.print(i + " ");
+		}
+		System.out.println();
+		System.out.println(insertedRows.length + " Rows inserted");
+
+		try {
+			mySqlConn.commit();
+			System.out.println("Commit successful");
+		} catch (SQLException e) {
+			System.err.println("Failed commit: " + e.getMessage());
+		}
 
 	}
 
-	public void loadModel() {
+	private static void doTicketDetail() {
+		try {
+			recordsIn = new ArrayList<>();
+			psSelect = accessConn.prepareStatement("Select TicketDetail.Key, Operation, Sequence, StatusDate, Status, Quantity, Rate, [Bar Code ID], LaborRate from TicketDetail Order By TicketDetail.Key");
+			ResultSet rs = psSelect.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columnCount = rsmd.getColumnCount();
+			for (int i = 1; i <= columnCount; i++) {
+				System.out.println(rsmd.getColumnName(i) + " - " + rsmd.getColumnType(i));
+			}
+//			Key - 4
+//			Operation - 12
+//			Sequence - 5
+//			StatusDate - 93
+//			Status - 12
+//			Quantity - 5
+//			Rate - 8
+//			Bar Code ID - 5
+//			LaborRate - 3
+//
+			String key = rsmd.getColumnName(1);
+			String operation = rsmd.getColumnName(2);
+			String sequence = rsmd.getColumnName(3);
+			String statusDate = rsmd.getColumnName(4);
+			String status = rsmd.getColumnName(5);
+			String quantity = rsmd.getColumnName(6);
+			String rate = rsmd.getColumnName(7);
+			String barCodeId = rsmd.getColumnName(8);
+			String laborRate = rsmd.getColumnName(9);
+
+
+			while (rs.next()) {
+				String record = rs.getInt(key) + "~" + rs.getString(operation) + "~" + rs.getInt(sequence) + "~"
+						+ rs.getDate(statusDate) + "~" + rs.getString(status) + "~" + rs.getInt(quantity) + "~" 
+						+ rs.getDouble(rate) +  "~" + rs.getInt(barCodeId) + "~" + rs.getDouble(laborRate);
+
+				System.out.println(record);
+				recordsIn.add(record);
+			}
+			System.out.println("Records In is " + recordsIn.size());
+			psSelect.close();
+		} catch (SQLException e) {
+
+			System.err.println(e.getMessage());
+			return;
+		}
+		System.out.println("Finished loading TicketDetails.  Beginning deleting TicketDetails");
+		try {
+			psDelete = mySqlConn.prepareStatement("Truncate TicketDetail");
+			rowsDeleted = psDelete.executeUpdate();
+			psDelete.close();
+		} catch (SQLException e) {
+			try {
+				mySqlConn.rollback();
+			} catch (SQLException e1) {
+				System.err.println("Failed rollback: " + e1.getMessage());
+			}
+			System.err.println(e.getMessage());
+			return;
+		}
+		System.out.println("Finished deleting " + rowsDeleted + " TicketDetails.  Beginning storing TicketDetails");
+		try {
+//			Key - 4
+//			Operation - 12
+//			Sequence - 5
+//			StatusDate - 93
+//			Status - 12
+//			Quantity - 5
+//			Rate - 8
+//			Bar Code ID - 5
+//			LaborRate - 3
+			psInsert = mySqlConn.prepareStatement(
+					"Insert into TicketDetail (TicketDetail.Key, Operation, Sequence, StatusDate, Status, Quantity, HourlyRateSAH, BarCodeID, LaborRate, UpdatedSequence) "
+							+ "values (?,?,?,?,?,?,?,?,?,?)");
+			for (String record : recordsIn) {
+				System.out.println(record);
+				String[] fields = record.split("~");
+				psInsert.setLong(1, Long.parseLong(fields[0]));
+				psInsert.setString(2, fields[1]);
+				psInsert.setLong(3, Long.parseLong(fields[2]));
+				psInsert.setDate(4, DateUtilities.stringToSQLDate(fields[3]));
+				psInsert.setString(5, fields[4]);
+				psInsert.setLong(6, Long.parseLong(fields[5]));
+				psInsert.setDouble(7, Double.parseDouble(fields[6]));
+				psInsert.setLong(8, Long.parseLong(fields[7]));
+				psInsert.setDouble(9, Double.parseDouble(fields[8]));
+				psInsert.setLong(10, Long.parseLong(fields[2]));  // Set updatedsequence to sequence
+				psInsert.addBatch();
+			}
+			insertedRows = psInsert.executeBatch();
+			psInsert.close();
+		} catch (SQLException e) {
+			try {
+				System.err.println(e.getMessage());
+				mySqlConn.rollback();
+			} catch (SQLException e1) {
+				System.err.println("Failed rollback: " + e1.getMessage());
+			}
+		}
+		System.out.println("Finished Inserting: ");
+		for (int i : insertedRows) {
+			System.out.print(i + " ");
+		}
+		System.out.println();
+		System.out.println(insertedRows.length + " Rows inserted");
+
+		try {
+			mySqlConn.commit();
+			System.out.println("Commit successful");
+		} catch (SQLException e) {
+			System.err.println("Failed commit: " + e.getMessage());
+		}
+
+
+	}
+
+	public void doModels() {
 
 	}
 
@@ -119,7 +331,7 @@ public class AccessToMySQL {
 			String lastName = rsmd.getColumnName(2);
 			String firstName = rsmd.getColumnName(3);
 			String barCodeId = rsmd.getColumnName(4);
-			;
+
 			String laborCode = rsmd.getColumnName(5);
 			String empId = rsmd.getColumnName(6);
 			String active = rsmd.getColumnName(7);
@@ -131,6 +343,7 @@ public class AccessToMySQL {
 				System.out.println(record);
 				recordsIn.add(record);
 			}
+			System.out.println("Records In is " + recordsIn.size());
 			psSelect.close();
 		} catch (SQLException e) {
 
@@ -139,7 +352,7 @@ public class AccessToMySQL {
 		}
 		System.out.println("Finished loading employees.  Beginning deleting employees");
 		try {
-			psDelete = mySqlConn.prepareStatement("Delete from Employee");
+			psDelete = mySqlConn.prepareStatement("Truncate Employee");
 			rowsDeleted = psDelete.executeUpdate();
 			psDelete.close();
 		} catch (SQLException e) {
@@ -182,6 +395,8 @@ public class AccessToMySQL {
 		for (int i : insertedRows) {
 			System.out.print(i + " ");
 		}
+		System.out.println();
+		System.out.println(insertedRows.length + " Rows inserted");
 
 		try {
 			mySqlConn.commit();
@@ -217,6 +432,7 @@ public class AccessToMySQL {
 				System.out.println(record);
 				recordsIn.add(record);
 			}
+			System.out.println("Records In is " + recordsIn.size());
 			psSelect.close();
 		} catch (SQLException e) {
 
@@ -225,7 +441,7 @@ public class AccessToMySQL {
 		}
 		System.out.println("Finished loading laborcodes.  Beginning deleting laborcodes");
 		try {
-			psDelete = mySqlConn.prepareStatement("Delete from LaborCode");
+			psDelete = mySqlConn.prepareStatement("Truncate LaborCode");
 			rowsDeleted = psDelete.executeUpdate();
 			psDelete.close();
 		} catch (SQLException e) {
@@ -264,6 +480,8 @@ public class AccessToMySQL {
 		for (int i : insertedRows) {
 			System.out.print(i + " ");
 		}
+		System.out.println();
+		System.out.println(insertedRows.length + " Rows inserted");
 
 		try {
 			mySqlConn.commit();
@@ -304,9 +522,10 @@ public class AccessToMySQL {
 						+ rs.getDouble(hourlyRateSAH) + "~" + rs.getInt(laborCode) + "~" + rs.getInt(key) + "~"
 						+ rs.getInt(lastStudyYear);
 				;
-				System.out.println(record);
+				// System.out.println(record);
 				recordsIn.add(record);
 			}
+			System.out.println("Records In is " + recordsIn.size());
 			psSelect.close();
 		} catch (SQLException e) {
 
@@ -315,7 +534,7 @@ public class AccessToMySQL {
 		}
 		System.out.println("Finished loading opcodes. Beginning deleting opcodes");
 		try {
-			psDelete = mySqlConn.prepareStatement("Delete from Operation");
+			psDelete = mySqlConn.prepareStatement("Truncate Operation");
 			rowsDeleted = psDelete.executeUpdate();
 			psDelete.close();
 		} catch (SQLException e) {
@@ -333,7 +552,7 @@ public class AccessToMySQL {
 					"Insert into Operation (opCode, Description, HourlyRateSAH, LaborCode, Operation.Key, LastStudyYear) "
 							+ "values (?,?,?,?,?,?)");
 			for (String record : recordsIn) {
-				System.out.println(record);
+				// System.out.println(record);
 				String[] fields = record.split("~");
 				psInsert.setString(1, fields[0]);
 				psInsert.setString(2, fields[1]);
@@ -357,6 +576,8 @@ public class AccessToMySQL {
 		for (int i : insertedRows) {
 			System.out.print(i + " ");
 		}
+		System.out.println();
+		System.out.println(insertedRows.length + " Rows inserted");
 
 		try {
 			mySqlConn.commit();
@@ -365,4 +586,5 @@ public class AccessToMySQL {
 			System.err.println("Failed commit: " + e.getMessage());
 		}
 	}
+
 }

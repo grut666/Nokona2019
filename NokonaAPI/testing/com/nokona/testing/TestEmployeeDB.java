@@ -9,27 +9,55 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.db.NokonaDAOEmployee;
 import com.nokona.exceptions.DataNotFoundException;
+import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.model.Employee;
 
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
 class TestEmployeeDB {
+	private Connection conn;
+	@Mock private Connection connMock;
 
-	private static NokonaDatabaseEmp db;
-	private static Connection conn;
-
-	@BeforeAll
-	private static void setup() throws DatabaseException, SQLException {
+	@InjectMocks private  NokonaDatabaseEmp dbMock;
+	private  NokonaDatabaseEmp db;
+	@BeforeEach
+	private void setupBeforeEach() throws SQLException, DatabaseException  {
 		db = new NokonaDAOEmployee("root", "xyz");
+		dbMock = new NokonaDAOEmployee("root", "xyz");
 		conn = db.getConn();
 		conn.setAutoCommit(false);
+		connMock = dbMock.getConn();
+		connMock.setAutoCommit(false);
+		MockitoAnnotations.initMocks(this);
 	}
+//	@Test
+//	public void testEmployee404() throws DatabaseException {
+//		Mockito.when(db.getEmployee(Mockito.anyString())).thenThrow(new DataNotFoundException("Broken"));
+//		assertEquals(404, empResource.getEmployee("aaa").getStatus());	
+//	}
+
+
+//	@BeforeAll
+//	private static void setup() throws DatabaseException, SQLException {
+//		db = new NokonaDAOEmployee("root", "xyz");
+//		dbMock = new NokonaDAOEmployee("root", "xyz");
+//		conn = db.getConn();
+//		conn.setAutoCommit(false);
+//		connMock = dbMock.getConn();
+//		connMock.setAutoCommit(false);
+//	}
 
 	@AfterEach
 	private void tearDown() throws DatabaseException, SQLException {
@@ -65,20 +93,19 @@ class TestEmployeeDB {
 				emp.toString());
 	}
 
-	// @Test
-	// void testGetEmployeeFullArgumentsLowerCase() throws DatabaseException {
-	// Employee emp = new Employee(167,"molsbee", "mary n.",8654, 7, "mol20",
-	// false);
-	// assertEquals("MOLSBEE", emp.getLastName());
-	// assertEquals("MARY N.", emp.getFirstName());
-	// assertEquals(8654, emp.getBarCodeID());
-	// assertEquals(167, emp.getKey());
-	// assertEquals("MOL20", emp.getEmpId());
-	// assertEquals(7, emp.getLaborCode());
-	// assertEquals(false, emp.isActive());
-	// assertEquals("Employee [key=167, lastName=MOLSBEE, firstName=MARY N.,
-	// barCodeID=8654, laborCode=7, empId=MOL20, active=false]", emp.toString());
-	// }
+	 @Test
+	 void testGetEmployeeFullArgumentsLowerCase() throws DatabaseException {
+	 Employee emp = new Employee(6666,"molsbee", "mary n.",9999, 7, "xxxx20",
+	 false);
+	 db.addEmployee(emp);
+	 emp = db.getEmployee("XXXX20");
+	 assertEquals("MOLSBEE", emp.getLastName());
+	 assertEquals("MARY N.", emp.getFirstName());
+	 assertEquals(9999, emp.getBarCodeID());
+	 assertEquals("XXXX20", emp.getEmpId());
+	 assertEquals(7, emp.getLaborCode());
+	 assertEquals(false, emp.isActive());
+	 }
 	@Test
 	void testGetEmployeeFromDBByID() throws DatabaseException {
 		Employee emp = db.getEmployee("MOL20");
@@ -126,7 +153,7 @@ class TestEmployeeDB {
 	@Test
 	void testGetEmployeesFromDB() throws DatabaseException {
 		List<Employee> emps = db.getEmployees();
-		assertEquals(269, emps.size());
+		assertEquals(302, emps.size());
 
 	}
 
@@ -153,7 +180,7 @@ class TestEmployeeDB {
 	void testDeleteEmployee() throws DatabaseException {
 		List<Employee> employees = db.getEmployees();
 		int startingCount = employees.size();
-		db.deleteEmployee("BAL10");
+		db.deleteEmployee("ALV20");
 		assertEquals(startingCount - 1, db.getEmployees().size());
 
 	}
@@ -208,6 +235,17 @@ class TestEmployeeDB {
 		Assertions.assertThrows(NullInputDataException.class, () -> {
 			db.addEmployee(null);
 		});
+	}
+	@Test
+	void testDeleteEmployeeMocks() throws SQLException  {
+		Mockito.when(connMock.prepareStatement(Mockito.anyString())).thenThrow(new SQLException());
+		Assertions.assertThrows(DatabaseException.class, () -> {
+			dbMock.deleteEmployee("HITLER");
+		});
+		Assertions.assertThrows(DatabaseException.class, () -> {
+			dbMock.deleteEmployeeByKey(123);
+		});
+
 	}
 
 }

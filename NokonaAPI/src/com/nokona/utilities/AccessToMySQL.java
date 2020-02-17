@@ -40,10 +40,11 @@ public class AccessToMySQL {
 		while (rs.next()) {
 			System.out.println(rs.getString("TABLE_NAME"));
 		}
-		// doEmployees();
-		// doLaborCodes();
-		// doOperations();
+		doEmployees();
+		doLaborCodes();
+		doOperations();
 		doTickets();
+		doJobs();
 		long endTime = System.currentTimeMillis();
 		try {
 			mySqlConn.close();
@@ -101,7 +102,7 @@ public class AccessToMySQL {
 
 	public static void doTickets() {
 		doTicketHeaders();
-//		doTicketDetail();
+		doTicketDetail();
 	}
 
 	private static void doTicketHeaders() {
@@ -313,10 +314,192 @@ public class AccessToMySQL {
 
 	}
 
-	public void doJobs() {
-
+	public static void doJobs() {
+		doJobHeaders();
+		doJobDetails();
 	}
 
+	private static void doJobHeaders() {
+		try {
+			recordsIn = new ArrayList<>();
+			psSelect = accessConn.prepareStatement("Select Job.key, jobcode, description, category, stdquantity from Job Order By Job.Key");
+			ResultSet rs = psSelect.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columnCount = rsmd.getColumnCount();
+			for (int i = 1; i <= columnCount; i++) {
+				System.out.println(rsmd.getColumnName(i) + " - " + rsmd.getColumnType(i));
+			}
+//			Key - 4
+//			JobCode - 12
+//			Description - 12
+//			Category - 12
+//			StdQuantity - 5
+			String key = rsmd.getColumnName(1);
+			String job = rsmd.getColumnName(2);
+			String description= rsmd.getColumnName(3);
+			String category = rsmd.getColumnName(4);
+			String stdquantity = rsmd.getColumnName(5);
+
+			while (rs.next()) {
+				String record = rs.getInt(key) + "~" + rs.getString(job) + "~" + rs.getString(description) + "~"
+						+ rs.getString(category) + "~" + rs.getInt(stdquantity);
+				System.out.println(record);
+				recordsIn.add(record);
+			}
+			System.out.println("Records In is " + recordsIn.size());
+			psSelect.close();
+		} catch (SQLException e) {
+
+			System.err.println(e.getMessage());
+			return;
+		}
+		System.out.println("Finished loading JobHeaders.  Beginning deleting JobHeaders");
+		try {
+			psDelete = mySqlConn.prepareStatement("Truncate JobHeader");
+			rowsDeleted = psDelete.executeUpdate();
+			psDelete.close();
+		} catch (SQLException e) {
+			try {
+				mySqlConn.rollback();
+			} catch (SQLException e1) {
+				System.err.println("Failed rollback: " + e1.getMessage());
+			}
+			System.err.println(e.getMessage());
+			return;
+		}
+//		Key - 4
+//		JobCode - 12
+//		Description - 12
+//		Category - 12
+//		StdQuantity - 5
+		System.out.println("Finished deleting " + rowsDeleted + " JobHeaders.  Beginning storing JobHeaders");
+		try {
+			psInsert = mySqlConn.prepareStatement(
+					"Insert into JobHeader (JobHeader.Key, JobId, Description, JobType, StandardQuantity) "
+							+ "values (?,?,?,?,?)");
+			for (String record : recordsIn) {
+				System.out.println(record);
+				String[] fields = record.split("~");
+				psInsert.setLong(1, Long.parseLong(fields[0]));
+				psInsert.setString(2, fields[1]);
+				psInsert.setString(3, fields[2]);
+				psInsert.setString(4, fields[3]);
+				psInsert.setLong(5, Long.parseLong(fields[4]));
+
+				psInsert.addBatch();
+			}
+			insertedRows = psInsert.executeBatch();
+			psInsert.close();
+		} catch (SQLException e) {
+			try {
+				System.err.println(e.getMessage());
+				mySqlConn.rollback();
+			} catch (SQLException e1) {
+				System.err.println("Failed rollback: " + e1.getMessage());
+			}
+		}
+		System.out.println("Finished Inserting: ");
+		for (int i : insertedRows) {
+			System.out.print(i + " ");
+		}
+		System.out.println();
+		System.out.println(insertedRows.length + " Rows inserted");
+
+		try {
+			mySqlConn.commit();
+			System.out.println("Commit successful");
+		} catch (SQLException e) {
+			System.err.println("Failed commit: " + e.getMessage());
+		}
+
+		
+	}
+	private static void doJobDetails() {
+		try {
+			recordsIn = new ArrayList<>();
+//			psSelect = accessConn.prepareStatement("Select * from SegmentOp order by segment, sequence, operation");
+			psSelect = accessConn.prepareStatement("Select * from SegmentOp where segment in (select jobcode from job) order by segment, sequence, operation");
+
+			ResultSet rs = psSelect.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columnCount = rsmd.getColumnCount();
+			for (int i = 1; i <= columnCount; i++) {
+				System.out.println(rsmd.getColumnName(i) + " - " + rsmd.getColumnType(i));
+			}
+//			Segment - 12
+//			Operation - 12
+//			Sequence - 5
+
+			String jobid = rsmd.getColumnName(1);
+			String operation = rsmd.getColumnName(2);
+			String sequence = rsmd.getColumnName(3);
+
+			while (rs.next()) {
+				String record = rs.getString(jobid) + "~" + rs.getString(operation) + "~" + rs.getLong(sequence);
+				System.out.println(record);
+				recordsIn.add(record);
+			}
+			System.out.println("Records In is " + recordsIn.size());
+//			psSelect.close();
+		} catch (SQLException e) {
+
+			System.err.println(e.getMessage());
+			return;
+		}
+		System.out.println("Finished loading JobDetails.  Beginning deleting JobDetails");
+		try {
+			psDelete = mySqlConn.prepareStatement("Truncate JobDetail");
+			rowsDeleted = psDelete.executeUpdate();
+			psDelete.close();
+		} catch (SQLException e) {
+			try {
+				mySqlConn.rollback();
+			} catch (SQLException e1) {
+				System.err.println("Failed rollback: " + e1.getMessage());
+			}
+			System.err.println(e.getMessage());
+			return;
+		}
+
+		System.out.println("Finished deleting " + rowsDeleted + " JobDetails.  Beginning storing JobDetails");
+		try {
+			psInsert = mySqlConn.prepareStatement(
+					"Insert into JobDetail (JobId, OpCode, Sequence) "
+							+ "values (?,?,?)");
+			for (String record : recordsIn) {
+				System.out.println(record);
+				String[] fields = record.split("~");
+				
+				psInsert.setString(1, fields[0]);
+				psInsert.setString(2, fields[1]);
+				psInsert.setLong(3, Long.parseLong(fields[2]));
+				psInsert.addBatch();
+			}
+			insertedRows = psInsert.executeBatch();
+			psInsert.close();
+		} catch (SQLException e) {
+			try {
+				System.err.println(e.getMessage());
+				mySqlConn.rollback();
+			} catch (SQLException e1) {
+				System.err.println("Failed rollback: " + e1.getMessage());
+			}
+		}
+		System.out.println("Finished Inserting: ");
+		for (int i : insertedRows) {
+			System.out.print(i + " ");
+		}
+		System.out.println();
+		System.out.println(insertedRows.length + " Rows inserted");
+
+		try {
+			mySqlConn.commit();
+			System.out.println("Commit successful");
+		} catch (SQLException e) {
+			System.err.println("Failed commit: " + e.getMessage());
+		}
+		
+	}
 	public static void doEmployees() {
 		recordsIn = new ArrayList<>();
 		try {

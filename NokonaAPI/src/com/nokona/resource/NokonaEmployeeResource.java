@@ -32,7 +32,7 @@ public class NokonaEmployeeResource {
 	@Inject
 	private NokonaDatabaseEmp db;
 
-	public NokonaEmployeeResource() throws DatabaseException {
+	public NokonaEmployeeResource()  {
 
 	}
 

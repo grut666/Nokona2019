@@ -288,7 +288,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			psMoveDeletedEmployeeByKey.setLong(1, key);
 			int rowCount = psMoveDeletedEmployeeByKey.executeUpdate();
 			if (rowCount == 0) {
-				throw new InvalidInsertException("Key "+ key + " could not be inserted into delete table");
+				throw new DataNotFoundException("Key "+ key + " could not be inserted into delete table");
 			}
 			psDelEmployeeByKey.setLong(1, key);
 			rowCount = psDelEmployeeByKey.executeUpdate();
@@ -306,13 +306,14 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 	}
 
 	@Override
-	public void deleteEmployee(String empID) throws DatabaseException {
-		if (empID == null) {
-			throw new NullInputDataException("empID cannot be null");
-		}
+	public void deleteEmployee(String empId) throws DatabaseException {
+
+		
 		if (psDelEmployeeByEmpId == null) {
 			try {
-				psDelEmployeeByEmpId = conn.prepareStatement("Delete From Employee where EmpID = ?");
+				psDelEmployeeByEmpId = conn.prepareStatement("Delete From Employee where empID = ?");
+				psMoveDeletedEmployeeByEmpId = conn.prepareStatement("INSERT INTO Deleted_Employee (Deleted_Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) " + 
+						"  SELECT Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active FROM Employee WHERE empid = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -320,11 +321,17 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			}
 		}
 		try {
-			psDelEmployeeByEmpId.setString(1, empID);
-			int rowCount = psDelEmployeeByEmpId.executeUpdate();
+			psMoveDeletedEmployeeByEmpId.setString(1, empId);
+			int rowCount = psMoveDeletedEmployeeByEmpId.executeUpdate();
+			if (rowCount == 0) {
+				throw new InvalidInsertException("Empid "+ empId + " could not be inserted into delete table");
+			}
+			psDelEmployeeByEmpId.setString(1,empId);
+			rowCount = psDelEmployeeByEmpId.executeUpdate();
 
 			if (rowCount == 0) {
-				throw new DataNotFoundException("Error.  Delete Emp ID " + empID + " failed");
+				conn.rollback();
+				throw new DataNotFoundException("Error.  Delete Employee empId " + empId + " failed");
 			}
 
 		} catch (SQLException e) {
@@ -332,5 +339,4 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			throw new DatabaseException(e.getMessage(), e);
 		}
 	}
-
 }

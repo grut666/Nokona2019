@@ -1,38 +1,46 @@
 package com.nokona.dto;
 
 public class TicketDTOIn {
-	private String modelId;
+	private String jobId;
 	private String description;
 	private int quantity;
+
 	public TicketDTOIn() {
-		
+
 	}
-	public TicketDTOIn(String modelId, String description, int quantity) {
-		this.setModelId(modelId);
+
+	public TicketDTOIn(String jobId, String description, int quantity) {
+		this.setJobId(jobId);
 		this.setDescription(description);
 		this.setQuantity(quantity);
 	}
-	public String getModelId() {
-		return modelId;
+
+	public String getJobId() {
+		return jobId;
 	}
-	public void setModelId(String modelId) {
-		this.modelId = modelId;
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public int getQuantity() {
 		return quantity;
 	}
+
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
+
 	@Override
 	public String toString() {
-		return "TicketDTOIn [modelId=" + modelId + ", quantity=" + quantity + "]";
+		return "TicketDTOIn [jobId=" + jobId + ", quantity=" + quantity + "]";
 	}
 }

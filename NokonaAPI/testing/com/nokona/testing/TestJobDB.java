@@ -12,24 +12,24 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.nokona.data.NokonaDatabaseEmp;
-import com.nokona.data.NokonaDatabaseModel;
+import com.nokona.data.NokonaDatabaseJob;
 import com.nokona.db.NokonaDAOEmployee;
-import com.nokona.db.NokonaDAOModel;
+import com.nokona.db.NokonaDAOJob;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.model.Employee;
-import com.nokona.model.ModelHeader;
+import com.nokona.model.JobHeader;
 
-class TestModelDB {
+class TestJobDB {
 
-	private static NokonaDatabaseModel db;
+	private static NokonaDatabaseJob db;
 	private static Connection conn;
 
 	@BeforeAll
 	private static void setup() throws DatabaseException, SQLException {
-		db = new NokonaDAOModel("root", "xyz");
+		db = new NokonaDAOJob("root", "xyz");
 		conn = db.getConn();
 		conn.setAutoCommit(false);
 	}
@@ -127,9 +127,9 @@ class TestModelDB {
 //	}
 //
 	@Test
-	void testGetModelsFromDB() throws DatabaseException {
-		List<ModelHeader> models = db.getModelHeaders();
-		assertEquals(2067, models.size());
+	void testGetJobsFromDB() throws DatabaseException {
+		List<JobHeader> jobHeaders = db.getJobHeaders();
+		assertEquals(2067, jobHeaders.size());
 
 	}
 //

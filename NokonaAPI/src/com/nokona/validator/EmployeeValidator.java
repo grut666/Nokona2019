@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 import com.nokona.model.Employee;
 
-// No duplicate modelID
+// No duplicate jobID
 // No duplicate barCodeID
 public class EmployeeValidator {
 	private static PreparedStatement updatePS;

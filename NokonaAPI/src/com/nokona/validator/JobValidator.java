@@ -5,33 +5,33 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.nokona.model.ModelHeader;
+import com.nokona.model.JobHeader;
 
-// No duplicate modelID
-public class ModelValidator {
+// No duplicate jobID
+public class JobValidator {
 
 	private static PreparedStatement updatePS;
 	private static PreparedStatement addPS;
 
 
-	public static String validateAdd(ModelHeader modelIn, Connection conn) {
+	public static String validateAdd(JobHeader jobIn, Connection conn) {
 
 		String errors = "";
 		if (addPS == null) {
 			try {
 				addPS = conn.prepareStatement(
 
-						"Select Model.key from ModelHeader where ModelID = ?");
+						"Select Job.key from JobHeader where JobID = ?");
 
 			} catch (SQLException e) {
 				errors += e.getMessage() + "\n";
 			}	
 		} else {
 				try {
-					addPS.setString(1, modelIn.getModelId());
+					addPS.setString(1, jobIn.getJobId());
 					ResultSet rs = addPS.executeQuery();
 					if (rs.next()) {
-						errors += "Add: Model ID already in use\n";
+						errors += "Add: Job ID already in use\n";
 					}
 					rs.close();
 				} catch (SQLException e) {
@@ -42,24 +42,24 @@ public class ModelValidator {
 		return errors;
 	}
 
-	public static String validateUpdate(ModelHeader modelHeaderIn, Connection conn) {
+	public static String validateUpdate(JobHeader jobHeaderIn, Connection conn) {
 		String errors = "";
 		if (updatePS == null) {
 			try {
 				updatePS = conn.prepareStatement(
 
-						"Select ModelHeader.key from ModelHeader where ModelHeader.key <> ? and modelID = ?");
+						"Select JobHeader.key from JobHeader where JobHeader.key <> ? and jobID = ?");
 
 			} catch (SQLException e) {
 				errors += e.getMessage() + "\n";
 			}	
 		} else {
 				try {
-					updatePS.setLong(1, modelHeaderIn.getKey());
-					updatePS.setString(2, modelHeaderIn.getModelId());
+					updatePS.setLong(1, jobHeaderIn.getKey());
+					updatePS.setString(2, jobHeaderIn.getJobId());
 					ResultSet rs = updatePS.executeQuery();
 					if (rs.next()) {
-						errors += "Update: Model ID would be a duplicate\n";
+						errors += "Update: Job ID would be a duplicate\n";
 					}
 					rs.close();
 				} catch (SQLException e) {

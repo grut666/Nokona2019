@@ -28,7 +28,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	private PreparedStatement psGetTicketHeaders;
 
 	private PreparedStatement psGetTickets;
-	private PreparedStatement psGetTicketsByModel;
+	private PreparedStatement psGetTicketsByJob;
 
 	private PreparedStatement psGetTicketDetail;
 	private PreparedStatement psGetTicketDetails;
@@ -43,7 +43,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 
 	private PreparedStatement psDelTicketByKey;
 
-	private PreparedStatement psGetModelSegment;
+	private PreparedStatement psGetJobSegment;
 	private PreparedStatement psGetSegmentOp;
 
 	public NokonaDAOTicket() throws DatabaseException {
@@ -88,7 +88,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 				psGetTicketByKey = conn.prepareStatement(
 						"Select * from ticketheader join ticketdetail on ticketheader.key = ticketdetail.key  "
 								+ "join operation on operation = opcode "
-								+ "join model on ticketheader.modelid = model.modelid "
+								+ "join job on ticketheader.jobid = job.jobid "
 								+ "where ticketheader.key = ? order by sequenceOriginal");
 
 			} catch (SQLException e) {
@@ -292,13 +292,13 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	//
 	//
 	@Override
-	public List<Ticket> getTicketsByModel(String model) throws DatabaseException {
+	public List<Ticket> getTicketsByJob(String job) throws DatabaseException {
 		List<Ticket> tickets = new ArrayList<Ticket>();
-		if (psGetTicketsByModel == null) {
+		if (psGetTicketsByJob == null) {
 			try {
-				psGetTicketsByModel = getConn().prepareStatement(
+				psGetTicketsByJob = getConn().prepareStatement(
 						"Select * from ticketheader join ticketdetail on ticketheader.key = ticketdetail.key "
-								+ "where modelID = ? order by ticketheader.key, sequence");
+								+ "where jobID = ? order by ticketheader.key, sequence");
 
 			} catch (SQLException e) {
 				throw new DatabaseException(e.getMessage(), e);
@@ -306,8 +306,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		}
 
 		try {
-			psGetTicketsByModel.setString(1, model);
-			ResultSet rs = psGetTicketsByModel.executeQuery();
+			psGetTicketsByJob.setString(1, job);
+			ResultSet rs = psGetTicketsByJob.executeQuery();
 			while (rs.next()) {
 				tickets.add(convertTicketFromResultSet(rs));
 			}
@@ -327,7 +327,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		try {
 			if (psAddTicketHeader == null) {
 				conn.prepareStatement(
-						"Insert into TicketHeader (ModelID, DateCreated, Status, StatusDate, Quantity) values (?,?,?,?,?)",
+						"Insert into TicketHeader (JobID, DateCreated, Status, StatusDate, Quantity) values (?,?,?,?,?)",
 						PreparedStatement.RETURN_GENERATED_KEYS);
 			}
 			if (psGetSegmentOp == null) {
@@ -344,7 +344,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		// Should not need any validation so not validating
 		TicketHeader newTicketHeader;
 		try {
-			psAddTicketHeader.setString(1, formattedTicketHeader.getModel());
+			psAddTicketHeader.setString(1, formattedTicketHeader.getJobId());
 			psAddTicketHeader.setDate(2,
 					DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateCreated()));
 			psAddTicketHeader.setString(3, formattedTicketHeader.getTicketStatus().getTicketStatus());
@@ -372,18 +372,18 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		List<TicketDetail> newTicketDetails = new ArrayList<TicketDetail>();
 
 		// Get the detail records generated.
-		if (psGetModelSegment == null) {
+		if (psGetJobSegment == null) {
 			try {
-				psGetModelSegment = conn
-						.prepareStatement("Select * from ModelSegment where modelId = ? order by Sequence");
+				psGetJobSegment = conn
+						.prepareStatement("Select * from JobSegment where jobId = ? order by Sequence");
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage());
 			}
 
 			try {
-				psGetModelSegment.setString(1, formattedTicketHeader.getModel());
-				ResultSet rs = psGetModelSegment.executeQuery();
+				psGetJobSegment.setString(1, formattedTicketHeader.getJobId());
+				ResultSet rs = psGetJobSegment.executeQuery();
 				while (rs.next()) {
 					String segmentName = rs.getString("SegmentName");
 					ResultSet rsSegment = psGetSegmentOp.executeQuery();
@@ -420,7 +420,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		if (psGetTicketHeaders == null) {
 			try {
 				psGetTicketHeaders = conn
-						.prepareStatement("Select * from ticketheader " + "order by modelID, dateCreated, Status");
+						.prepareStatement("Select * from ticketheader " + "order by jobID, dateCreated, Status");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -444,8 +444,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		TicketHeader ticketHeader = null;
 		if (psGetTicketHeaderByKey == null) {
 			try {
-				psGetTicketHeaderByKey = conn.prepareStatement("Select * from ticketheader join model on "
-						+ "ticketheader.modelid = model.modelid where ticketheader.key = ?");
+				psGetTicketHeaderByKey = conn.prepareStatement("Select * from ticketheader join job on "
+						+ "ticketheader.jobid = job.jobid where ticketheader.key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -509,8 +509,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	private TicketHeader convertTicketHeaderFromResultSet(ResultSet rs) throws SQLException {
 
 		int key = rs.getInt("Key");
-		String model = rs.getString("ModelID"); //
-		String description = rs.getString("Model.Description");
+		String jobId = rs.getString("JobID"); //
+		String description = rs.getString("Job.Description");
 		// java.util.Date newDate = result.getTimestamp("VALUEDATE");
 		Date dateCreated = DateUtilities.convertSQLDateToUtilDate(rs.getDate("DateCreated"));
 		Date dateStatus = DateUtilities.convertSQLDateToUtilDate(rs.getDate("StatusDate"));
@@ -522,7 +522,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 
 		int quantity = rs.getInt("Quantity");
 		
-		return TicketHeaderFormatter.format(new TicketHeader(key, model, description, dateCreated, ticketStatus,
+		return TicketHeaderFormatter.format(new TicketHeader(key, jobId, description, dateCreated, ticketStatus,
 				dateStatus, quantity));
 	}
 

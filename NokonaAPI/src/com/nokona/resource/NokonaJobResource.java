@@ -14,21 +14,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.nokona.data.NokonaDatabaseModel;
+import com.nokona.data.NokonaDatabaseJob;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
-import com.nokona.model.ModelDetail;
-import com.nokona.model.ModelHeader;
+import com.nokona.model.JobDetail;
+import com.nokona.model.JobHeader;
 
-@Path("/models")
-public class NokonaModelResource {
+@Path("/jobs")
+public class NokonaJobResource {
 
 	@Inject
-	private NokonaDatabaseModel db;
+	private NokonaDatabaseJob db;
 
-	public NokonaModelResource() throws DatabaseException {
+	public NokonaJobResource() throws DatabaseException {
 
 	}
 	
@@ -36,10 +36,10 @@ public class NokonaModelResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/modelheaders")
-	public Response getModelHeaders() {
+	@Path("/jobheaders")
+	public Response getJobHeaders() {
 		try {
-			return Response.status(200).entity(db.getModelHeaders()).build();
+			return Response.status(200).entity(db.getJobHeaders()).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (Exception ex) {
@@ -49,11 +49,11 @@ public class NokonaModelResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/modelheaders/{modelId}")
-	public Response getModelHeadersByModel(@PathParam("modelId") String model) {
+	@Path("/jobheaders/{jobId}")
+	public Response getJobHeadersByJobId(@PathParam("jobId") String jobId) {
 		try {
 
-			return Response.status(200).entity(db.getModelHeader(model)).build();
+			return Response.status(200).entity(db.getJobHeader(jobId)).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (Exception ex) {
@@ -62,11 +62,11 @@ public class NokonaModelResource {
 	}
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/modelheaders/bykey/{key}")
-	public Response getModelHeadersByKey(@PathParam("key") long key ) {
+	@Path("/jobheaders/bykey/{key}")
+	public Response getJobHeadersByKey(@PathParam("key") long key ) {
 		try {
 
-			return Response.status(200).entity(db.getModelHeaderByKey(key)).build();
+			return Response.status(200).entity(db.getJobHeaderByKey(key)).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (Exception ex) {
@@ -76,14 +76,14 @@ public class NokonaModelResource {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/modelheaders/{modelId}")
-	public Response updateModelHeader(@PathParam("modelId") String modelId, ModelHeader modelHeaderIn) {
+	@Path("/jobheaders/{jobId}")
+	public Response updateJobHeader(@PathParam("jobId") String jobId, JobHeader jobHeaderIn) {
 
-		if (!modelId.equals(modelHeaderIn.getModelId())) {
+		if (!jobId.equals(jobHeaderIn.getJobId())) {
 			return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
 		}
 		try {
-			return Response.status(200).entity(db.updateModelHeader(modelHeaderIn)).build();
+			return Response.status(200).entity(db.updteJobHeader(jobHeaderIn)).build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -97,11 +97,11 @@ public class NokonaModelResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 
-	@Path("/modelheaders")
-	public Response addModelHeader(ModelHeader modelHeaderIn) {
-		ModelHeader modelHeader;
+	@Path("/jobheaders")
+	public Response addJobHeader(JobHeader jobHeaderIn) {
+		JobHeader jobHeader;
 		try {
-			modelHeader = db.addModelHeader(modelHeaderIn);
+			jobHeader = db.addJobHeader(jobHeaderIn);
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -109,18 +109,18 @@ public class NokonaModelResource {
 		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
-		return Response.status(201).entity(modelHeader).build();
+		return Response.status(201).entity(jobHeader).build();
 	}
 
 // DETAILS	
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/modeldetails/{model}")
-	public Response getModelDetailsByModel(@PathParam("model") String model) {
+	@Path("/jobdetails/{jobid}")
+	public Response getJobDetailsByJobId(@PathParam("jobid") String jobId) {
 		try {
 
-			return Response.status(200).entity(db.getModelDetails(model)).build();
+			return Response.status(200).entity(db.getJobDetails(jobId)).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (Exception ex) {
@@ -132,15 +132,15 @@ public class NokonaModelResource {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/modeldetails/{modelId}")
+	@Path("/jobdetails/{jobId}")
 
-	public Response updateModelDetail(@PathParam("modelId") String modelId, ModelDetail modelDetailIn) {
+	public Response updateJobDetail(@PathParam("jobId") String jobId, JobDetail jobDetailIn) {
 
-		if (!modelId.equals(modelDetailIn.getModelId())) {
+		if (!jobId.equals(jobDetailIn.getJobId())) {
 			return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
 		}
 		try {
-			return Response.status(200).entity(db.updateModelDetails(modelDetailIn)).build();
+			return Response.status(200).entity(db.updateJobDetails(jobDetailIn)).build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -154,11 +154,11 @@ public class NokonaModelResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 
-	@Path("/modeldetails")
-	public Response addModelDetail(ModelDetail modelDetailIn) {
-		List<ModelDetail> modelDetails;
+	@Path("/jobdetails")
+	public Response addJobDetail(JobDetail jobDetailIn) {
+		List<JobDetail> jobDetails;
 		try {
-			modelDetails = db.addModelDetails(modelDetailIn);
+			jobDetails = db.addJobDetails(jobDetailIn);
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -166,18 +166,18 @@ public class NokonaModelResource {
 		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
-		return Response.status(201).entity(modelDetails).build();
+		return Response.status(201).entity(jobDetails).build();
 	}
 	
 
-// Model in its entirety
+// Job in its entirety
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{model}")
-	public Response getModelByModel(@PathParam("model") String model) {
+	@Path("/{jobId}")
+	public Response getJobByJobId(@PathParam("jobId") String jobId) {
 		try {
 
-			return Response.status(200).entity(db.getModel(model)).build();
+			return Response.status(200).entity(db.getJob(jobId)).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (Exception ex) {
@@ -189,14 +189,14 @@ public class NokonaModelResource {
 	
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{modelId}")
-	public Response deleteModel(@PathParam("modelId") String modelId) {
+	@Path("/{jobId}")
+	public Response deleteJob(@PathParam("jobId") String jobId) {
 
 		try {
-			db.deleteModel(modelId);
+			db.deleteJob(jobId);
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DataNotFoundException ex) {
-			return Response.status(404).entity("{\"error\":\"" + modelId + " not found\"}").build();
+			return Response.status(404).entity("{\"error\":\"" + jobId + " not found\"}").build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (DatabaseException ex) {
@@ -206,11 +206,11 @@ public class NokonaModelResource {
 	}
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/bymodel/{key}")
-	public Response deleteModelByKey(@PathParam("key") Long key) {
+	@Path("/bykey/{key}")
+	public Response deleteJobByKey(@PathParam("key") Long key) {
 
 		try {
-			db.deleteModelByKey(key);
+			db.deleteJobByKey(key);
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();

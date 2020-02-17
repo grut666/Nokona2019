@@ -7,7 +7,7 @@ import com.nokona.enums.TicketStatus;
 
 public class TicketHeader {
 	private long key;
-	private String model;
+	private String jobId;
 	private String description;
 	private Date dateCreated;
 	private TicketStatus ticketStatus;
@@ -18,11 +18,11 @@ public class TicketHeader {
 	}
 
 	public TicketHeader(TicketDTOIn ticketDTOIn) {
-		this(-1, ticketDTOIn.getModelId(), ticketDTOIn.getDescription(), new Date(), TicketStatus.NEW, new Date(), ticketDTOIn.getQuantity());
+		this(-1, ticketDTOIn.getJobId(), ticketDTOIn.getDescription(), new Date(), TicketStatus.NEW, new Date(), ticketDTOIn.getQuantity());
 	}
-	public TicketHeader(long key, String model, String description, Date dateCreated, TicketStatus ticketStatus, Date dateStatus, int quantity) {
+	public TicketHeader(long key, String jobId, String description, Date dateCreated, TicketStatus ticketStatus, Date dateStatus, int quantity) {
 		this.setKey(key);
-		this.setModel(model);
+		this.setJobId(jobId);
 		this.setDescription(description);
 		this.setDateCreated(dateCreated);
 		this.setTicketStatus(ticketStatus);
@@ -35,11 +35,11 @@ public class TicketHeader {
 	public void setKey(long key) {
 		this.key = key;
 	}
-	public String getModel() {
-		return model;
+	public String getJobId() {
+		return jobId;
 	}
-	public void setModel(String model) {
-		this.model = model;
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
 	}
 	
 	public String getDescription() {
@@ -75,7 +75,7 @@ public class TicketHeader {
 	
 	@Override
 	public String toString() {
-		return "TicketHeader [key=" + key + ", model=" + model + ", dateCreated=" + dateCreated + ", ticketStatus="
+		return "TicketHeader [key=" + key + ", jobId=" + jobId + ", dateCreated=" + dateCreated + ", ticketStatus="
 				+ ticketStatus + ", dateStatus=" + dateStatus + ", quantity=" + quantity + "]";
 	}
 	

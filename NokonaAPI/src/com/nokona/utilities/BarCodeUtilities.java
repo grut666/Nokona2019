@@ -132,8 +132,8 @@ public class BarCodeUtilities {
 
 		TicketHeader th = ticketIn.getTicketHeader();
 		String star44 = "********************************************";
-		String strModel = th.getModel();
-		boolean isRH = strModel.contains("-RH") ? true : false;
+		String strJobId = th.getJobId();
+		boolean isRH = strJobId.contains("-RH") ? true : false;
 		String strJobDesc = th.getDescription();
 		String strTkt1 = String.format("%06d", th.getKey());
 		String strQtyFormatted = replaceLeadingWithUnderScores(String.format("%03d", th.getQuantity()));
@@ -148,7 +148,7 @@ public class BarCodeUtilities {
 		sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
 				.append("&a2.1C").append(star44);
 		sb.append(ESC).append("&a").append(intRowCount + .14).append("R"); // Set Vertical Coordinate
-		sb.append(ESC).append("&a0.3C").append("OFFICE_CONTROL").append(ESC).append("&a1.3C").append(strModel)
+		sb.append(ESC).append("&a0.3C").append("OFFICE_CONTROL").append(ESC).append("&a1.3C").append(strJobId)
 				.append(ESC).append("&a2.3C").append("OFFICE_CONTROL");
 		sb.append(ESC).append("&a").append(intRowCount + 0.3).append("R"); // Set Vertical Coordinate
 
@@ -367,7 +367,7 @@ public class BarCodeUtilities {
 		// & "&a2.3C" & "FACTORY_CONTROL"
 		//
 		sb.append(ESC).append("&a").append(intRowCount + 0.14).append("R"); // ' Set Vertical Coordinate)
-		sb.append(ESC).append("&a0.3C").append("FACTORY_CONTROL").append(ESC).append("&a1.3C").append(strModel)
+		sb.append(ESC).append("&a0.3C").append("FACTORY_CONTROL").append(ESC).append("&a1.3C").append(strJobId)
 				.append(ESC).append("&a2.3C").append("FACTORY_CONTROL");
 
 		// Put #1, , ESC & "&a" & (intRowCount + 0.3) & "R" ' Set Vertical Coordinate

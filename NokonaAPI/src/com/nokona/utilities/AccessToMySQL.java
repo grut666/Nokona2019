@@ -158,7 +158,7 @@ public class AccessToMySQL {
 		System.out.println("Finished deleting " + rowsDeleted + " TicketHeaders.  Beginning storing TicketHeaders");
 		try {
 			psInsert = mySqlConn.prepareStatement(
-					"Insert into TicketHeader (TicketHeader.Key, ModelId, CreatedDate, Status, StatusDate, Quantity) "
+					"Insert into TicketHeader (TicketHeader.Key, JobId, CreatedDate, Status, StatusDate, Quantity) "
 							+ "values (?,?,?,?,?,?)");
 			for (String record : recordsIn) {
 				System.out.println(record);
@@ -313,7 +313,7 @@ public class AccessToMySQL {
 
 	}
 
-	public void doModels() {
+	public void doJobs() {
 
 	}
 

@@ -1,24 +1,24 @@
 package com.nokona.model;
 
-public class ModelDetail {
-	private String modelId;
+public class JobDetail {
+	private String jobId;
 	private String opCode;
 	private int sequence;
-	public ModelDetail() {
+	public JobDetail() {
 		super();
 	}
-	public ModelDetail(String modelId, String opCode, int sequence) {
+	public JobDetail(String jobId, String opCode, int sequence) {
 		super();
-		this.setModelId(modelId);
+		this.setJobId(jobId);
 		this.setOpCode(opCode);
 		this.setSequence(sequence);
 	}
 
-	public String getModelId() {
-		return modelId;
+	public String getJobId() {
+		return jobId;
 	}
-	public void setModelId(String modelId) {
-		this.modelId = modelId;
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
 	}
 	public void setOpCode(String opCode) {
 		this.opCode = opCode;
@@ -34,7 +34,7 @@ public class ModelDetail {
 	}
 	@Override
 	public String toString() {
-		return "ModelDetail [opCode=" + opCode + ", sequence=" + sequence
+		return "JobDetail [opCode=" + opCode + ", sequence=" + sequence
 				+ "]";
 	}
 

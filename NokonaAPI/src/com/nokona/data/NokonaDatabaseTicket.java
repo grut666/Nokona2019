@@ -12,7 +12,7 @@ public interface NokonaDatabaseTicket extends NokonaDatabase {
 	
 	List<Ticket> getTickets() throws DatabaseException;
 	Ticket getTicketByKey(long headerKey) throws DatabaseException;
-	List<Ticket> getTicketsByModel(String model) throws DatabaseException;
+	List<Ticket> getTicketsByJob(String jobId) throws DatabaseException;
 	Ticket addTicket(TicketDTOIn dtoIn)  throws DatabaseException;
 	Ticket updateTicket (Ticket ticket) throws DatabaseException;
 

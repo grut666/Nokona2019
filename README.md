@@ -361,278 +361,192 @@ operations/XYZ1
 {\
     "Success": "200"\
 }
-## Model
+## Job
 
-### Get /models/modelheaders # Get all Model Headers
+### Get /jobs/jobheaders # Get all Job Headers
 #### In
-/models/modelheaders
+/jobs/jobheaders
 #### Out
 [
  {\
-        "modelId": "AMG700K-CW-LH",\
+        "jobId": "AMG700K-CW-LH",\
         "description": "WAL/TAN KANG 13.5 IN CLSD WEB, LEFT",\
-        "modelType": "B",\
+        "jobType": "B",\
         "key": 5694,\
         "standardQuantity": 10\
     },\
     {\
-        "modelId": "AMG700W-CW-LH",\
+        "jobId": "AMG700W-CW-LH",\
         "description": "WALNUT 13.5 IN CLSD WEB - LEFT",\
-        "modelType": "B",\
+        "jobType": "B",\
         "key": 5689,\
         "standardQuantity": 10\
     },\
     {\
-        "modelId": "BB-1175I-LH",\
+        "jobId": "BB-1175I-LH",\
         "description": "11.75\" BUCKAROO AMG1175 I-WEB\"",\
-        "modelType": "B",\
+        "jobType": "B",\
         "key": 5174,\
         "standardQuantity": 10\
     }\
 ] 
-### Get /models/{modelId} # Get 1 entire Model (Header and Detail) Object by unique modelId
+### Get /jobs/{jobId} # Get 1 entire Job (Header and Detail) Object by unique jobId
 #### In
-/models/BFG
+/jobs/BFG
 #### Out
 {\
     "header": {\
-        "modelId": "BFG",\
+        "jobId": "BFG",\
         "description": "LACE BABY GLOVE",\
-        "modelType": "B",\
+        "jobType": "B",\
         "key": 5040,\
         "standardQuantity": 10\
     },\
     "details": [\
         {\
             "sequence": 0,\
-            "modelId": "BFG",\
+            "jobId": "BFG",\
             "opCode": "111"\
         },\
         {\
             "sequence": 1,\
-            "modelId": "BFG",\
+            "jobId": "BFG",\
             "opCode": "222"\
         },\
         {\
             "sequence": 2,\
-            "modelId": "BFG",\
+            "jobId": "BFG",\
             "opCode": "GA7"\
         },\
         {\
             "sequence": 3,\
-            "modelId": "BFG",\
+            "jobId": "BFG",\
             "opCode": "GA8"\
         },\
         {\
             "sequence": 4,\
-            "modelId": "BFG",\
+            "jobId": "BFG",\
             "opCode": "GA9"\
         },\
         {\
             "sequence": 5,\
-            "modelId": "BFG",\
+            "jobId": "BFG",\
             "opCode": "GB3"\
         }\
     ]\
 }
 
 
-### Get /models/modelheaders/{modelId} # Get 1 Model Header by unique modelId
+### Get /jobs/jobheaders/{jobId} # Get 1 Job Header by unique jobId
 #### In
-/models/modelheaders/BC-1200C-RH
+/jobs/jobheaders/BC-1200C-RH
 #### Out
 {\
-    "modelId": "BC-1200C-RH",\
+    "jobId": "BC-1200C-RH",\
     "description": "12\" BUFFALO COMBO CLOSED WEB\"",\
-    "modelType": "B",\
+    "jobType": "B",\
     "key": 5253,\
     "standardQuantity": 10\
 }
-### Get /models/modelheaders/bykey/{key} # Get 1 Model Header by unique key
+### Get /jobs/jobheaders/bykey/{key} # Get 1 Job Header by unique key
 #### In
-/models/modelheaders/bykey/5565
+/jobs/jobheaders/bykey/5565
 #### Out
 {\
-    "modelId": "BC-1150M-LH",\
+    "jobId": "BC-1150M-LH",\
     "description": "BUFFALO COMBO 11.5 IN MOD TRAP - LEFT",\
-    "modelType": "B",\
+    "jobType": "B",\
     "key": 5565,\
     "standardQuantity": 10\
 }
-### Put /models/modelheaders/{modelId} # Update one Model Header Record
+### Put /jobs/jobheaders/{jobId} # Update one Job Header Record
 #### In
-/models/modelheaders/BF1125
+/jobs/jobheaders/BF1125
 Body:
 {\
-    "modelId": "BF1125",\
+    "jobId": "BF1125",\
     "description": "11.25\" Buffalo GLOVE OPEN WEB\"",\
-    "modelType": "B",\
+    "jobType": "B",\
     "key": 4304,\
     "standardQuantity": 10\
 }
 #### Out
 {\
-    "modelId": "BF1125",\
+    "jobId": "BF1125",\
     "description": "11.25\" BUFFALO GLOVE OPEN WEB\"",\
-    "modelType": "B",\
+    "jobType": "B",\
     "key": 4304,\
     "standardQuantity": 10\
 }
         
-### Post /models/modelheaders # Add 1 Model Header Record
+### Post /jobs/jobheaders # Add 1 Job Header Record
 #### In
 Body:
 {\
     "deleted": false,\
-    "modelId": "BXXX123",\
+    "jobId": "BXXX123",\
     "description": "12.25\" Human Skin GLOVE OPEN WEB\"",\
-    "modelType": "B",\
+    "jobType": "B",\
     "key": 0,\
     "standardQuantity": 15\
 }
 
 #### Out
 {\
-    "modelId": "BXXX123",\
+    "jobId": "BXXX123",\
     "description": "12.25\" HUMAN SKIN GLOVE OPEN WEB\"",\
-    "modelType": "B",\
+    "jobType": "B",\
     "key": 9733,\
     "standardQuantity": 15\
 }
-### Get /models/modeldetails/{modelId} # Get a List of Model Detail records by unique modelId
+### Get /jobs/jobdetails/{jobId} # Get a List of Job Detail records by unique jobId
 #### In
-/models/modeldetails/BC-1200C-RH
+/jobs/jobdetails/BC-1200C-RH
 #### Out
 [\
     {\
         "sequence": 0,\
-        "modelId": "BC-1150M-LH",\
+        "jobId": "BC-1150M-LH",\
         "opCode": "111"\
     },\
     {\
         "sequence": 1,\
-        "modelId": "BC-1150M-LH",\
+        "jobId": "BC-1150M-LH",\
         "opCode": "222"\
     },\
     {\
         "sequence": 2,\
-        "modelId": "BC-1150M-LH",\
+        "jobId": "BC-1150M-LH",\
         "opCode": "333"\
     },\ 
     {\
         "sequence": 38,\
-        "modelId": "BC-1150M-LH",\
+        "jobId": "BC-1150M-LH",\
         "opCode": "I28"\
     }\
 ]
 
 
-### Delete /models/{modelId} # Delete 1 Model by the unique ModelId.  Deletes both header and detail
+### Delete /jobs/{jobId} # Delete 1 Job by the unique jobId.  Deletes both header and detail
 #### In
-models/BXXX123
+jobs/BXXX123
 
 #### Out
 {\
     "Success": "200"\
 }
 
-### Delete /models/bykey/{key} # Delete 1 Model Record by the unique Database key.  Deletes both header and detail
+### Delete /jobs/bykey/{key} # Delete 1 Job Record by the unique Database key.  Deletes both header and detail
 #### In
-/models/bykey/9733
+/jobs/bykey/9733
 
 #### Out
 {\
     "Success": "200"\
 }
 
-xxxxxxx
+
 
 ## Segment - Contains a wrapped SegmentHeader and a list of all SegmentDetail records for a given segmentName
-### Get /segments # Get all Segments
-#### In
-/segments
-#### Out
-List of all segments
 
-### Get /segments/{segmentName} # Get 1 Segment by its unique identifer, segmentName
-#### In
-/segments/100I-LH
-#### Out
-{\
-    "segmentHeader": {\
-        "deleted": false,\
-        "segmentDescription": "10.5 IN, I WEB - LEFT",\
-        "segmentName": "100I-LH"\
-    },\
-    "segmentDetails": [\
-        {\
-            "sequence": 1,\
-            "opCode": "222",\
-            "segmentName": "100I-LH"\
-        },\
-        {\
-            "sequence": 2,\
-            "opCode": "333",\
-            "segmentName": "100I-LH"\
-        },\
-        {\
-            "sequence": 3,\
-            "opCode": "C206",\
-            "segmentName": "100I-LH"\
-        }\
-    ]
-        
-### Get /segments/segmentHeaders # Get all SegmentHeaders
-#### In
-/segments/segmentHeaders
-#### Out
-[\
-    {\
-        "deleted": false,\
-        "segmentDescription": "Description",\
-        "segmentName": "1"\
-    },\
-    {\
-        "deleted": false,\
-        "segmentDescription": "10.5 IN, I WEB - LEFT",\
-        "segmentName": "100I-LH"\
-    },\
-    {\
-        "deleted": false,\
-        "segmentDescription": "CLASSIC 100, I-WEB - LEFT",\
-        "segmentName": "100ICLASSIC-LH"\
-    }\
- ]
-        
-### Get /segments/segmentHeaders/{segmentName} # Get 1 SegmentHeader by its unique identifer, segmentName
-#### In
-/segments/segmentHeaders/1175H-LH
-#### Out
-{\
-    "deleted": false,\
-    "segmentDescription": "11.75 IN GLOVE H WEB - LEFT",\
-    "segmentName": "1175H-LH"\
-}
-        
-### Get /segments/segmentDetails/{segmentName} # Get all SegmentDetails for a unique identifer, segmentName
-#### In
-/segments/segmentDetails/100I-LH
-#### Out
-[\
-    {\
-        "sequence": 0,\
-        "opCode": "111",\
-        "segmentName": "100I  LH"\
-    },\
-    {\
-        "sequence": 1,\
-        "opCode": "222",\
-        "segmentName": "100I-LH"\
-    },\
-    {\
-        "sequence": 2,\
-        "opCode": "333",\
-        "segmentName": "100I-LH"\
-    }\
-]
 

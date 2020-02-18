@@ -19,10 +19,10 @@ import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
+import com.nokona.exceptions.NullInputDataException;
 import com.nokona.model.Employee;
 import com.nokona.model.Labels;
 import com.nokona.utilities.BarCodeUtilities;
-
 
 @Path("/employees")
 @PermitAll
@@ -32,12 +32,12 @@ public class NokonaEmployeeResource {
 	@Inject
 	private NokonaDatabaseEmp db;
 
-	public NokonaEmployeeResource()  {
+	public NokonaEmployeeResource() {
 
 	}
 
 	@GET
-	
+
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{empId}")
 	public Response getEmployee(@PathParam("empId") String empId) {
@@ -57,8 +57,9 @@ public class NokonaEmployeeResource {
 
 		return Response.status(200).entity(emp).build();
 	}
-@GET
-	
+
+	@GET
+
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/bykey/{key}")
 	public Response getEmployeeByKey(@PathParam("key") int key) {
@@ -150,6 +151,7 @@ public class NokonaEmployeeResource {
 		}
 
 	}
+
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/bykey/{key}")
@@ -181,6 +183,9 @@ public class NokonaEmployeeResource {
 
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + user + " not found\"}").build();
+		} catch (NullInputDataException ex) {
+			return Response.status(422).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (DatabaseException ex) {

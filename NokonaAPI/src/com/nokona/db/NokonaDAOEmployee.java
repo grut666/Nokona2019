@@ -97,7 +97,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 	}
 
 	@Override
-	public Employee getEmployee(String empID) throws DatabaseException {
+	public Employee getEmployee(String empID) throws DatabaseException, NullInputDataException {
 		if (empID == null) {
 			throw new NullInputDataException("empID cannot be null");
 		}
@@ -212,7 +212,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage());
+				throw new DatabaseException(e.getMessage()); 
 			}
 		}
 		try {

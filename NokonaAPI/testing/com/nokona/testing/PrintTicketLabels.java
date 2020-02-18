@@ -26,7 +26,7 @@ import com.nokona.utilities.BarCodeUtilities;
 
 public class PrintTicketLabels {
 
-	public static void main(String[] args) throws PrintException, IOException, DatabaseException, SQLException {
+	public static void main(String[] args) throws PrintException, IOException, DatabaseException, SQLException, NullInputDataException {
 		Connection conn;
 		NokonaDatabaseTicket db =  new NokonaDAOTicket("root", "xyz");
 		conn = db.getConn();

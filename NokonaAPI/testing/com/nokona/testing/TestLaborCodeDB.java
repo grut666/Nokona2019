@@ -63,7 +63,7 @@ class TestLaborCodeDB {
 		assertEquals(7, laborCode.getLaborCode());
 		assertEquals("CLICK LEATHER", laborCode.getDescription());
 		assertEquals(12, laborCode.getKey());
-		assertEquals(8.15, laborCode.getRate());
+		assertEquals(10.0, laborCode.getRate());
 
 	}
 	@Test
@@ -72,7 +72,7 @@ class TestLaborCodeDB {
 		assertEquals(7, laborCode.getLaborCode());
 		assertEquals("CLICK LEATHER", laborCode.getDescription());
 		assertEquals(12, laborCode.getKey());
-		assertEquals(8.15, laborCode.getRate());
+		assertEquals(10.0, laborCode.getRate());
 
 	}
 
@@ -92,7 +92,7 @@ class TestLaborCodeDB {
 	@Test
 	void testGetLaborCodesFromDB() throws DatabaseException {
 		List<LaborCode> laborCode = db.getLaborCodes();
-		assertEquals(18, laborCode.size());
+		assertEquals(17, laborCode.size());
 
 	}
 //

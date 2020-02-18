@@ -83,7 +83,7 @@ public class NokonaJobResource {
 			return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
 		}
 		try {
-			return Response.status(200).entity(db.updteJobHeader(jobHeaderIn)).build();
+			return Response.status(200).entity(db.updateJobHeader(jobHeaderIn)).build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {

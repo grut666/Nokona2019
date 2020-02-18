@@ -7,14 +7,14 @@ public class JobHeader {
 	private String description;
 	private int standardQuantity;
 	private JobType jobType;
-	private int key;
+	private long key;
 
 	public JobHeader() {
 
 	}
 
-	public JobHeader(String jobId, String description, int standardQuantity, JobType jobType, int key) {
-		this.seteJobId(jobId);
+	public JobHeader(String jobId, String description, int standardQuantity, JobType jobType, long key) {
+		this.setJobId(jobId);
 		this.setDescription(description);
 		this.setStandardQuantity(standardQuantity);
 		this.setJobType(jobType);
@@ -26,7 +26,7 @@ public class JobHeader {
 		return jobId;
 	}
 
-	public void seteJobId(String jobId) {
+	public void setJobId(String jobId) {
 		this.jobId = jobId;
 	}
 
@@ -54,11 +54,11 @@ public class JobHeader {
 		this.jobType = jobType;
 	}
 
-	public int getKey() {
+	public long getKey() {
 		return key;
 	}
 
-	public void setKey(int key) {
+	public void setKey(long key) {
 		this.key = key;
 	}
 

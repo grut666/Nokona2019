@@ -5,7 +5,7 @@ import com.nokona.model.JobHeader;
 public class JobFormatter {
 
 	public static JobHeader format(JobHeader jobHeader) {
-		jobHeader.seteJobId(formatJobId(jobHeader.getJobId()));
+		jobHeader.setJobId(formatJobId(jobHeader.getJobId()));
 		jobHeader.setDescription(formatDescription(jobHeader.getDescription()));
 		return jobHeader;
 	}

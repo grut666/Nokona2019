@@ -10,6 +10,7 @@ import com.nokona.data.NokonaDatabaseLaborCode;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
+import com.nokona.exceptions.InvalidInsertException;
 import com.nokona.formatter.LaborCodeFormatter;
 import com.nokona.model.LaborCode;
 import com.nokona.model.Operation;
@@ -32,7 +33,9 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 
 	PreparedStatement psDelLaborCodeByKey;
 	PreparedStatement psDelLaborCodeByLaborCode;
-
+	
+	PreparedStatement psMoveDeletedLaborCodeByLaborCode;
+	PreparedStatement psMoveDeletedLaborCodeByKey;
 	
 	@Override
 	public LaborCode getLaborCodeByKey(long key) throws DataNotFoundException {
@@ -89,7 +92,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 
 	@Override
 	public List<LaborCode> getLaborCodes() {
-		List<LaborCode> laborCodes = new ArrayList<LaborCode>();
+		List<LaborCode> laborCodes = new ArrayList<LaborCode>(); 
 		if (psGetLaborCodes == null) {
 			try {
 				psGetLaborCodes = conn.prepareStatement("Select * from LaborCode order by LaborCode");
@@ -196,6 +199,8 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 		if (psDelLaborCodeByKey == null) {
 			try {
 				psDelLaborCodeByKey = conn.prepareStatement("Delete From LaborCode where LaborCode.Key = ?");
+				psMoveDeletedLaborCodeByKey = conn.prepareStatement("INSERT INTO Deleted_LaborCode (Deleted_LaborCode.key, Description, LaborCode, LaborRate) " + 
+						"  SELECT Deleted_LaborCode.key, Description, LaborCode, LaborRate FROM LaborCode WHERE LaborCode.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -203,8 +208,13 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			}
 		}
 		try {
+			psMoveDeletedLaborCodeByKey.setLong(1, key);
+			int rowCount = psMoveDeletedLaborCodeByKey.executeUpdate();
+			if (rowCount == 0) {
+				throw new InvalidInsertException("LaborCode key "+ key + " could not be inserted into delete table");
+			}
 			psDelLaborCodeByKey.setLong(1, key);
-			int rowCount = psDelLaborCodeByKey.executeUpdate();
+			rowCount = psDelLaborCodeByKey.executeUpdate();
 
 			if (rowCount == 0) {
 				throw new DataNotFoundException("Error.  Delete Operation Key " + key + " failed");
@@ -221,6 +231,8 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 		if (psDelLaborCodeByLaborCode == null) {
 			try {
 				psDelLaborCodeByLaborCode = conn.prepareStatement("Delete From LaborCode where LaborCode = ?");
+				psMoveDeletedLaborCodeByLaborCode = conn.prepareStatement("INSERT INTO Deleted_LaborCode (Deleted_LaborCode.key, Description, LaborCode, LaborRate) " + 
+						"  SELECT Deleted_LaborCode.key, Description, LaborCode, LaborRate FROM LaborCode WHERE LaborCode = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -228,8 +240,13 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			}
 		}
 		try {
+			psMoveDeletedLaborCodeByLaborCode.setInt(1, laborCode);
+			int rowCount = psMoveDeletedLaborCodeByLaborCode.executeUpdate();
+			if (rowCount == 0) {
+				throw new InvalidInsertException("LaborCode LaborCode "+ laborCode + " could not be inserted into delete table");
+			}
 			psDelLaborCodeByLaborCode.setInt(1, laborCode);
-			int rowCount = psDelLaborCodeByLaborCode.executeUpdate();
+			rowCount = psDelLaborCodeByLaborCode.executeUpdate();
 
 			if (rowCount == 0) {
 				throw new DataNotFoundException("Error.  Delete Labor Code " + laborCode + " failed");

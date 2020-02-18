@@ -12,7 +12,7 @@ public interface NokonaDatabaseJob extends NokonaDatabase {
 	List<JobHeader> getJobHeaders() throws DatabaseException;
 	JobHeader getJobHeaderByKey(long key) throws DatabaseException;
 	JobHeader getJobHeader(String jobId) throws DatabaseException;
-	JobHeader updteJobHeader(JobHeader jobHeader) throws DatabaseException;
+	JobHeader updateJobHeader(JobHeader jobHeader) throws DatabaseException;
 	JobHeader addJobHeader(JobHeader jobHeader) throws DatabaseException;
 	
 	List<JobDetail> getJobDetails(String jobId) throws DatabaseException;

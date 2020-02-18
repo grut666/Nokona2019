@@ -10,6 +10,7 @@ import com.nokona.data.NokonaDatabaseOperation;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
+import com.nokona.exceptions.InvalidInsertException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.OperationFormatter;
 import com.nokona.model.Operation;
@@ -28,7 +29,11 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 	PreparedStatement psUpdateOperation;
 
 	PreparedStatement psDelOperationByKey;
-	PreparedStatement psDelOperationByOpId;
+	PreparedStatement psDelOperationByOpId; 
+	
+	PreparedStatement psMoveDeletedOperationByKey;
+	PreparedStatement psMoveDeletedOperationByOpCode;
+	
 
 	
 	@Override
@@ -196,6 +201,8 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 		if (psDelOperationByKey == null) {
 			try {
 				psDelOperationByKey = conn.prepareStatement("Delete From Operation where Operation.Key = ?");
+				psMoveDeletedOperationByKey = conn.prepareStatement("INSERT INTO Deleted_Operation (Operation.key, OpCode, Description, HourlyRateSAH, LaborCode, LastStudyYear) " + 
+						"  SELECT Operation.key, OpCode, Description, HourlyRateSAH, LaborCode, LastStudyYear FROM Employee WHERE Operation.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -203,8 +210,13 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			}
 		}
 		try {
+			psMoveDeletedOperationByKey.setLong(1, key);
+			int rowCount = psMoveDeletedOperationByKey.executeUpdate();
+			if (rowCount == 0) {
+				throw new InvalidInsertException("Operation key "+ key + " could not be inserted into delete table");
+			}
 			psDelOperationByKey.setLong(1, key);
-			int rowCount = psDelOperationByKey.executeUpdate();
+			rowCount = psDelOperationByKey.executeUpdate();
 
 			if (rowCount == 0) {
 				throw new DataNotFoundException("Error.  Delete Operation Key " + key + " failed");
@@ -217,13 +229,15 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 	}
 
 	@Override
-	public void deleteOperation(String opID) throws DatabaseException {
-		if (opID == null) {
+	public void deleteOperation(String opCode) throws DatabaseException {
+		if (opCode == null) {
 			throw new NullInputDataException("opID cannot be null");
 		}
 		if (psDelOperationByOpId == null) {
 			try {
 				psDelOperationByOpId = conn.prepareStatement("Delete From Operation where OpCode = ?");
+				psMoveDeletedOperationByOpCode = conn.prepareStatement("INSERT INTO Deleted_Operation (Operation.key, OpCode, Description, HourlyRateSAH, LaborCode, LastStudyYear) " + 
+						"  SELECT Operation.key, OpCode, Description, HourlyRateSAH, LaborCode, LastStudyYear FROM Employee WHERE OpCode = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -231,19 +245,23 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			}
 		}
 		try {
-			psDelOperationByOpId.setString(1, opID);
-			int rowCount = psDelOperationByOpId.executeUpdate();
+			psMoveDeletedOperationByOpCode.setString(1, opCode);
+			int rowCount = psMoveDeletedOperationByOpCode.executeUpdate();
+			if (rowCount == 0) {
+				throw new InvalidInsertException("Operation opCode "+ opCode + " could not be inserted into delete table");
+			}
+			psDelOperationByOpId.setString(1, opCode);
+			rowCount = psDelOperationByOpId.executeUpdate();
 
 			if (rowCount == 0) {
-				throw new DataNotFoundException("Error.  Delete Operation ID " + opID + " failed");
+				throw new DataNotFoundException("Error.  Delete Operation ID " + opCode + " failed");
 			}
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
 		}
-		
-		
+	
 	}
 	private Operation convertOperationFromResultSet(ResultSet rs) throws SQLException {
 		int key = rs.getInt("Key");

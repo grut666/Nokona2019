@@ -2,7 +2,6 @@ package com.nokona.model;
 
 import java.util.Date;
 
-import com.nokona.dto.TicketDTOIn;
 import com.nokona.enums.TicketStatus;
 
 public class TicketHeader {
@@ -17,8 +16,8 @@ public class TicketHeader {
 		this(-1, "", "", new Date(), TicketStatus.NEW, new Date(), 0);
 	}
 
-	public TicketHeader(TicketDTOIn ticketDTOIn) {
-		this(-1, ticketDTOIn.getJobId(), ticketDTOIn.getDescription(), new Date(), TicketStatus.NEW, new Date(), ticketDTOIn.getQuantity());
+	public TicketHeader(TicketHeader ticketHeader) {
+		this(-1, ticketHeader.getJobId(), ticketHeader.getDescription(), new Date(), TicketStatus.NEW, new Date(), ticketHeader.getQuantity());
 	}
 	public TicketHeader(long key, String jobId, String description, Date dateCreated, TicketStatus ticketStatus, Date dateStatus, int quantity) {
 		this.setKey(key);

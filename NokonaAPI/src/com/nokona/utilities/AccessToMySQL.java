@@ -40,11 +40,11 @@ public class AccessToMySQL {
 		while (rs.next()) {
 			System.out.println(rs.getString("TABLE_NAME"));
 		}
-		doEmployees();
-		doLaborCodes();
-		doOperations();
+//		doEmployees(); 
+//		doLaborCodes();
+//		doOperations();
 		doTickets();
-		doJobs();
+//		doJobs();
 		long endTime = System.currentTimeMillis();
 		try {
 			mySqlConn.close();
@@ -102,7 +102,7 @@ public class AccessToMySQL {
 
 	public static void doTickets() {
 		doTicketHeaders();
-		doTicketDetail();
+//		doTicketDetail();
 	}
 
 	private static void doTicketHeaders() {

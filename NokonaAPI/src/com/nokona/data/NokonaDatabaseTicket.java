@@ -2,7 +2,6 @@ package com.nokona.data;
 
 import java.util.List;
 
-import com.nokona.dto.TicketDTOIn;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.model.Ticket;
 import com.nokona.model.TicketDetail;
@@ -11,16 +10,15 @@ import com.nokona.model.TicketHeader;
 public interface NokonaDatabaseTicket extends NokonaDatabase {
 	
 	List<Ticket> getTickets() throws DatabaseException;
-	Ticket getTicketByKey(long headerKey) throws DatabaseException;
+	Ticket getTicketByKey(long key) throws DatabaseException;
 	List<Ticket> getTicketsByJob(String jobId) throws DatabaseException;
-	Ticket addTicket(TicketDTOIn dtoIn)  throws DatabaseException;
+	Ticket addTicket(TicketHeader ticketHeader)  throws DatabaseException;
 	Ticket updateTicket (Ticket ticket) throws DatabaseException;
 
-	Ticket deleteTicketByKey (long key) throws DatabaseException;
+	void deleteTicketByKey (long key) throws DatabaseException;
 	
 	List<TicketHeader> getTicketHeaders() throws DatabaseException;
 	TicketHeader getTicketHeaderByKey(long headerKey) throws DatabaseException;
-	
 	List<TicketDetail> getTicketDetailsByKey(long headerKey) throws DatabaseException;
 
 }

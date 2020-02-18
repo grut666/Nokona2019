@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.nokona.data.NokonaDatabaseJob;
@@ -12,13 +11,12 @@ import com.nokona.enums.JobType;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
+import com.nokona.exceptions.InvalidInsertException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.JobFormatter;
-import com.nokona.model.Employee;
 import com.nokona.model.Job;
 import com.nokona.model.JobDetail;
 import com.nokona.model.JobHeader;
-import com.nokona.utilities.DateUtilities;
 import com.nokona.validator.JobValidator;
 
 public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
@@ -42,6 +40,15 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
 	PreparedStatement psDelJobByKey;
 	PreparedStatement psDelJobByJobId;
+	
+	PreparedStatement psDelJobDetailByKey;
+	PreparedStatement psDelJobDetailByJobId;
+	
+	PreparedStatement psMoveDeletedJobByJobId;
+	PreparedStatement psMoveDeletedJobByKey;
+	
+	PreparedStatement psMoveDeletedJobDetailByJobId;
+	PreparedStatement psMoveDeletedJobDetailByKey;
 
 	@Override
 	public JobHeader getJobHeaderByKey(long key) throws DataNotFoundException {
@@ -50,7 +57,6 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			try {
 
 				psGetJobHeaderByKey = conn.prepareStatement("Select * from JobHeader where JobHeader.Key = ?");
-
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -124,7 +130,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	}
 
 	@Override
-	public JobHeader updteJobHeader(JobHeader jobHeaderIn) throws DatabaseException {
+	public JobHeader updateJobHeader(JobHeader jobHeaderIn) throws DatabaseException {
 
 		if (psUpdateJobHeader == null) {
 			try {
@@ -147,7 +153,6 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			psUpdateJobHeader.setString(2, formattedJobHeader.getDescription());
 			psUpdateJobHeader.setInt(3, formattedJobHeader.getStandardQuantity());
 			psUpdateJobHeader.setString(4, formattedJobHeader.getJobType().getJobType());
-
 			psUpdateJobHeader.setLong(5, formattedJobHeader.getKey());
 			int rowCount = psUpdateJobHeader.executeUpdate();
 
@@ -215,10 +220,10 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
 			}
-			Employee newEmp = new Employee();
+			JobHeader newJobHeader = new JobHeader();
 			try (ResultSet generatedKeys = psAddJobHeader.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
-					newEmp.setKey(generatedKeys.getLong(1));
+					newJobHeader.setKey(generatedKeys.getInt(1));
 					return getJobHeaderByKey(generatedKeys.getLong(1));
 				} else {
 					throw new SQLException("Creating user failed, no ID obtained.");
@@ -230,12 +235,14 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		}
 	}
 
-	@Override
+	@Override 
 	public void deleteJobByKey(long key) throws DatabaseException {
 
 		if (psDelJobByKey == null) {
 			try {
-				psDelJobByKey = conn.prepareStatement("Delete From Job where Job.Key = ?");
+				psDelJobByKey = conn.prepareStatement("Delete From JobHeader where Job.Key = ?");
+				psMoveDeletedJobByKey = conn.prepareStatement("INSERT INTO Deleted_JobHeader (Deleted_JobHeader.key, JobId, Description, StandardQuantity, Type) " + 
+						"  SELECT JobHeader.key, JobId, Description, StandardQuantity, Type FROM JobHeader WHERE Deleted_JobHeader.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -243,12 +250,18 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			}
 		}
 		try {
+			psMoveDeletedJobByKey.setLong(1, key);
+			int rowCount = psMoveDeletedJobByKey.executeUpdate();
+			if (rowCount == 0) {
+				throw new InvalidInsertException("JobHeader key "+ key + " could not be inserted into delete table");
+			}
 			psDelJobByKey.setLong(1, key);
-			int rowCount = psDelJobByKey.executeUpdate();
+			rowCount = psDelJobByKey.executeUpdate();
 
 			if (rowCount == 0) {
-				throw new DataNotFoundException("Error.  Delete Job key " + key + " failed");
+				throw new DataNotFoundException("Error.  Delete JobHeader key " + key + " failed");
 			}
+			deleteJobDetailsByKey(key);
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -260,11 +273,13 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	@Override
 	public void deleteJob(String jobId) throws DatabaseException {
 		if (jobId == null) {
-			throw new NullInputDataException("empID cannot be null");
+			throw new NullInputDataException("jobID cannot be null");
 		}
 		if (psDelJobByJobId == null) {
 			try {
-				psDelJobByJobId = conn.prepareStatement("Delete From Job where JobID = ?");
+				psDelJobByJobId = conn.prepareStatement("Delete From JobHeader where JobID = ?");
+				psMoveDeletedJobByJobId = conn.prepareStatement("INSERT INTO Deleted_JobHeader (Deleted_JobHeader.key, JobId, Description, StandardQuantity, Type) " + 
+						"  SELECT JobHeader.key, JobId, Description, StandardQuantity, Type FROM JobHeader WHERE JobId = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -272,11 +287,81 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			}
 		}
 		try {
+			psMoveDeletedJobByJobId.setString(1, jobId);
+			int rowCount = psMoveDeletedJobByJobId.executeUpdate();
+			if (rowCount == 0) {
+				throw new InvalidInsertException("JobHeader JobId "+ jobId + " could not be inserted into delete table");
+			}
 			psDelJobByJobId.setString(1, jobId);
-			int rowCount = psDelJobByJobId.executeUpdate();
+			rowCount = psDelJobByJobId.executeUpdate();
 
 			if (rowCount == 0) {
-				throw new DataNotFoundException("Error.  Delete Emp ID " + jobId + " failed");
+				throw new DataNotFoundException("Error.  Delete JobHeader JobID " + jobId + " failed");
+			}
+			deleteJobDetailsByJobId(jobId);
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage(), e);
+		}
+	}
+
+	private void deleteJobDetailsByKey(long key) throws DatabaseException {
+
+		if (psDelJobDetailByKey == null) {
+			try {
+				psDelJobDetailByKey = conn.prepareStatement("Delete From JobDetail where key = ?");
+				psMoveDeletedJobDetailByKey = conn.prepareStatement("INSERT INTO Deleted_JobDetail (Deleted_JobDetail.key, JobId, OpCode, Sequence) " + 
+						"  SELECT JobDetail.key, JobId, OpCode, Sequence FROM JobDetail WHERE JobDetail.Key = ?");
+
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DatabaseException(e.getMessage());
+			}
+		}
+		try {
+			psMoveDeletedJobDetailByKey.setLong(1, key);
+			int rowCount = psMoveDeletedJobDetailByKey.executeUpdate();
+			if (rowCount == 0) {
+				throw new InvalidInsertException("JobDetail Key "+ key + " could not be inserted into delete table");
+			}
+			psDelJobDetailByKey.setLong(1, key);
+			rowCount = psDelJobDetailByKey.executeUpdate();
+
+			if (rowCount == 0) {
+				throw new DataNotFoundException("Error.  Delete JobDetail Key " + key + " failed");
+			}
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage(), e);
+		}
+	}
+
+	private void deleteJobDetailsByJobId(String jobId) throws DatabaseException {
+
+		if (psDelJobDetailByKey == null) {
+			try {
+				psDelJobDetailByKey = conn.prepareStatement("Delete From JobDetail where key = ?");
+				psMoveDeletedJobDetailByJobId = conn.prepareStatement("INSERT INTO Deleted_JobDetail (Deleted_JobDetail.key, JobId, OpCode, Sequence) " + 
+						"  SELECT JobDetail.key, JobId, OpCode, Sequence FROM JobDetail WHERE JobId = ?");
+
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DatabaseException(e.getMessage());
+			}
+		}
+		try {
+			psMoveDeletedJobDetailByJobId.setString(1, jobId);
+			int rowCount = psMoveDeletedJobDetailByJobId.executeUpdate();
+			if (rowCount == 0) {
+				throw new InvalidInsertException("JobDetail  JobId "+ jobId + " could not be inserted into delete table");
+			}
+			psDelJobDetailByKey.setString(1, jobId);
+			rowCount = psDelJobDetailByKey.executeUpdate();
+
+			if (rowCount == 0) {
+				throw new DataNotFoundException("Error.  JobDetail  " + jobId + " failed");
 			}
 
 		} catch (SQLException e) {
@@ -351,7 +436,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		String jobId = rs.getString("JobID");
 		String description = rs.getString("Description");
 
-		int standardQuantity = rs.getInt("standardQuantity");		
+		int standardQuantity = rs.getInt("standardQuantity");
 		String jobTypeString = rs.getString("Type");
 		JobType jobType = JobType.UNKNOWN;
 		if ("B".equals(jobTypeString) || "S".equals(jobTypeString)) {

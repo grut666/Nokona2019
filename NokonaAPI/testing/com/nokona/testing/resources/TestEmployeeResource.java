@@ -34,7 +34,7 @@ class TestEmployeeResource {
 
 	@Test
 	public void testEmployeeGoodGet() throws DatabaseException {
-		Mockito.when(db.getEmployee(Mockito.anyString()))
+		Mockito.when(db.getEmployee(Mockito.anyString())) 
 				.thenReturn(new Employee(167, "MOLSBEE", "MARY N.", 8654, 7, "MOL20", false));
 		assertEquals("MARY N.", ((Employee) (empResource.getEmployee("MOL20").getEntity())).getFirstName());
 	}

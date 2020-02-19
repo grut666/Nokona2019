@@ -1,4 +1,4 @@
-package com.nokona.testing;
+package com.nokona.testing.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

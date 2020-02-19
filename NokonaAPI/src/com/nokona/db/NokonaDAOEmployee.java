@@ -49,7 +49,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 	@Override
 	public List<Employee> getEmployees() throws DatabaseException {
 		List<Employee> employees = new ArrayList<Employee>();
-		if (psGetEmployees == null) {
+		if (psGetEmployees == null) { 
 			try {
 				psGetEmployees = getConn().prepareStatement("Select * from Employee order by EmpID");
 
@@ -107,7 +107,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 				psGetEmployeeByEmpId = conn.prepareStatement("Select * from Employee where Employee.EmpID = ?");
 
 			} catch (SQLException e) {
-				throw new DatabaseException(e.getMessage(), e);
+				throw new DatabaseException(e.getMessage(), e); 
 			}
 		}
 		try {

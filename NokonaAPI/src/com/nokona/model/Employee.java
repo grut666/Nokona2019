@@ -10,7 +10,7 @@ public class Employee {
 	boolean active;
 	
 	public Employee() {
-		this(-1, "", "", -1, -1, "", false);
+		this(-1, "", "", 0, 0, "", false);
 	}
 	public Employee(int key, String lastName, String firstName, int barCodeID, int laborCode, String empId, boolean active) {
 		this.setKey(key);

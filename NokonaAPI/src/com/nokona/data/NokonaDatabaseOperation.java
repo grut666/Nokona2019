@@ -5,7 +5,7 @@ import java.util.List;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.model.Operation;
 
-public interface NokonaDatabaseOperation  {
+public interface NokonaDatabaseOperation extends NokonaDatabase {
 
 	Operation getOperationByKey(long key) throws DatabaseException;
 	Operation getOperation(String operationIn) throws DatabaseException;

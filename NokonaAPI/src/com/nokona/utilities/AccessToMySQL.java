@@ -40,11 +40,11 @@ public class AccessToMySQL {
 		while (rs.next()) {
 			System.out.println(rs.getString("TABLE_NAME"));
 		}
-//		doEmployees(); 
-//		doLaborCodes();
-//		doOperations();
+		doEmployees(); 
+		doLaborCodes();
+		doOperations();
 		doTickets();
-//		doJobs();
+		doJobs();
 		long endTime = System.currentTimeMillis();
 		try {
 			mySqlConn.close();
@@ -102,7 +102,7 @@ public class AccessToMySQL {
 
 	public static void doTickets() {
 		doTicketHeaders();
-//		doTicketDetail();
+		doTicketDetail();
 	}
 
 	private static void doTicketHeaders() {
@@ -130,8 +130,8 @@ public class AccessToMySQL {
 
 
 			while (rs.next()) {
-				String record = rs.getInt(key) + "~" + rs.getString(job) + "~" + rs.getDate(dateCreated) + "~"
-						+ rs.getString(status) + "~" + rs.getDate(dateOfStatus) + "~" + rs.getInt(quantity);
+				String record = rs.getInt(key) + "~" + rs.getString(job).trim() + "~" + rs.getDate(dateCreated) + "~"
+						+ rs.getString(status).trim() + "~" + rs.getDate(dateOfStatus) + "~" + rs.getInt(quantity);
 				System.out.println(record);
 				recordsIn.add(record);
 			}
@@ -230,8 +230,8 @@ public class AccessToMySQL {
 
 
 			while (rs.next()) {
-				String record = rs.getInt(key) + "~" + rs.getString(operation) + "~" + rs.getInt(sequence) + "~"
-						+ rs.getDate(statusDate) + "~" + rs.getString(status) + "~" + rs.getInt(quantity) + "~" 
+				String record = rs.getInt(key) + "~" + rs.getString(operation).trim() + "~" + rs.getInt(sequence) + "~"
+						+ rs.getDate(statusDate) + "~" + rs.getString(status).trim() + "~" + rs.getInt(quantity) + "~" 
 						+ rs.getDouble(rate) +  "~" + rs.getInt(barCodeId) + "~" + rs.getDouble(laborRate);
 
 				System.out.println(record);
@@ -341,8 +341,8 @@ public class AccessToMySQL {
 			String stdquantity = rsmd.getColumnName(5);
 
 			while (rs.next()) {
-				String record = rs.getInt(key) + "~" + rs.getString(job) + "~" + rs.getString(description) + "~"
-						+ rs.getString(category) + "~" + rs.getInt(stdquantity);
+				String record = rs.getInt(key) + "~" + rs.getString(job).trim() + "~" + rs.getString(description).trim() + "~"
+						+ rs.getString(category).trim() + "~" + rs.getInt(stdquantity);
 				System.out.println(record);
 				recordsIn.add(record);
 			}
@@ -435,7 +435,7 @@ public class AccessToMySQL {
 			String sequence = rsmd.getColumnName(3);
 
 			while (rs.next()) {
-				String record = rs.getString(jobid) + "~" + rs.getString(operation) + "~" + rs.getLong(sequence);
+				String record = rs.getString(jobid).trim() + "~" + rs.getString(operation).trim() + "~" + rs.getLong(sequence);
 				System.out.println(record);
 				recordsIn.add(record);
 			}
@@ -520,8 +520,8 @@ public class AccessToMySQL {
 			String active = rsmd.getColumnName(7);
 			//
 			while (rs.next()) {
-				String record = rs.getInt(key) + "~" + rs.getString(lastName) + "~" + rs.getString(firstName) + "~"
-						+ rs.getInt(barCodeId) + "~" + rs.getString(laborCode) + "~" + rs.getString(empId) + "~"
+				String record = rs.getInt(key) + "~" + rs.getString(lastName).trim() + "~" + rs.getString(firstName).trim() + "~"
+						+ rs.getInt(barCodeId) + "~" + rs.getInt(laborCode) + "~" + rs.getString(empId).trim() + "~"
 						+ rs.getString(active);
 				System.out.println(record);
 				recordsIn.add(record);
@@ -610,7 +610,7 @@ public class AccessToMySQL {
 			String key = rsmd.getColumnName(4);
 
 			while (rs.next()) {
-				String record = rs.getInt(laborCode) + "~" + rs.getString(description) + "~" + rs.getDouble(laborRate)
+				String record = rs.getInt(laborCode) + "~" + rs.getString(description).trim() + "~" + rs.getDouble(laborRate)
 						+ "~" + rs.getInt(key);
 				System.out.println(record);
 				recordsIn.add(record);
@@ -692,7 +692,7 @@ public class AccessToMySQL {
 			// LaborCode - 5
 			// Key - 4
 			// LastStudyYear - 5
-			String opCode = rsmd.getColumnName(1);
+			String opCode = rsmd.getColumnName(1); 
 			String description = rsmd.getColumnName(2);
 			String hourlyRateSAH = rsmd.getColumnName(3);
 			String laborCode = rsmd.getColumnName(4);
@@ -701,7 +701,7 @@ public class AccessToMySQL {
 
 			//
 			while (rs.next()) {
-				String record = rs.getString(opCode) + "~" + rs.getString(description) + "~"
+				String record = rs.getString(opCode).trim() + "~" + rs.getString(description).trim() + "~"
 						+ rs.getDouble(hourlyRateSAH) + "~" + rs.getInt(laborCode) + "~" + rs.getInt(key) + "~"
 						+ rs.getInt(lastStudyYear);
 				;

@@ -1,4 +1,4 @@
-package com.nokona.testing;
+package com.nokona.testing.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,22 +9,15 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.db.NokonaDAOEmployee;
 import com.nokona.exceptions.DataNotFoundException;
-import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.model.Employee;
-
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 class TestEmployeeDB {
 	private static Connection conn;
@@ -47,12 +40,12 @@ class TestEmployeeDB {
 		Employee emp = new Employee();
 		assertEquals("", emp.getLastName());
 		assertEquals("", emp.getFirstName());
-		assertEquals(-1, emp.getBarCodeID());
+		assertEquals(0, emp.getBarCodeID());
 		assertEquals(-1, emp.getKey());
 		assertEquals("", emp.getEmpId());
-		assertEquals(-1, emp.getLaborCode());
+		assertEquals(0, emp.getLaborCode());
 		assertEquals(false, emp.isActive());
-		assertEquals("Employee [key=-1, lastName=, firstName=, barCodeID=-1, laborCode=-1, empId=, active=false]",
+		assertEquals("Employee [key=-1, lastName=, firstName=, barCodeID=0, laborCode=0, empId=, active=false]",
 				emp.toString());
 	}
 
@@ -114,9 +107,7 @@ class TestEmployeeDB {
 	@Test
 	void testGetEmployeeFromDBException() {
 
-		Assertions.assertThrows(DataNotFoundException.class, () -> {
-			db.getEmployee("HITLER");
-		});
+		
 		Assertions.assertThrows(NullInputDataException.class, () -> {
 			db.getEmployee(null);
 		});
@@ -164,7 +155,7 @@ class TestEmployeeDB {
 	}
 
 	@Test
-	void testDeleteEmployeeNullException() throws DatabaseException {
+	void testDeleteDataNotFoundException() throws DatabaseException {
 		Assertions.assertThrows(DataNotFoundException.class, () -> {
 			db.deleteEmployeeByKey(666666);
 		});
@@ -181,11 +172,11 @@ class TestEmployeeDB {
 
 	@Test
 	void testAddEmployee() throws DatabaseException {
+		Employee emp = new Employee(0, "Wonka", "Willie", 9999, 7, "Z99", true);
 		List<Employee> employees = db.getEmployees();
 		int startingCount = employees.size();
-		db.deleteEmployeeByKey(562);
-		assertEquals(startingCount - 1, db.getEmployees().size());
-
+		db.addEmployee(emp);
+		assertEquals(startingCount + 1, db.getEmployees().size());
 	}
 
 	@Test

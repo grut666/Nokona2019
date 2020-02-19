@@ -45,7 +45,7 @@ public class NokonaEmployeeResource {
 		Employee emp;
 
 		try {
-			emp = db.getEmployee(empId);
+			emp = db.getEmployee(empId); 
 
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + empId + " not found\"}").build();

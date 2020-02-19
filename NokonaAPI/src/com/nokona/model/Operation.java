@@ -7,27 +7,22 @@ public class Operation {
 	private double hourlyRateSAH;
 	private int laborCode;
 	private int lastStudyYear;
-	private boolean active;
+
 	
 	public Operation() {
-		this("", "", 0, 0, 0, 0, false);
+		this("", "", 0, 0, -1, 0);
 	}
-	public Operation(String opCode, String description, double hourlyRateSAH, int laborCode, long key, int lastStudyYear, boolean active) {
+	public Operation(String opCode, String description, double hourlyRateSAH, int laborCode, long key, int lastStudyYear) {
 		this.setOpCode(opCode);
 		this.setDescription(description);
 		this.setHourlyRateSAH(hourlyRateSAH);
 		this.setLaborCode(laborCode);
 		this.setKey(key);
 		this.setLastStudyYear(lastStudyYear);
-		this.setActive(active);
+
 		
 	}
-	public boolean isActive() {
-		return active;
-	}
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+
 	public String getOpCode() {
 		return opCode;
 	}
@@ -64,5 +59,11 @@ public class Operation {
 	public void setLastStudyYear(int lastStudyYear) {
 		this.lastStudyYear = lastStudyYear;
 	}
+	@Override
+	public String toString() {
+		return "Operation [key=" + key + ", opCode=" + opCode + ", description=" + description + ", hourlyRateSAH="
+				+ hourlyRateSAH + ", laborCode=" + laborCode + ", lastStudyYear=" + lastStudyYear + "]";
+	}
+	
 	
 }

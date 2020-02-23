@@ -40,9 +40,9 @@ public class AccessToMySQL {
 		while (rs.next()) {
 			System.out.println(rs.getString("TABLE_NAME"));
 		}
-		doEmployees(); 
-		doLaborCodes();
-		doOperations();
+//		doEmployees(); 
+//		doLaborCodes();
+//		doOperations();
 		doTickets();
 		doJobs();
 		long endTime = System.currentTimeMillis();
@@ -53,6 +53,14 @@ public class AccessToMySQL {
 			System.err.println("Close failed: " + e.getMessage());
 		}
 		System.out.println("Total time is " + (endTime - startTime));
+	}
+	public static void doTickets() {
+		doTicketHeaders();
+		doTicketDetail();
+	}
+	public static void doJobs() {
+		doJobHeaders();
+		doJobDetails();
 	}
 
 	public static void connect() {
@@ -100,10 +108,7 @@ public class AccessToMySQL {
 
 	}
 
-	public static void doTickets() {
-		doTicketHeaders();
-		doTicketDetail();
-	}
+
 
 	private static void doTicketHeaders() {
 		try {
@@ -270,7 +275,7 @@ public class AccessToMySQL {
 //			Bar Code ID - 5
 //			LaborRate - 3
 			psInsert = mySqlConn.prepareStatement(
-					"Insert into TicketDetail (TicketDetail.Key, Operation, Sequence, StatusDate, Status, Quantity, HourlyRateSAH, BarCodeID, LaborRate, UpdatedSequence) "
+					"Insert into TicketDetail (TicketDetail.Key, OpCode, Sequence, StatusDate, Status, Quantity, HourlyRateSAH, BarCodeID, LaborRate, UpdatedSequence) "
 							+ "values (?,?,?,?,?,?,?,?,?,?)");
 			for (String record : recordsIn) {
 				System.out.println(record);
@@ -314,15 +319,12 @@ public class AccessToMySQL {
 
 	}
 
-	public static void doJobs() {
-		doJobHeaders();
-		doJobDetails();
-	}
+
 
 	private static void doJobHeaders() {
 		try {
 			recordsIn = new ArrayList<>();
-			psSelect = accessConn.prepareStatement("Select Job.key, jobcode, description, category, stdquantity from Job Order By Job.Key");
+			psSelect = accessConn.prepareStatement("Select Job.key, jobcode, upper(description), category, stdquantity from Job Order By Job.Key");
 			ResultSet rs = psSelect.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();

@@ -135,7 +135,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		if (psUpdateJobHeader == null) {
 			try {
 				psUpdateJobHeader = conn.prepareStatement(
-						"Update JobHeader Set jobId = ?, Description = ?, StandardQuantity = ?, Type = ? "
+						"Update JobHeader Set jobId = ?, Description = ?, StandardQuantity = ?, JobType = ? "
 								+ "WHERE JobHeader.KEY = ?");
 
 			} catch (SQLException e) {
@@ -197,7 +197,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		if (psAddJobHeader == null) {
 			try {
 				psAddJobHeader = conn.prepareStatement(
-						"Insert into JobHeader (JobId, Description, StandardQuantity, Type) values (?,?,?,?)",
+						"Insert into JobHeader (JobId, Description, StandardQuantity, JobType) values (?,?,?,?)",
 						PreparedStatement.RETURN_GENERATED_KEYS);
 
 			} catch (SQLException e) {
@@ -241,8 +241,8 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		if (psDelJobByKey == null) {
 			try {
 				psDelJobByKey = conn.prepareStatement("Delete From JobHeader where Job.Key = ?");
-				psMoveDeletedJobByKey = conn.prepareStatement("INSERT INTO Deleted_JobHeader (Deleted_JobHeader.key, JobId, Description, StandardQuantity, Type) " + 
-						"  SELECT JobHeader.key, JobId, Description, StandardQuantity, Type FROM JobHeader WHERE Deleted_JobHeader.Key = ?");
+				psMoveDeletedJobByKey = conn.prepareStatement("INSERT INTO Deleted_JobHeader (Deleted_JobHeader.key, JobId, Description, StandardQuantity, JobType) " + 
+						"  SELECT JobHeader.key, JobId, Description, StandardQuantity, JobType FROM JobHeader WHERE Deleted_JobHeader.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -278,8 +278,8 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		if (psDelJobByJobId == null) {
 			try {
 				psDelJobByJobId = conn.prepareStatement("Delete From JobHeader where JobID = ?");
-				psMoveDeletedJobByJobId = conn.prepareStatement("INSERT INTO Deleted_JobHeader (Deleted_JobHeader.key, JobId, Description, StandardQuantity, Type) " + 
-						"  SELECT JobHeader.key, JobId, Description, StandardQuantity, Type FROM JobHeader WHERE JobId = ?");
+				psMoveDeletedJobByJobId = conn.prepareStatement("INSERT INTO Deleted_JobHeader (Deleted_JobHeader.key, JobId, Description, StandardQuantity, JobType) " + 
+						"  SELECT JobHeader.key, JobId, Description, StandardQuantity, JobType FROM JobHeader WHERE JobId = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -437,7 +437,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		String description = rs.getString("Description");
 
 		int standardQuantity = rs.getInt("standardQuantity");
-		String jobTypeString = rs.getString("Type");
+		String jobTypeString = rs.getString("JobType");
 		JobType jobType = JobType.UNKNOWN;
 		if ("B".equals(jobTypeString) || "S".equals(jobTypeString)) {
 			jobType = JobType.valueOf(jobTypeString);

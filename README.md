@@ -246,7 +246,6 @@ Body:
         "hourlyRateSAH": 0.0036,\
         "description": "SPLIT LINING                  CATCHERS MITT                 ",\
         "laborCode": 7,\
-        "active": false,\
         "opCode": "Z97",\
         "key": 12791\
     },\
@@ -255,7 +254,6 @@ Body:
         "hourlyRateSAH": 0.04,\
         "description": "STAMP PALM                    CATCHERS MITT                 ",\
         "laborCode": 7,\
-        "active": false,\
         "opCode": "Z98",\
         "key": 12792\
     },\
@@ -264,7 +262,6 @@ Body:
         "hourlyRateSAH": 0.06,\
         "description": "STAMP MITT                                                  ",\
         "laborCode": 7,\
-        "active": false,\
         "opCode": "ZA3",\
         "key": 12796\
     }\
@@ -279,7 +276,6 @@ Body:
         "hourlyRateSAH": 0.04,\
         "description": "STAMP PALM                    CATCHERS MITT                 ",\
         "laborCode": 7,\
-        "active": false,\
         "opCode": "Z98",\
         "key": 12792\
 }
@@ -292,7 +288,6 @@ Body:
     "hourlyRateSAH": 0.0033,\
     "description": "CLICK GENUINE BLACK SHEEP - WRIST",\
     "laborCode": 7,\
-    "active": false,\
     "opCode": "B21B",\
     "key": 13315\
 }
@@ -305,7 +300,6 @@ Body:
     "hourlyRateSAH": 0.0036,\
     "description": "CLICK GENUINE WHITE SHEEP - WRIST",\
     "laborCode": 7,\
-    "active": false,\
     "opCode": "B21B",\
     "key": 13315\
 }
@@ -315,7 +309,6 @@ Body:
     "hourlyRateSAH": 0.0036,\
     "description": "CLICK GENUINE WHITE SHEEP - WRIST",\
     "laborCode": 7,\
-    "active": false,\
     "opCode": "B21B",\
     "key": 13315\
 }
@@ -328,7 +321,6 @@ Body:
     "hourlyRateSAH": 0.0033,\
     "description": "TEST Operation",\
     "laborCode": 7,\
-    "active": false,\
     "opCode": "XYZ2",\
     "key": 0\
 }
@@ -339,7 +331,6 @@ Body:
     "hourlyRateSAH": 0.0033,\
     "description": "TEST Operation",\
     "laborCode": 7,\
-    "active": false,\
     "opCode": "XYZ2",\
     "key": 13343\
 }
@@ -501,7 +492,7 @@ Body:
 }
 ### Get /jobs/jobdetails/{jobId} # Get a List of Job Detail records by unique jobId
 #### In
-/jobs/jobdetails/BC-1200C-RH
+/jobs/jobdetails/BC-1150M-LH
 #### Out
 [\
     {\

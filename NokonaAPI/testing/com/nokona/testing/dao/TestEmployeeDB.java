@@ -45,7 +45,8 @@ class TestEmployeeDB {
 		assertEquals("", emp.getEmpId());
 		assertEquals(0, emp.getLaborCode());
 		assertEquals(false, emp.isActive());
-		assertEquals("Employee [key=-1, lastName=, firstName=, barCodeID=0, laborCode=0, empId=, active=false]",
+		assertEquals(
+				"Employee(key=-1, lastName=, firstName=, barCodeID=0, laborCode=0, empId=, active=false)",
 				emp.toString());
 	}
 
@@ -60,10 +61,9 @@ class TestEmployeeDB {
 		assertEquals(7, emp.getLaborCode());
 		assertEquals(false, emp.isActive());
 		assertEquals(
-				"Employee [key=167, lastName=MOLSBEE, firstName=MARY N., barCodeID=8654, laborCode=7, empId=MOL20, active=false]",
+				"Employee(key=167, lastName=MOLSBEE, firstName=MARY N., barCodeID=8654, laborCode=7, empId=MOL20, active=false)",
 				emp.toString());
 	}
-
 	@Test
 	void testGetEmployeeFullArgumentsLowerCase() throws DatabaseException {
 		Employee emp = new Employee(6666, "molsbee", "mary n.", 9999, 7, "xxxx20", false);
@@ -88,7 +88,7 @@ class TestEmployeeDB {
 		assertEquals(7, emp.getLaborCode());
 		assertEquals(false, emp.isActive());
 		assertEquals(
-				"Employee [key=167, lastName=MOLSBEE, firstName=MARY N., barCodeID=8654, laborCode=7, empId=MOL20, active=false]",
+				"Employee(key=167, lastName=MOLSBEE, firstName=MARY N., barCodeID=8654, laborCode=7, empId=MOL20, active=false)",
 				emp.toString());
 	}
 
@@ -106,8 +106,6 @@ class TestEmployeeDB {
 
 	@Test
 	void testGetEmployeeFromDBException() {
-
-		
 		Assertions.assertThrows(NullInputDataException.class, () -> {
 			db.getEmployee(null);
 		});
@@ -210,7 +208,5 @@ class TestEmployeeDB {
 			db.addEmployee(null);
 		});
 	}
-
-
 
 }

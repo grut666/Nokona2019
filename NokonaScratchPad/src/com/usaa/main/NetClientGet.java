@@ -66,8 +66,8 @@ public class NetClientGet {
 				ccResponse += input;
 			}
 			TimeUnit.MILLISECONDS.sleep(2000);
-			//return ccResponse;
-			return "YO";
+			return ccResponse;
+			//return "YO";
 		};
 		Callable<String> callableTask2 = () -> {
 			System.out.println("Starting 2");
@@ -77,8 +77,8 @@ public class NetClientGet {
 				ccResponse += input;
 			}
 			TimeUnit.MILLISECONDS.sleep(2000);
-//			return ccResponse;
-			return "YEE";
+			return ccResponse;
+	//		return "YEE";
 
 		};
 		List<Callable<String>> callables = new ArrayList<>();

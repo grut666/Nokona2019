@@ -69,7 +69,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			try {
 				psGetTickets = getConn().prepareStatement(
 						"Select * from ticketheader join ticketdetail on ticketheader.key = ticketdetail.key "
-								+ "order by ticketheader.key, sequenceOriginal");
+								+ "order by ticketheader.key, sequence");
 
 			} catch (SQLException e) {
 				throw new DatabaseException(e.getMessage(), e);
@@ -93,9 +93,9 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			try {
 				psGetTicketByKey = conn.prepareStatement(
 						"Select * from ticketheader join ticketdetail on ticketheader.key = ticketdetail.key  "
-								+ "join operation on operation = opcode "
-								+ "join job on ticketheader.jobid = job.jobid "
-								+ "where ticketheader.key = ? order by sequenceOriginal");
+								+ "join operation on ticketdetail.opcode = operation.opcode "
+								+ "join jobheader on ticketheader.jobid = jobheader.jobid "
+								+ "where ticketheader.key = ? order by sequence");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -372,7 +372,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			try {
 				psGetTicketDetails = conn
 						.prepareStatement("Select * from ticketdetail join operation on operation = opcode "
-								+ "where ticketdetail.key = ? order by sequenceOriginal");
+								+ "where ticketdetail.key = ? order by sequence");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -406,8 +406,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 
 		int key = rs.getInt("Key");
 		String jobId = rs.getString("JobID"); //
-		String description = rs.getString("Job.Description");
-		Date dateCreated = DateUtilities.convertSQLDateToUtilDate(rs.getDate("DateCreated"));
+		String description = rs.getString("JobHeader.Description");
+		Date createdDate = DateUtilities.convertSQLDateToUtilDate(rs.getDate("CreatedDate"));
 		Date dateStatus = DateUtilities.convertSQLDateToUtilDate(rs.getDate("StatusDate"));
 		String ticketStatusString = rs.getString("Status");
 		TicketStatus ticketStatus = TicketStatus.NEW;
@@ -416,14 +416,14 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		}
 		int quantity = rs.getInt("Quantity");
 		return TicketHeaderFormatter
-				.format(new TicketHeader(key, jobId, description, dateCreated, ticketStatus, dateStatus, quantity));
+				.format(new TicketHeader(key, jobId, description, createdDate, ticketStatus, dateStatus, quantity));
 	}
 
 	private TicketDetail convertTicketDetailFromResultSet(ResultSet rs) throws SQLException {
 		long key = rs.getInt("Key");
-		String operation = rs.getString("operation");
-		int sequenceOriginal = rs.getInt("SequenceOriginal");
-		int sequenceUpdated = rs.getInt("UpdatedSequence");
+		String opCode = rs.getString("opCode");
+		int sequence = rs.getInt("Sequence");
+		int updatedSequence = rs.getInt("UpdatedSequence");
 		Date statusDate = DateUtilities.convertSQLDateToUtilDate(rs.getDate("StatusDate"));
 		String operationStatusString = rs.getString("Status");
 		String operationDescription = rs.getString("Operation.Description");
@@ -435,8 +435,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 
 		int barCodeID = rs.getInt("BarCodeID");
 		double hourlyRateSAH = rs.getDouble("HourlyRateSAH");
-		TicketDetail td = new TicketDetail(key, operation, operationDescription, operationStatus, sequenceOriginal,
-				sequenceUpdated, statusDate, quantity, hourlyRateSAH, barCodeID);
+		TicketDetail td = new TicketDetail(key, opCode, operationDescription, operationStatus, sequence,
+				updatedSequence, statusDate, quantity, hourlyRateSAH, barCodeID);
 
 		return td;
 	}

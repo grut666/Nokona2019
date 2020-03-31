@@ -47,7 +47,6 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 				psGetOperationByKey = conn.prepareStatement("Select * from Operation where Operation.key = ?");
 
 			} catch (SQLException e) {
-				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage());
 			}
 		}
@@ -60,7 +59,6 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 				throw new DataNotFoundException("Operation key " + key + " is not in DB");
 			}
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
 		}
 		return operation;
@@ -77,7 +75,6 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 				psGetOperationByOpCode = conn.prepareStatement("Select * from Operation where Operation.OpCode = ?");
 
 			} catch (SQLException e) {
-				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage(), e);
 			}
 		}
@@ -90,7 +87,6 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 				throw new DataNotFoundException("Operation OPCode " + opCode + " is not in DB");
 			}
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
 			throw new DataNotFoundException(e.getMessage(), e);
 		}
 		return operation;
@@ -113,7 +109,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 				operations.add(convertOperationFromResultSet(rs));
 			}
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage());
 		}
 		return operations;
 	}
@@ -129,7 +125,6 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 							"WHERE Operation.KEY = ?");
 
 			} catch (SQLException e) {
-				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage());
 			}
 		}
@@ -153,7 +148,6 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			return getOperationByKey(formattedOperation.getKey());
 			
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
 			throw new DuplicateDataException(e.getMessage(), e);
 		}
 	}
@@ -170,14 +164,12 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 						PreparedStatement.RETURN_GENERATED_KEYS);
 
 			} catch (SQLException e) {
-				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage());
 			}
 		}
 		Operation formattedOperation = OperationFormatter.format(operationIn);
 		String validateMessage = OperationValidator.validateAdd(operationIn, conn);
 		if (!"".equals(validateMessage)) {
-			System.err.println(validateMessage);
 			throw new DuplicateDataException(validateMessage);
 		}
 		try {
@@ -201,7 +193,6 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 				}
 			}
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
 			throw new DuplicateDataException(e.getMessage(), e);
 		}
 	}
@@ -215,7 +206,6 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 						"  SELECT Operation.Key, OpCode, Description, HourlyRateSAH, LaborCode, LastStudyYear FROM Operation WHERE Operation.Key = ?");
 
 			} catch (SQLException e) {
-				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage());
 			}
 		}
@@ -233,7 +223,6 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			}
 
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
 		}	
 	}
@@ -250,7 +239,6 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 						"  SELECT Operation.Key, OpCode, Description, HourlyRateSAH, LaborCode, LastStudyYear FROM Operation WHERE OpCode = ?");
 
 			} catch (SQLException e) {
-				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage());
 			}
 		}
@@ -268,7 +256,6 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			}
 
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
 		}
 	

@@ -22,23 +22,22 @@ import com.nokona.model.Operation;
 @Path("/operations")
 public class NokonaOperationResource {
 
-@Inject
+	@Inject
 	private NokonaDatabaseOperation db;
-public NokonaOperationResource() throws DatabaseException  {
 
-	
-}
-	
+	public NokonaOperationResource() throws DatabaseException {
+
+	}
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{operation}")
-	public Response getOperation(@PathParam("operation") String operation) {		
-		Operation op;		
+	public Response getOperation(@PathParam("operation") String operation) {
+		Operation op;
 		try {
 
-			
-				op = db.getOperation(operation);
-	
+			op = db.getOperation(operation);
+
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + operation + " not found\"}").build();
 		} catch (DatabaseConnectionException ex) {
@@ -46,28 +45,28 @@ public NokonaOperationResource() throws DatabaseException  {
 		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
 		}
-		
+
 		return Response.status(200).entity(op).build();
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/bykey/{operation}")
 	public Response getOperationByKey(@PathParam("operation") long key) {
-		
+
 		Operation op;
-		
+
 		try {
-			
-				op = db.getOperationByKey(key);
-	
+
+			op = db.getOperationByKey(key);
+
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
-		}		
+		}
 		return Response.status(200).entity(op).build();
 	}
 
@@ -79,8 +78,7 @@ public NokonaOperationResource() throws DatabaseException  {
 			return Response.status(200).entity(db.getOperations()).build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		}
-		catch (DatabaseException ex) {
+		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 	}
@@ -91,7 +89,7 @@ public NokonaOperationResource() throws DatabaseException  {
 	@Path("/{opCode}")
 	public Response updateOperation(@PathParam("opCode") String opCode, Operation opIn) {
 
-		if (! opCode.equals(opIn.getOpCode())) {
+		if (!opCode.equals(opIn.getOpCode())) {
 			return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
 		}
 		try {
@@ -103,8 +101,9 @@ public NokonaOperationResource() throws DatabaseException  {
 		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
-		
+
 	}
+
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -115,50 +114,48 @@ public NokonaOperationResource() throws DatabaseException  {
 			op = db.addOperation(opIn);
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
-		}catch (DatabaseConnectionException ex) {
+		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		}
-		catch (DatabaseException ex) {
+		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 		return Response.status(201).entity(op).build();
 	}
-	
+
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{operation}")
-	public Response deleteOperation(@PathParam("operation") String operation) {	
+	public Response deleteOperation(@PathParam("operation") String operation) {
 		try {
-				db.deleteOperation(operation);	
+			db.deleteOperation(operation);
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + operation + " not found\"}").build();
-		} catch (DatabaseConnectionException ex ) {
+		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		}
-		catch (DatabaseException ex) {
+		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
-		
+
 		return Response.status(200).entity("{\"Success\":\"200\"}").build();
 	}
+
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/bykey/{key}")
 	public Response deleteOperationByKey(@PathParam("key") long key) {
-	
+
 		try {
 
-				db.deleteOperationByKey(key);
-	
+			db.deleteOperationByKey(key);
+
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
-		} catch (DatabaseConnectionException ex ) {
+		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		}
-		catch (DatabaseException ex) {
+		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
-		
+
 		return Response.status(200).entity("{\"Success\":\"200\"}").build();
 	}
 

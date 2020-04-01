@@ -538,7 +538,7 @@ jobs/BXXX123
 
 ## Reports
 
-### Get /reports # Get a sample of the ReportProperties JSON
+### Get /reports # Get a sample of the ReportProperties JSON (for now, anyway)
 #### In
 /reports
 #### Out
@@ -551,12 +551,44 @@ jobs/BXXX123
     "operatorId": "111",\
     "startDate": "20200331095639-0500",\
     "pdfNotExcel": true,\
-    "orderBys": []\
+        "orderBys": [\
+        {\
+            "ascending": true,\
+            "columnName": "JobId"\
+        },\
+        {\
+            "ascending": false,\
+            "columnName": "StatusDate"\
+        }\
+    ]\
 }
 
-### Get /reports/{report} # Get the LaborCode in .pdf or .csv format
+### Get /reports/{report} # Get the LaborCode report in .pdf or .csv format.  Only a portion of the body is usually needed.
 #### In
 /reports/LaborCodes
+
+Body:
+{\
+    "isPdfNotExcel": true,\
+    "jobId": "222",\
+    "isSummaryNotDetail": true,\
+    "endDate": "20200331095639-0500",\
+    "summaryNotDetail": true,\
+    "operatorId": "111",\
+    "startDate": "20200331095639-0500",\
+    "pdfNotExcel": true,\
+        "orderBys": [\
+        {\
+            "ascending": true,\
+            "columnName": "JobId"\
+        },\
+        {\
+            "ascending": false,\
+            "columnName": "StatusDate"\
+        }\
+    ]\
+}
+
 #### Out
 
 Either a .pdf or .csv file, stream, or html.  Not sure yet.

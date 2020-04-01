@@ -13,26 +13,41 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+
 import com.nokona.data.NokonaDatabase;
+import com.nokona.db.NokonaDAO;
+import com.nokona.exceptions.DatabaseConnectionException;
+import com.nokona.qualifiers.BaseDaoQualifier;
 import com.nokona.reports.OrderBy;
 import com.nokona.reports.ReportProperties;
 
 @Path("/reports")
 public class NokonaReportsResource {
-	@Inject
+
 	private NokonaDatabase db;
 	private Connection conn;
 
 	public NokonaReportsResource() {
+		if (db == null) {
+			try {
+				db = new NokonaDAO();
+			} catch (DatabaseConnectionException e) {
+				e.printStackTrace();
+			}
+		}
 		conn = db.getConn();
 	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getEmptyReportProperties() {
-
+		OrderBy orderBy = new OrderBy("JobId", true);
+		OrderBy orderBy2 = new OrderBy("StatusDate", false);
+		List<OrderBy> ordersBy = new ArrayList<OrderBy>();
+		ordersBy.add(orderBy);
+		ordersBy.add(orderBy2); 
 		return Response
-				.ok(new ReportProperties(new Date(), new Date(), new ArrayList<OrderBy>(), true, true, "111", "222"))
+				.ok(new ReportProperties(new Date(), new Date(), ordersBy, true, true, "111", "222"))
 				.build();
 	}
 

@@ -536,8 +536,27 @@ jobs/BXXX123
     "Success": "200"\
 }
 
+## Reports
 
+### Get /reports # Get a sample of the ReportProperties JSON
+#### In
+/reports
+#### Out
+{\
+    "isPdfNotExcel": true,\
+    "jobId": "222",\
+    "isSummaryNotDetail": true,\
+    "endDate": "20200331095639-0500",\
+    "summaryNotDetail": true,\
+    "operatorId": "111",\
+    "startDate": "20200331095639-0500",\
+    "pdfNotExcel": true,\
+    "orderBys": []\
+}
 
-## Segment - Contains a wrapped SegmentHeader and a list of all SegmentDetail records for a given segmentName
+### Get /reports/{report} # Get the LaborCode in .pdf or .csv format
+#### In
+/reports/LaborCodes
+#### Out
 
-
+Either a .pdf or .csv file, stream, or html.  Not sure yet.

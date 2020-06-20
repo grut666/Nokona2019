@@ -543,15 +543,14 @@ jobs/BXXX123
 /reports
 #### Out
 {\
-    "isPdfNotExcel": true,\
     "jobId": "222",\
-    "isSummaryNotDetail": true,\
-    "endDate": "20200331095639-0500",\
+    "reportName": "Dummy Report",\
+    "endDate": "20200620142554-0500",\
     "summaryNotDetail": true,\
     "operatorId": "111",\
-    "startDate": "20200331095639-0500",\
+    "startDate": "20200620142554-0500",\
     "pdfNotExcel": true,\
-        "orderBys": [\
+    "orderBys": [\
         {\
             "ascending": true,\
             "columnName": "JobId"\
@@ -561,23 +560,22 @@ jobs/BXXX123
             "columnName": "StatusDate"\
         }\
     ]\
-}
+}\
 
-### Get /reports/{report} # Get the LaborCode report in .pdf or .csv format.  Only a portion of the body is usually needed.
+### Get /reports/pdf # Get the requested report in .pdf format.  Only a portion of the body is usually needed.
 #### In
-/reports/LaborCodes
+/reports/pdf
 
 Body:
 {\
-    "isPdfNotExcel": true,\
-    "jobId": "222",\
-    "isSummaryNotDetail": true,\
-    "endDate": "20200331095639-0500",\
+    ""jobId": "222",\
+    "reportName": "Dummy Report",\
+    "endDate": "20200620142554-0500",\
     "summaryNotDetail": true,\
     "operatorId": "111",\
-    "startDate": "20200331095639-0500",\
+    "startDate": "20200620142554-0500",\
     "pdfNotExcel": true,\
-        "orderBys": [\
+    "orderBys": [\
         {\
             "ascending": true,\
             "columnName": "JobId"\
@@ -587,7 +585,7 @@ Body:
             "columnName": "StatusDate"\
         }\
     ]\
-}
+}\
 
 #### Out
 

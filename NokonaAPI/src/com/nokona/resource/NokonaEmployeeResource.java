@@ -29,7 +29,7 @@ import com.nokona.utilities.BarCodeUtilities;
 public class NokonaEmployeeResource {
 	@ApplicationScoped
 
-	@Inject
+	@Inject 
 	private NokonaDatabaseEmp db;
 
 	public NokonaEmployeeResource() {

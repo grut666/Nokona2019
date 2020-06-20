@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import com.nokona.data.NokonaDatabase;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.qualifiers.BaseDaoQualifier;
-
+@BaseDaoQualifier
 public class NokonaDAO  implements NokonaDatabase {
 	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 	private static String DB_URL = "jdbc:mysql://localhost:3306/Nokona?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";

@@ -12,12 +12,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @Data
 public class ReportProperties {
+	private String reportName;
 	private Date startDate;
 	private Date endDate;
 	private List<OrderBy> orderBys;
 	private boolean isSummaryNotDetail;
-	private boolean isPdfNotExcel;
 	private String operatorId;
 	private String jobId;
-	
+	private String reportType;
 }

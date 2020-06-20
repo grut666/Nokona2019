@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.inject.Default;
-
 import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
@@ -18,7 +16,7 @@ import com.nokona.formatter.EmployeeFormatter;
 import com.nokona.model.Employee;
 import com.nokona.validator.EmployeeValidator;
 
-@Default
+
 public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 	public NokonaDAOEmployee() throws DatabaseException {
 		super();

@@ -48,7 +48,7 @@ public class NokonaReportsResource {
 		List<OrderBy> ordersBy = new ArrayList<OrderBy>();
 		ordersBy.add(orderBy);
 		ordersBy.add(orderBy2);
-		return Response.ok(new ReportProperties("Dummy Report", new Date(), new Date(), ordersBy, true, "111", "222", "CSV"))
+		return Response.ok(new ReportProperties("Dummy Report", new Date(), new Date(), ordersBy, "111", "222", true, true))
 				.build();
 	}
 

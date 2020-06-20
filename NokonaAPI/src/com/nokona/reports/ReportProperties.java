@@ -15,9 +15,9 @@ public class ReportProperties {
 	private String reportName;
 	private Date startDate;
 	private Date endDate;
-	private List<OrderBy> orderBys;
-	private boolean isSummaryNotDetail;
+	private List<OrderBy> orderBys;	
 	private String operatorId;
 	private String jobId;
-	private String reportType;
+	private boolean pdfNotExcel;
+	private boolean summaryNotDetail;
 }

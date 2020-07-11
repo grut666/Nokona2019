@@ -1,12 +1,12 @@
 package com.nokona.resource;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -15,17 +15,23 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
+
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import com.nokona.data.NokonaDatabase;
+import com.nokona.exceptions.PDFException;
 import com.nokona.qualifiers.BaseDaoQualifier;
 import com.nokona.reports.OrderBy;
-import com.nokona.reports.ReportProcesser;
 import com.nokona.reports.ReportProperties;
 
 @Path("/reports")
 public class NokonaReportsResource {
 
+	private static final String PDF_DIRECTORY = "/tmp";
 	@Inject
 	@BaseDaoQualifier
 	private NokonaDatabase db;
@@ -48,45 +54,121 @@ public class NokonaReportsResource {
 		List<OrderBy> ordersBy = new ArrayList<OrderBy>();
 		ordersBy.add(orderBy);
 		ordersBy.add(orderBy2);
-		return Response.ok(new ReportProperties("Dummy Report", new Date(), new Date(), ordersBy, "111", "222", true, true))
+
+		return Response
+				.ok(new ReportProperties("Dummy Report", new Date(), new Date(), ordersBy, "111", "222", true, true))
 				.build();
+
 	}
 
 	@GET
-//	@Produces("application/octet-stream")
+	// @Produces("application/octet-stream")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces("application/pdf")
+	// @Produces("application/pdf")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@Path("/pdf")
 	public Response getPdfReport(ReportProperties properties) {
 
-		File file = new File("c:/codebase/Reports/output.pdf");  // This would be the file created by the ReportProcesser
-	    FileInputStream fileInputStream = null;
+		File file = null;
 		try {
-			fileInputStream = new FileInputStream(file);
-		} catch (FileNotFoundException e) {
+			file = testPDF();
+			System.err.println("Absolute Path: " + file.getAbsolutePath());
+			return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
+					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()) // optional
+					.build();
+
+		}
+		// ResponseBuilder responseBuilder = javax.ws.rs.core.Response.ok((Object)
+		// fileInputStream);
+		// responseBuilder.type("application/pdf");
+		// responseBuilder.header("Content-Disposition", "filename=" + new
+		// ReportProcesser().generateReport(properties));
+		// return responseBuilder.build();
+		// return Response.ok().build();
+		catch (PDFException e) {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
-	    ResponseBuilder responseBuilder = javax.ws.rs.core.Response.ok((Object) fileInputStream);
-	    responseBuilder.type("application/pdf");
-	    responseBuilder.header("Content-Disposition", "filename=" + new ReportProcesser().generateReport(properties)); 
-	    return responseBuilder.build();
 	}
-	
 
-//	@GET
-////	@Produces("application/octet-stream")
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Path("/csv")
-//	public Response getCsvReport(ReportProperties properties) {
-////		File fileNew = new File("c:/codebase/Reports/output.csv");
-////		try {
-////			fileNew.createNewFile();
-////		} catch (IOException e) {
-////			return Response.ok(e.getMessage()).build();
-////		}
-////		File file = new File("c:/codebase/Reports/output.csv");
-////		return Response.ok(file).header("Content-Disposition", "attachment; filename=\"c:/codebase/Reports/output.csv\"").build();
-//		return Response.ok(new Operation("csv","Test",1.1,5,10,15 )).build();
-//	}
+	// @GET
+	//// @Produces("application/octet-stream")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// @Path("/csv")
+	// public Response getCsvReport(ReportProperties properties) {
+	//// File fileNew = new File("c:/codebase/Reports/output.csv");
+	//// try {
+	//// fileNew.createNewFile();
+	//// } catch (IOException e) {
+	//// return Response.ok(e.getMessage()).build();
+	//// }
+	//// File file = new File("c:/codebase/Reports/output.csv");
+	//// return Response.ok(file).header("Content-Disposition", "attachment;
+	// filename=\"c:/codebase/Reports/output.csv\"").build();
+	// return Response.ok(new Operation("csv","Test",1.1,5,10,15 )).build();
+	// }
+
+	private File testPDF() throws PDFException {
+
+		File dir = new File(PDF_DIRECTORY);
+		if (!dir.exists()) {
+			dir.mkdir();
+		}
+
+		File file;
+		
+		 try {
+			file = new File(pdfFile());
+		}  catch (IOException e) {
+			throw new PDFException(e.getMessage());
+		}
+		 
+
+		return file;
+	}
+
+	private String pdfFile() throws IOException {
+		String fileName = PDF_DIRECTORY + "/" + generatePDFName();
+		
+		PDDocument document = new PDDocument();
+		
+		PDPage pdPage = new PDPage();
+		document.addPage(pdPage);
+		 PDPageContentStream contentStream = new PDPageContentStream(document, pdPage);
+	      
+	      //Begin the Content stream 
+	      contentStream.beginText(); 
+	       
+	      //Setting the font to the Content stream  
+	      contentStream.setFont(PDType1Font.TIMES_ROMAN, 12);
+
+	      //Setting the position for the line 
+	      
+	      contentStream.newLineAtOffset(1, 500);
+	      
+	      String text = "This is the sample document.  Hello from Mark";
+
+	      //Adding text in the form of string 
+	      contentStream.showText(text);      
+
+	      //Ending the content stream
+	      contentStream.endText();
+
+	      System.out.println("Content added");
+
+	      //Closing the content stream
+	      contentStream.close();
+		document.save(fileName);
+		
+		document.close();
+
+
+		return fileName;
+	}
+
+	private String generatePDFName() {
+		// return "Nokona_" + UUID.randomUUID().toString() + ".pdf"; // This will be the
+		// real file after test
+		return "Nokona_" + UUID.randomUUID().toString() + ".pdf";
+	}
 
 }

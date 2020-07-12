@@ -5,14 +5,18 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -28,9 +32,16 @@ import com.nokona.qualifiers.BaseDaoQualifier;
 import com.nokona.reports.OrderBy;
 import com.nokona.reports.ReportProperties;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+
 @Path("/reports")
 public class NokonaReportsResource {
-
+    @Context private ServletContext context;
 	private static final String PDF_DIRECTORY = "/tmp";
 	@Inject
 	@BaseDaoQualifier
@@ -71,7 +82,8 @@ public class NokonaReportsResource {
 
 		File file = null;
 		try {
-			file = testPDF();
+	//		file = testPDF();
+			file = getJasperReport(properties);
 			System.err.println("Absolute Path: " + file.getAbsolutePath());
 			return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
 					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()) // optional
@@ -170,5 +182,30 @@ public class NokonaReportsResource {
 		// real file after test
 		return "Nokona_" + UUID.randomUUID().toString() + ".pdf";
 	}
-
+	private File getJasperReport(ReportProperties properties) throws PDFException {
+		String fileName = PDF_DIRECTORY + "/" + generatePDFName();
+		// Check properties, etc.  Figure out which template to use.  Then, the below:
+		File dir = new File(PDF_DIRECTORY);
+		if (!dir.exists()) {
+			dir.mkdir();
+		} 
+		try {
+			String templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/LaborCodes.jrxml");
+			JasperReport jasperReport = JasperCompileManager.compileReport(templateFileName);
+			
+			System.out.println("JasperReport");
+			Map<String, Object> parms = new HashMap<String, Object>();
+			conn = db.getConn();
+			System.out.println("Conn");
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parms, conn);
+			System.out.println("JasperPrint");
+			JasperExportManager.exportReportToPdfFile(jasperPrint, fileName);
+			System.out.println("JasperExportManager");
+			
+		} catch (JRException e) {
+			System.out.println(e.getMessage());
+			throw new PDFException(e.getMessage());
+		}
+		return new File(fileName);
+	}
 }

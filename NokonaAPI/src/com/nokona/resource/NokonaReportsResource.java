@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -72,31 +73,20 @@ public class NokonaReportsResource {
 
 	}
 
-	@GET
-	// @Produces("application/octet-stream")
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	// @Produces("application/pdf")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@Path("/pdf")
 	public Response getPdfReport(ReportProperties properties) {
 
 		File file = null;
 		try {
-	//		file = testPDF();
 			file = getJasperReport(properties);
-			System.err.println("Absolute Path: " + file.getAbsolutePath());
 			return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()) // optional
+					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()) 
 					.build();
 
 		}
-		// ResponseBuilder responseBuilder = javax.ws.rs.core.Response.ok((Object)
-		// fileInputStream);
-		// responseBuilder.type("application/pdf");
-		// responseBuilder.header("Content-Disposition", "filename=" + new
-		// ReportProcesser().generateReport(properties));
-		// return responseBuilder.build();
-		// return Response.ok().build();
 		catch (PDFException e) {
 			return Response.status(500).entity(e.getMessage()).build();
 		}

@@ -13,8 +13,9 @@
 			<style mode="Opaque" backcolor="#F0EFEF"/>
 		</conditionalStyle>
 	</style>
+	<parameter name="laborCode" class="java.lang.Integer"/>
 	<queryString language="SQL">
-		<![CDATA[select * from laborcode order by laborcode;]]>
+		<![CDATA[select * from laborcode where LaborCode = $P{laborCode};]]>
 	</queryString>
 	<field name="LaborCode" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="LaborCode"/>
@@ -37,6 +38,7 @@
 	</background>
 	<title>
 		<band height="102" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<frame>
 				<reportElement mode="Opaque" x="0" y="0" width="802" height="66" backcolor="#000000" uuid="d8d9e644-3a32-491d-97cb-a277aff17133"/>
 				<staticText>
@@ -48,7 +50,7 @@
 					<text><![CDATA[Nokona]]></text>
 				</staticText>
 				<staticText>
-					<reportElement style="SubTitle" x="370" y="37" width="316" height="29" uuid="cfa21334-0634-4605-9ea7-aca4981f67e4"/>
+					<reportElement style="SubTitle" x="210" y="28" width="148" height="29" uuid="cfa21334-0634-4605-9ea7-aca4981f67e4"/>
 					<textElement textAlignment="Right">
 						<font size="22" isBold="false"/>
 					</textElement>
@@ -58,11 +60,15 @@
 					<reportElement x="288" y="27" width="100" height="30" uuid="d479c6e7-e5fe-4b8a-870f-d2d0ab2bfd8d"/>
 					<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
 				</textField>
+				<image>
+					<reportElement x="720" y="0" width="60" height="67" uuid="6b75105d-35b7-4498-9a3a-5af26aaa79d3"/>
+					<imageExpression><![CDATA["IndianHeadandNokona.jpg"]]></imageExpression>
+				</image>
 			</frame>
 			<frame>
 				<reportElement mode="Opaque" x="0" y="70" width="802" height="32" forecolor="#000000" backcolor="#CC0000" uuid="b0c895f6-6dbd-477d-9858-9ad66af087e1"/>
-				<textField pattern="MMM d, yyyy h:mm:ss a z">
-					<reportElement x="10" y="6" width="189" height="20" forecolor="#FFFFFF" uuid="a33fce3b-20c1-4696-873a-fe134d1e7d88"/>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement x="553" y="12" width="144" height="20" forecolor="#FFFFFF" uuid="a33fce3b-20c1-4696-873a-fe134d1e7d88"/>
 					<textElement textAlignment="Right">
 						<font size="12"/>
 					</textElement>
@@ -116,6 +122,7 @@
 	</columnHeader>
 	<detail>
 		<band height="18" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
 			<frame>
 				<reportElement style="Row" mode="Opaque" x="0" y="0" width="797" height="18" uuid="34a2ae4b-4055-476b-8676-d499f6af510b"/>
 				<textField textAdjust="StretchHeight">
@@ -136,11 +143,11 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{Description}]]></textFieldExpression>
 				</textField>
-				<textField textAdjust="StretchHeight" pattern="$ #,##0.00">
+				<textField textAdjust="StretchHeight">
 					<reportElement style="Detail" positionType="Float" x="398" y="0" width="199" height="18" uuid="1eb5b8db-2306-48a7-a3ac-d65e162c5347">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f87bc92d-bf52-4273-8315-7cd73e44e875"/>
 					</reportElement>
-					<textElement>
+					<textElement textAlignment="Right">
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{LaborRate}]]></textFieldExpression>
@@ -149,7 +156,7 @@
 					<reportElement style="Detail" positionType="Float" x="597" y="0" width="199" height="18" uuid="afae0967-a274-4c42-915c-de9c6457ed4d">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4c4412e-085c-497a-b7d5-9253aaaf159b"/>
 					</reportElement>
-					<textElement>
+					<textElement textAlignment="Right">
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{Key}]]></textFieldExpression>
@@ -185,7 +192,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 				</textField>
-				<textField pattern="MMM d, yyyy h:mm:ss a z">
+				<textField pattern="EEEEE dd MMMMM yyyy">
 					<reportElement style="Column header" x="2" y="3" width="197" height="20" forecolor="#FFFFFF" uuid="0c9f7e91-d3f5-47f9-82b7-0b2b3a43a5d6"/>
 					<textElement verticalAlignment="Middle">
 						<font size="10" isBold="false"/>

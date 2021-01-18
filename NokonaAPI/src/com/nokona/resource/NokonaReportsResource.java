@@ -21,12 +21,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-
 import com.nokona.data.NokonaDatabase;
 import com.nokona.exceptions.PDFException;
 import com.nokona.qualifiers.BaseDaoQualifier;
@@ -42,7 +36,8 @@ import net.sf.jasperreports.engine.JasperReport;
 
 @Path("/reports")
 public class NokonaReportsResource {
-    @Context private ServletContext context;
+	@Context
+	private ServletContext context;
 	private static final String PDF_DIRECTORY = "/tmp";
 	@Inject
 	@BaseDaoQualifier
@@ -83,13 +78,20 @@ public class NokonaReportsResource {
 		try {
 			file = getJasperReport(properties);
 			return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()) 
-					.build();
+					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()).build();
 
-		}
-		catch (PDFException e) {
+		} catch (PDFException e) {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
+	}
+
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@Path("/pdftest")
+	public Response getPdfReportTest() {
+//		ReportProperties properties = new ReportProperties();
+		return getPdfReport(null);
 	}
 
 	// @GET
@@ -109,89 +111,98 @@ public class NokonaReportsResource {
 	// return Response.ok(new Operation("csv","Test",1.1,5,10,15 )).build();
 	// }
 
-	private File testPDF() throws PDFException {
+//	private File testPDF() throws PDFException {
+//
+//		File dir = new File(PDF_DIRECTORY);
+//		if (!dir.exists()) {
+//			dir.mkdir();
+//		}
+//
+//		File file;
+//
+//		try {
+//			file = new File(pdfFile());
+//		} catch (IOException e) {
+//			throw new PDFException(e.getMessage());
+//		}
+//
+//		return file;
+//	}
 
-		File dir = new File(PDF_DIRECTORY);
-		if (!dir.exists()) {
-			dir.mkdir();
-		}
-
-		File file;
-		
-		 try {
-			file = new File(pdfFile());
-		}  catch (IOException e) {
-			throw new PDFException(e.getMessage());
-		}
-		 
-
-		return file;
-	}
-
-	private String pdfFile() throws IOException {
-		String fileName = PDF_DIRECTORY + "/" + generatePDFName();
-		
-		PDDocument document = new PDDocument();
-		
-		PDPage pdPage = new PDPage();
-		document.addPage(pdPage);
-		 PDPageContentStream contentStream = new PDPageContentStream(document, pdPage);
-	      
-	      //Begin the Content stream 
-	      contentStream.beginText(); 
-	       
-	      //Setting the font to the Content stream  
-	      contentStream.setFont(PDType1Font.TIMES_ROMAN, 12);
-
-	      //Setting the position for the line 
-	      
-	      contentStream.newLineAtOffset(1, 500);
-	      
-	      String text = "This is the sample document.  Hello from Mark";
-
-	      //Adding text in the form of string 
-	      contentStream.showText(text);      
-
-	      //Ending the content stream
-	      contentStream.endText();
-
-	      System.out.println("Content added");
-
-	      //Closing the content stream
-	      contentStream.close();
-		document.save(fileName);
-		
-		document.close();
-
-
-		return fileName;
-	}
+//	private String pdfFile() throws IOException {
+//		String fileName = PDF_DIRECTORY + "/" + generatePDFName();
+//
+//		PDDocument document = new PDDocument();
+//
+//		PDPage pdPage = new PDPage();
+//		document.addPage(pdPage);
+//		PDPageContentStream contentStream = new PDPageContentStream(document, pdPage);
+//
+//		// Begin the Content stream
+//		contentStream.beginText();
+//
+//		// Setting the font to the Content stream
+//		contentStream.setFont(PDType1Font.TIMES_ROMAN, 12);
+//
+//		// Setting the position for the line
+//
+//		contentStream.newLineAtOffset(1, 500);
+//
+//		String text = "This is the sample document.  Hello from Mark";
+//
+//		// Adding text in the form of string
+//		contentStream.showText(text);
+//
+//		// Ending the content stream
+//		contentStream.endText();
+//
+//		System.out.println("Content added");
+//
+//		// Closing the content stream
+//		contentStream.close();
+//		document.save(fileName);
+//
+//		document.close();
+//
+//		return fileName;
+//	}
 
 	private String generatePDFName() {
 		// return "Nokona_" + UUID.randomUUID().toString() + ".pdf"; // This will be the
 		// real file after test
 		return "Nokona_" + UUID.randomUUID().toString() + ".pdf";
 	}
+
 	private File getJasperReport(ReportProperties properties) throws PDFException {
 		String fileName = PDF_DIRECTORY + "/" + generatePDFName();
-		// Check properties, etc.  Figure out which template to use.  Then, the below:
+		// Check properties, etc. Figure out which template to use. Then, the below:
 		File dir = new File(PDF_DIRECTORY);
 		if (!dir.exists()) {
 			dir.mkdir();
-		} 
+		}
 		try {
-			String templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/LaborCodes.jrxml");
+//			String templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/LaborCodes.jrxml");
+			String templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
+
 			JasperReport jasperReport = JasperCompileManager.compileReport(templateFileName);
-			
+
 			System.out.println("JasperReport");
 			Map<String, Object> parms = new HashMap<String, Object>();
+			
+			//  Practicing
+			//	parms.put("FIRST_LETTER", "F");
+				parms.put("ACTIVE1", 0);
+				parms.put("ACTIVE2", 1);
+		
+			
+			//  End Practice
 			conn = db.getConn();
 			System.out.println("Conn");
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parms, conn);
 			System.out.println("JasperPrint");
 			JasperExportManager.exportReportToPdfFile(jasperPrint, fileName);
 			System.out.println("JasperExportManager");
-			
+
 		} catch (JRException e) {
 			System.out.println(e.getMessage());
 			throw new PDFException(e.getMessage());

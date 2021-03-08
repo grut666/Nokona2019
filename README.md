@@ -560,7 +560,7 @@ jobs/BXXX123
             "columnName": "StatusDate"\
         }\
     ]\
-}\
+}
 
 ### Get /reports/pdf # Get the requested report in .pdf format.  Only a portion of the body is usually needed.
 #### In
@@ -585,7 +585,7 @@ Body:
             "columnName": "StatusDate"\
         }\
     ]\
-}\
+}
 
 #### Out
 

@@ -653,6 +653,87 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
     }\
 ]            
 
+### Get /tickets/{key} # Get One Ticket By DB key 
+
+#### In
+
+/tickets/40965
+
+#### Out
+{\
+    "ticketHeader": {\
+        "jobId": "A-1275H-GR-LH",\
+        "dateCreated": "20200216180000-0600",\
+        "quantity": 1,\
+        "ticketStatus": "P",\
+        "description": "CLICK HEELS & PLASTIC GLOVE",\
+        "key": 40965,\
+        "dateStatus": "20200216180000-0600"\
+    },\
+    "ticketDetails": [\
+        {\
+            "statusDate": "20200216180000-0600",\
+            "barCodeID": 0,\
+            "operationStatus": "INCOMPLETE",\
+            "operationDescription": "SEW HEEL FELT & PLASTIC",\
+            "quantity": 1,\
+            "hourlyRateSAH": 0.0,\
+            "sequenceUpdated": 2,\
+            "sequenceOriginal": 2,\
+            "operation": "EB18",\
+            "key": 40965\
+        },\
+        {\
+            "statusDate": "20200216180000-0600",\
+            "barCodeID": 0,\
+            "operationStatus": "INCOMPLETE",\
+            "operationDescription": "SEGMENT A",\
+            "quantity": 1,\
+            "hourlyRateSAH": 0.0,\
+            "sequenceUpdated": 3,\
+            "sequenceOriginal": 3,\
+            "operation": "111",\
+            "key": 40965\
+        },\
+        {\
+            "statusDate": "20200216180000-0600",\
+            "barCodeID": 0,\
+            "operationStatus": "INCOMPLETE",\
+            "operationDescription": "LACE #1 (PADS)",\
+            "quantity": 1,\
+            "hourlyRateSAH": 0.0,\
+            "sequenceUpdated": 4,\
+            "sequenceOriginal": 4,\
+            "operation": "W136",\
+            "key": 40965\
+        },\
+        {\
+            "statusDate": "20200216180000-0600",\
+            "barCodeID": 0,\
+            "operationStatus": "INCOMPLETE",\
+            "operationDescription": "LACE #2  (PALM, PUNCH HOLES)",\
+            "quantity": 1,\
+            "hourlyRateSAH": 0.0,\
+            "sequenceUpdated": 5,\
+            "sequenceOriginal": 5,\
+            "operation": "W125",
+            "key": 40965\
+        },\
+        {\
+            "statusDate": "20200216180000-0600",\
+            "barCodeID": 0,\
+            "operationStatus": "INCOMPLETE",\
+            "operationDescription": "LACE STEP 3 (HEEL & WRIST)",\
+            "quantity": 1,\
+            "hourlyRateSAH": 0.0,\
+            "sequenceUpdated": 6,\
+            "sequenceOriginal": 6,\
+            "operation": "A183",\
+            "key": 40965\
+        }\
+    ] \   
+}
+
 ### Get /tickets/ticketheaders # Get all Ticket Headers
 #### In
 /tickets/ticketheaders
@@ -703,4 +784,20 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
         "key": 40959,\
         "dateStatus": "20200216180000-0600"\
     }\
-]    
+]  
+
+### Get /tickets/ticketheaders/{key} # Get One Ticket Header By Key
+
+#### In
+/tickets/ticketheaders/40965
+
+#### Out
+{\
+    "jobId": "A-1275H-GR-LH",\
+    "dateCreated": "20200216180000-0600",\
+    "quantity": 1,\
+    "ticketStatus": "P",\
+    "description": "GRAY AMERKIP 12.75\", H-WEB - LEFT",\
+    "key": 40965,\
+    "dateStatus": "20200216180000-0600"\
+}

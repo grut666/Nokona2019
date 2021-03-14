@@ -801,3 +801,51 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
     "key": 40965,\
     "dateStatus": "20200216180000-0600"\
 }
+
+### Post tickets # Add 1 ticket
+
+#### In
+Body:
+
+{\
+    "jobId": "A-1150C-GR-LH",\
+    "quantity": 10\
+}
+
+#### Out
+
+ "ticketHeader": {\
+        "jobId": "A-1150C-GR-LH",\
+        "dateCreated": "20210314132634-0500",\
+        "quantity": 10,\
+        "ticketStatus": "NEW",\
+        "description": "GRAY AMERICANKIP 11.5\" CLSD WEB - LEFT",\
+        "key": 40978,\
+        "dateStatus": "20210314132634-0500"\
+    },\
+    "ticketDetails": [\
+        {\
+            "barCodeID": 0,\
+            "operationStatus": "INCOMPLETE",\
+            "operationDescription": "SEGMENT A",\
+            "quantity": 10,\
+            "hourlyRateSAH": 0.0,\
+            "sequenceUpdated": 0,\
+            "opCode": "111",\
+            "sequenceOriginal": 0,\
+            "key": 40978\
+        },\
+        {\
+            "barCodeID": 0,\
+            "operationStatus": "INCOMPLETE",\
+            "operationDescription": "CLICK HEEL FELT               WORTH",\
+            "quantity": 10,\
+            "hourlyRateSAH": 0.0123,\
+            "sequenceUpdated": 1,\
+            "opCode": "W103",\
+            "sequenceOriginal": 1,\
+            "key": 40978\
+        }\
+    ]\
+}
+

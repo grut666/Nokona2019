@@ -17,6 +17,18 @@ import com.nokona.model.Operation;
 import com.nokona.validator.OperationValidator;
 
 public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOperation {
+
+	private PreparedStatement psGetOperationByKey;
+	private PreparedStatement psGetOperationByOpCode;
+	private PreparedStatement psGetOperations;
+	private PreparedStatement psAddOperation;
+	private PreparedStatement psUpdateOperation;
+
+	private PreparedStatement psDelOperationByKey;
+	private PreparedStatement psDelOperationByOpId; 
+	
+	private PreparedStatement psMoveDeletedOperationByKey;
+	private PreparedStatement psMoveDeletedOperationByOpCode;
 	public NokonaDAOOperation() throws DatabaseException {
 		super();
 	}
@@ -25,20 +37,8 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 
 	}
 
-	PreparedStatement psGetOperationByKey;
-	PreparedStatement psGetOperationByOpCode;
-	PreparedStatement psGetOperations;
-	PreparedStatement psAddOperation;
-	PreparedStatement psUpdateOperation;
-
-	PreparedStatement psDelOperationByKey;
-	PreparedStatement psDelOperationByOpId; 
-	
-	PreparedStatement psMoveDeletedOperationByKey;
-	PreparedStatement psMoveDeletedOperationByOpCode;
 	
 
-	
 	@Override
 	public Operation getOperationByKey(long key) throws DatabaseException {
 		Operation operation = null;

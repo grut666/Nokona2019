@@ -18,6 +18,18 @@ import com.nokona.validator.EmployeeValidator;
 
 
 public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
+	private PreparedStatement psGetEmployeeByKey;
+	private PreparedStatement psGetEmployeeByEmpId;
+	private PreparedStatement psGetEmployees;
+	private PreparedStatement psAddEmployee;
+	private PreparedStatement psAddEmployeeDupeCheck;
+	private PreparedStatement psAddEmployeeLaborCodeCheck;
+	private PreparedStatement psUpdateEmployee;
+
+	private PreparedStatement psMoveDeletedEmployeeByKey;
+	private PreparedStatement psMoveDeletedEmployeeByEmpId;
+	private PreparedStatement psDelEmployeeByKey;
+	private PreparedStatement psDelEmployeeByEmpId;
 	public NokonaDAOEmployee() throws DatabaseException {
 		super();
 
@@ -27,22 +39,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 
 	}
 
-	PreparedStatement psGetEmployeeByKey;
-	PreparedStatement psGetEmployeeByEmpId;
-	PreparedStatement psGetEmployees;
-	PreparedStatement psAddEmployee;
-	PreparedStatement psAddEmployeeDupeCheck;
-	PreparedStatement psAddEmployeeLaborCodeCheck;
-	PreparedStatement psUpdateEmployee;
-
-	PreparedStatement psGetOperationByKey;
-	PreparedStatement psGetOperationByOpCode;
-	PreparedStatement psGetOperations;
-
-	PreparedStatement psMoveDeletedEmployeeByKey;
-	PreparedStatement psMoveDeletedEmployeeByEmpId;
-	PreparedStatement psDelEmployeeByKey;
-	PreparedStatement psDelEmployeeByEmpId;
+	
 
 	@Override
 	public List<Employee> getEmployees() throws DatabaseException {

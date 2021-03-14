@@ -17,6 +17,17 @@ import com.nokona.model.Operation;
 import com.nokona.validator.LaborCodeValidator;
 
 public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLaborCode {
+	private PreparedStatement psGetLaborCode;
+	private PreparedStatement psGetLaborCodeByKey;
+	private PreparedStatement psGetLaborCodes;
+	private PreparedStatement psAddLaborCode;
+	private PreparedStatement psUpdateLaborCode;
+
+	private PreparedStatement psDelLaborCodeByKey;
+	private PreparedStatement psDelLaborCodeByLaborCode;
+	
+	private PreparedStatement psMoveDeletedLaborCodeByLaborCode;
+	private PreparedStatement psMoveDeletedLaborCodeByKey;
 	public NokonaDAOLaborCode() throws DatabaseException {
 		super();	
 	}
@@ -25,17 +36,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 
 	}
 
-	PreparedStatement psGetLaborCode;
-	PreparedStatement psGetLaborCodeByKey;
-	PreparedStatement psGetLaborCodes;
-	PreparedStatement psAddLaborCode;
-	PreparedStatement psUpdateLaborCode;
-
-	PreparedStatement psDelLaborCodeByKey;
-	PreparedStatement psDelLaborCodeByLaborCode;
 	
-	PreparedStatement psMoveDeletedLaborCodeByLaborCode;
-	PreparedStatement psMoveDeletedLaborCodeByKey;
 	
 	@Override
 	public LaborCode getLaborCodeByKey(long key) throws DataNotFoundException {

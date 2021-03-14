@@ -12,7 +12,7 @@ import lombok.ToString;
 @Data
 public class TicketDetail {
 	private long key;
-	private String operation;
+	private String opCode;
 	private String operationDescription;
 	private OperationStatus operationStatus;
 	private int sequenceOriginal;

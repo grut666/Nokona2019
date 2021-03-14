@@ -156,22 +156,24 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			throw new InvalidQuantityException("Quantity of value " + ticketHeader.getQuantity() + " is invalid");
 		}
 		TicketHeader formattedTicketHeader = new TicketHeader();
-		formattedTicketHeader.setJobId(ticketHeader.getJobId());
-		formattedTicketHeader.setDateStatus(ticketHeader.getDateCreated());
-		formattedTicketHeader.setDateCreated(ticketHeader.getDateCreated());
+		String jobId = ticketHeader.getJobId(); 
+		formattedTicketHeader.setDescription(jobDAO.getJobHeader(jobId).getDescription());
+		formattedTicketHeader.setJobId(jobId);
+		formattedTicketHeader.setDateStatus(new Date());
+		formattedTicketHeader.setDateCreated(new Date());
 		formattedTicketHeader.setQuantity(ticketHeader.getQuantity());
 		formattedTicketHeader.setTicketStatus(TicketStatus.NEW);
 		formattedTicketHeader = TicketHeaderFormatter.format(formattedTicketHeader);
 		try {
 			if (psAddTicketHeader == null) {
-				conn.prepareStatement(
+				psAddTicketHeader = conn.prepareStatement(
 						"Insert into TicketHeader (JobID, CreatedDate, Status, StatusDate, Quantity) values (?,?,?,?,?)",
 						PreparedStatement.RETURN_GENERATED_KEYS);
 			}
 
 			if (psAddTicketDetail == null) {
-				conn.prepareStatement(
-						"Insert into TicketDetail (TicketDetail.Key, Operation, Sequence, StatusDate, Status, "
+				psAddTicketDetail = conn.prepareStatement(
+						"Insert into TicketDetail (TicketDetail.Key, OpCode, Sequence, StatusDate, Status, "
 								+ "Quantity, HourlyRateSAH, BarCodeID, LaborRate, UpdatedSequence)  "
 								+ "values (?,?,?,?,?,?,?,?,?,?)");
 			}
@@ -287,8 +289,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		if (psDelTicketDetailByKey == null) {
 			try {
 				psDelTicketDetailByKey = conn.prepareStatement("Delete From TicketDetail where key = ?");
-				psMoveDeletedTicketDetailByKey = conn.prepareStatement("INSERT INTO Deleted_TicketDetail (Deleted_TicketDetail.key, operation, sequence, statusDate, status, quantity, hourlyrateSAH, BarCodeID, LaborRate, UpdatedSequence) " + 
-						"  SELECT TicketDetail.key, operation, sequence, statusDate, status, quantity, hourlyrateSAH, BarCodeID, LaborRate, UpdatedSequence FROM TicketDetail WHERE TicketDetail.Key = ?");
+				psMoveDeletedTicketDetailByKey = conn.prepareStatement("INSERT INTO Deleted_TicketDetail (Deleted_TicketDetail.key, opCode, sequence, statusDate, status, quantity, hourlyrateSAH, BarCodeID, LaborRate, UpdatedSequence) " + 
+						"  SELECT TicketDetail.key, opCode, sequence, statusDate, status, quantity, hourlyrateSAH, BarCodeID, LaborRate, UpdatedSequence FROM TicketDetail WHERE TicketDetail.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -374,7 +376,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		if (psGetTicketDetails == null) {
 			try {
 				psGetTicketDetails = conn
-						.prepareStatement("Select * from ticketdetail join operation on operation = opcode "
+						.prepareStatement("Select * from ticketdetail join operation on operation.opcode = ticketdetail.opcode "
 								+ "where ticketdetail.key = ? order by sequence");
 
 			} catch (SQLException e) {

@@ -20,6 +20,25 @@ import com.nokona.model.JobHeader;
 import com.nokona.validator.JobValidator;
 
 public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
+	private PreparedStatement psGetJobHeaderByKey;
+	private PreparedStatement psGetJobHeaderByJobId;
+	private PreparedStatement psGetJobHeaders;
+	private PreparedStatement psAddJobHeader;
+	private PreparedStatement psAddJobHeaderDupeCheck;
+	private PreparedStatement psUpdateJobHeader;
+
+	private PreparedStatement psGetJobDetailByJobId;
+
+	private PreparedStatement psDelJobByKey;
+	private PreparedStatement psDelJobByJobId;
+	
+	private PreparedStatement psDelJobDetailByKey;
+	
+	private PreparedStatement psMoveDeletedJobByJobId;
+	private PreparedStatement psMoveDeletedJobByKey;
+	
+	private PreparedStatement psMoveDeletedJobDetailByJobId;
+	private PreparedStatement psMoveDeletedJobDetailByKey;
 	public NokonaDAOJob() throws DatabaseException {
 		super();
 
@@ -28,27 +47,6 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	public NokonaDAOJob(String userName, String password) throws DatabaseException {
 		super(userName, password);
 	}
-
-	PreparedStatement psGetJobHeaderByKey;
-	PreparedStatement psGetJobHeaderByJobId;
-	PreparedStatement psGetJobHeaders;
-	PreparedStatement psAddJobHeader;
-	PreparedStatement psAddJobHeaderDupeCheck;
-	PreparedStatement psUpdateJobHeader;
-
-	PreparedStatement psGetJobDetailByJobId;
-
-	PreparedStatement psDelJobByKey;
-	PreparedStatement psDelJobByJobId;
-	
-	PreparedStatement psDelJobDetailByKey;
-	PreparedStatement psDelJobDetailByJobId;
-	
-	PreparedStatement psMoveDeletedJobByJobId;
-	PreparedStatement psMoveDeletedJobByKey;
-	
-	PreparedStatement psMoveDeletedJobDetailByJobId;
-	PreparedStatement psMoveDeletedJobDetailByKey;
 
 	@Override
 	public JobHeader getJobHeaderByKey(long key) throws DataNotFoundException {
@@ -59,7 +57,6 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 				psGetJobHeaderByKey = conn.prepareStatement("Select * from JobHeader where JobHeader.Key = ?");
 
 			} catch (SQLException e) {
-				System.err.println(e.getMessage());
 				throw new DataNotFoundException(e.getMessage());
 			}
 		}
@@ -72,7 +69,6 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 				throw new DataNotFoundException("Job key " + key + " is not in DB");
 			}
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
 			throw new DataNotFoundException(e.getMessage(), e);
 		}
 		return jobHeader;
@@ -91,6 +87,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			}
 		}
 		try {
+			System.err.println("-----------------JOB ID IS:" + jobId + ":-----------------");
 			psGetJobHeaderByJobId.setString(1, jobId);
 			ResultSet rs = psGetJobHeaderByJobId.executeQuery();
 			if (rs.next()) {
@@ -384,6 +381,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			}
 		}
 		try {
+			System.err.println("-----------------JOB ID IS:" + jobId + ":-----------------");
 			psGetJobDetailByJobId.setString(1, jobId);
 			ResultSet rs = psGetJobDetailByJobId.executeQuery();
 			details = convertJobDetailsFromResultSet(rs);

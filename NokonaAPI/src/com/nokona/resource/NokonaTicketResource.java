@@ -105,27 +105,6 @@ public class NokonaTicketResource {
 		return Response.status(200).entity(ticketHeader).build();
 	}
 
-//	@GET
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Path("/{key}")
-//	public Response getTicketByKey(@PathParam("key") long key) {
-//
-//		Ticket ticket;
-//
-//		try {
-//			ticket = db.getTicketByKey(key);
-//
-//		} catch (DataNotFoundException ex) {
-//			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
-//		} catch (DatabaseException ex) {
-//			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-//		} catch (Exception ex) {
-//			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
-//		}
-//		// String year = ticketHeader.getDateCreated().toString();
-//		return Response.status(200).entity(ticket).build();
-//	}
-
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/labels/{ticket}")
@@ -168,6 +147,7 @@ public class NokonaTicketResource {
 
 		Ticket ticket;
 		try {
+			System.err.println(ticketHeader);
 			ticket = db.addTicket(ticketHeader);
 			return Response.status(200).entity(ticket).build();
 		} catch (DataNotFoundException ex) {

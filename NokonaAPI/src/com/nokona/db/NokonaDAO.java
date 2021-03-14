@@ -13,7 +13,7 @@ public class NokonaDAO  implements NokonaDatabase {
 	private static String DB_URL = "jdbc:mysql://localhost:3306/Nokona?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 	private static String USER_NAME = "root";
 	private static String PASSWORD = "xyz";
-	public Connection conn;
+	protected Connection conn;
 	// SuperClass for all DAO classes
 	public NokonaDAO() throws DatabaseConnectionException {
 		connectToDB(USER_NAME, PASSWORD);

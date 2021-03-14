@@ -593,6 +593,66 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
 
 ## Ticket
 
+### Get /tickets # Get all Tickets (this is currently limited to a sample because of the mammoth set of JSON returned
+
+#### In
+
+/tickets
+
+#### Out
+
+[\
+    {\
+        "ticketHeader": {\
+            "jobId": "A-1275H-BL-LH",\
+            "dateCreated": "20190813190000-0500",\
+            "quantity": 10,\
+            "ticketStatus": "P",\
+            "description": "AMERKIP BLONDE 12.75\" H-WEB - LEFT",\
+            "key": 38440,\
+            "dateStatus": "20190813190000-0500"\
+        },\
+        "ticketDetails": [\
+            {\
+                "statusDate": "20190813190000-0500",\
+                "barCodeID": 0,\
+                "operationStatus": "INCOMPLETE",\
+                "operationDescription": "CLICK GLOVE COMPLETE",\
+                "quantity": 10,\
+                "hourlyRateSAH": 0.0,\
+                "sequenceUpdated": 2,\
+                "sequenceOriginal": 2,\
+                "operation": "E202",\
+                "key": 38440\
+            },\
+            {\
+                "statusDate": "20190813190000-0500",\
+                "barCodeID": 0,\
+                "operationStatus": "INCOMPLETE",\
+                "operationDescription": "CLICK SYNTHETIC SHEARLING-WRIST",\
+                "quantity": 10,\
+                "hourlyRateSAH": 0.0,\
+                "sequenceUpdated": 3,\
+                "sequenceOriginal": 3,\
+                "operation": "B21S",\
+                "key": 38440\
+            },\
+            {\
+                "statusDate": "20190813190000-0500",\
+                "barCodeID": 1391,\
+                "operationStatus": "INCOMPLETE",\
+                "operationDescription": "CLICK LINING FINGERS",\
+                "quantity": 10,\
+                "hourlyRateSAH": 0.0251,\
+                "sequenceUpdated": 4,\
+                "sequenceOriginal": 4,\
+                "operation": "C207",\
+                "key": 38440\
+            }\
+        ]\
+    }\
+]            
+
 ### Get /tickets/ticketheaders # Get all Ticket Headers
 #### In
 /tickets/ticketheaders

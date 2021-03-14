@@ -590,3 +590,57 @@ Body:
 #### Out
 
 Either a .pdf or .csv file, stream, or html.  Not sure yet.
+
+## Ticket
+
+### Get /tickets/ticketheaders # Get all Ticket Headers
+#### In
+/tickets/ticketheaders
+#### Out
+[\
+    {\
+        "jobId": "A-1200C-GR-LH",\
+        "dateCreated": "20200216180000-0600",\
+        "quantity": 1,\
+        "ticketStatus": "P",\
+        "description": "GRAY AMERICANKIP 12\" CLSD WEB - LEFT",\
+        "key": 40966,\
+        "dateStatus": "20200216180000-0600"\
+    },\
+    {\
+        "jobId": "A-1200M-GR-LH",\
+        "dateCreated": "20200216180000-0600",\
+        "quantity": 1,\
+        "ticketStatus": "P",\
+        "description": "GRAY AMERICANKIP 12\" MT-WEB - LEFT",\
+        "key": 40963,\
+        "dateStatus": "20200216180000-0600"\
+    },\
+    {\
+        "jobId": "A-1275H-GR-LH",\
+        "dateCreated": "20200216180000-0600",\
+        "quantity": 1,\
+        "ticketStatus": "P",\
+        "description": "GRAY AMERKIP 12.75\", H-WEB - LEFT",\
+        "key": 40965,\
+        "dateStatus": "20200216180000-0600"\
+    },\
+    {\
+        "jobId": "A-1275H-GR-LH",\
+        "dateCreated": "20200216180000-0600",\
+        "quantity": 1,\
+        "ticketStatus": "P",\
+        "description": "GRAY AMERKIP 12.75\", H-WEB - LEFT",\
+        "key": 40960,\
+        "dateStatus": "20200216180000-0600"\
+    },\
+    {\
+        "jobId": "A-1275M-GR-LH",\
+        "dateCreated": "20200216180000-0600",\
+        "quantity": 1,\
+        "ticketStatus": "P",\
+        "description": "GRAY AMERKIP 12.75\" MOD TRAP - LEFT",\
+        "key": 40959,\
+        "dateStatus": "20200216180000-0600"\
+    }\
+]    

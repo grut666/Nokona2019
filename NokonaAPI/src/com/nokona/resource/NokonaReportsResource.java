@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.nokona.data.NokonaDatabase;
+import com.nokona.enums.ReportCategory;
 import com.nokona.exceptions.PDFException;
 import com.nokona.qualifiers.BaseDaoQualifier;
 import com.nokona.reports.OrderBy;
@@ -61,9 +62,12 @@ public class NokonaReportsResource {
 		List<OrderBy> ordersBy = new ArrayList<OrderBy>();
 		ordersBy.add(orderBy);
 		ordersBy.add(orderBy2);
-
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("ACTIVE", "Y");
+		
 		return Response
-				.ok(new ReportProperties("Dummy Report", new Date(), new Date(), ordersBy, "111", "222", true, true))
+				.ok(new ReportProperties(ReportCategory.EMPLOYEE, 
+						parameters, "Dummy Report", new Date(), new Date(), ordersBy, "111", "222", true, true))
 				.build();
 
 	}

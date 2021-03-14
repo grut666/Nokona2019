@@ -68,8 +68,11 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		if (psGetTickets == null) {
 			try {
 				psGetTickets = getConn().prepareStatement(
-						"Select * from ticketheader join ticketdetail on ticketheader.key = ticketdetail.key "
-								+ "order by ticketheader.key, sequence");
+						"Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid " +
+				                "join ticketdetail on ticketheader.key = ticketdetail.key " +
+								"join operation on ticketdetail.opcode = operation.opcode " + 
+				                "where ticketheader.jobid like 'A-1275%' " + // Limiting for testing, otherwise too large
+							    "order by ticketheader.key, sequence");
 
 			} catch (SQLException e) {
 				throw new DatabaseException(e.getMessage(), e);
@@ -162,7 +165,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		try {
 			if (psAddTicketHeader == null) {
 				conn.prepareStatement(
-						"Insert into TicketHeader (JobID, DateCreated, Status, StatusDate, Quantity) values (?,?,?,?,?)",
+						"Insert into TicketHeader (JobID, CreatedDate, Status, StatusDate, Quantity) values (?,?,?,?,?)",
 						PreparedStatement.RETURN_GENERATED_KEYS);
 			}
 
@@ -318,7 +321,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		if (psGetTicketHeaders == null) {
 			try {
 				psGetTicketHeaders = conn
-						.prepareStatement("Select * from ticketheader " + "order by dateCreated desc, jobID, Status");
+						.prepareStatement("Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid " + "order by CreatedDate desc, jobheader.jobID, Status");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -342,8 +345,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		TicketHeader ticketHeader = null;
 		if (psGetTicketHeaderByKey == null) {
 			try {
-				psGetTicketHeaderByKey = conn.prepareStatement("Select * from ticketheader join job on "
-						+ "ticketheader.jobid = job.jobid where ticketheader.key = ?");
+				psGetTicketHeaderByKey = conn.prepareStatement("Select * from ticketheader join jobHeader on "
+						+ "ticketheader.jobid = jobHeader.jobid where ticketheader.key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -406,7 +409,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 
 		int key = rs.getInt("Key");
 		String jobId = rs.getString("JobID"); //
-		String description = rs.getString("JobHeader.Description");
+		String description = rs.getString("Description");
 		Date createdDate = DateUtilities.convertSQLDateToUtilDate(rs.getDate("CreatedDate"));
 		Date dateStatus = DateUtilities.convertSQLDateToUtilDate(rs.getDate("StatusDate"));
 		String ticketStatusString = rs.getString("Status");
@@ -426,7 +429,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		int updatedSequence = rs.getInt("UpdatedSequence");
 		Date statusDate = DateUtilities.convertSQLDateToUtilDate(rs.getDate("StatusDate"));
 		String operationStatusString = rs.getString("Status");
-		String operationDescription = rs.getString("Operation.Description");
+		String operationDescription = rs.getString("operation.Description");
 		OperationStatus operationStatus = OperationStatus.INCOMPLETE;
 		if ("C".equals(operationStatusString)) {
 			operationStatus = OperationStatus.valueOf(operationStatusString);

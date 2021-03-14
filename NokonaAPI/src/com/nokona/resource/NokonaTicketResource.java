@@ -74,7 +74,7 @@ public class NokonaTicketResource {
 	@Path("/ticketheaders")
 	public Response getTicketHeaders() {
 
-		try {
+		 try {
 			return Response.status(200).entity(db.getTicketHeaders()).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
@@ -105,26 +105,26 @@ public class NokonaTicketResource {
 		return Response.status(200).entity(ticketHeader).build();
 	}
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{key}")
-	public Response getTicketByKey(@PathParam("key") long key) {
-
-		Ticket ticket;
-
-		try {
-			ticket = db.getTicketByKey(key);
-
-		} catch (DataNotFoundException ex) {
-			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
-		} catch (DatabaseException ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		} catch (Exception ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
-		}
-		// String year = ticketHeader.getDateCreated().toString();
-		return Response.status(200).entity(ticket).build();
-	}
+//	@GET
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@Path("/{key}")
+//	public Response getTicketByKey(@PathParam("key") long key) {
+//
+//		Ticket ticket;
+//
+//		try {
+//			ticket = db.getTicketByKey(key);
+//
+//		} catch (DataNotFoundException ex) {
+//			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
+//		} catch (DatabaseException ex) {
+//			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+//		} catch (Exception ex) {
+//			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+//		}
+//		// String year = ticketHeader.getDateCreated().toString();
+//		return Response.status(200).entity(ticket).build();
+//	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

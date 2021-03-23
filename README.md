@@ -381,6 +381,7 @@ operations/XYZ1
         "standardQuantity": 10\
     }\
 ] 
+
 ### Get /jobs/{jobId} # Get 1 entire Job (Header and Detail) Object by unique jobId
 #### In
 /jobs/BFG
@@ -439,6 +440,7 @@ operations/XYZ1
     "key": 5253,\
     "standardQuantity": 10\
 }
+
 ### Get /jobs/jobheaders/bykey/{key} # Get 1 Job Header by unique key
 #### In
 /jobs/jobheaders/bykey/5565
@@ -450,6 +452,40 @@ operations/XYZ1
     "key": 5565,\
     "standardQuantity": 10\
 }
+
+### Put /jobs # Add or update one entire job
+#### In
+{\
+    "header": {\
+        "jobId": "A-3350C-GR-LH",\
+        "description": "GRAY AMERKIP 33.5\" CAT MITT, CW - LEFT",\
+        "jobType": "B",\
+        "key": 10445,\
+        "standardQuantity": 10\
+    },\
+    "details": [\
+        {
+            "jobId": "A-3350C-GR-LH",\
+            "sequence": 0,\
+            "opCode": "111"\
+        },\
+        {\
+            "jobId": "A-3350C-GR-LH",\
+            "sequence": 1,\
+            "opCode": "112"\
+        },\
+        {\
+            "jobId": "A-3350C-GR-LH",\
+            "sequence": 2,\
+            "opCode": "222"\
+        },\
+        {\
+            "jobId": "A-3350C-GR-LH",\
+            "sequence": 3,\
+            "opCode": "G779"\
+        }\
+    ]    
+
 ### Put /jobs/jobheaders/{jobId} # Update one Job Header Record
 #### In
 /jobs/jobheaders/BF1125

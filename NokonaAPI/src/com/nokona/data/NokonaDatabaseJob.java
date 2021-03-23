@@ -16,8 +16,8 @@ public interface NokonaDatabaseJob extends NokonaDatabase {
 	JobHeader addJobHeader(JobHeader jobHeader) throws DatabaseException;
 	
 	List<JobDetail> getJobDetails(String jobId) throws DatabaseException;
-	List<JobDetail> updateJobDetails(JobDetail jobDetail)throws DatabaseException;
-	List<JobDetail> addJobDetails(JobDetail jobDetail) throws DatabaseException;
+	void updateJobDetail(JobDetail jobDetail)throws DatabaseException;
+	void addJobDetail(JobDetail jobDetail) throws DatabaseException;
 	
 	Job getJob(String jobId) throws DatabaseException;
 	Job updateJob(Job job) throws DatabaseException;

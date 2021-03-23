@@ -398,20 +398,17 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	}
 
 	@Override
-	public List<JobDetail> updateJobDetails(JobDetail jobDetail) throws DatabaseException {
-		// TODO Auto-generated method stub
-		return null;
+	public void updateJobDetail(JobDetail jobDetail) throws DatabaseException {
+		// possibly not needed
 	}
 
 	@Override
-	public List<JobDetail> addJobDetails(JobDetail jobDetail) throws DatabaseException {
-		// TODO Auto-generated method stub
-		return null;
+	public void addJobDetail(JobDetail jobDetail) throws DatabaseException {
+		// possibly not needed
 	}
 
 	@Override
 	public Job getJob(String jobId) throws DatabaseException {
-
 		Job job = new Job(getJobHeader(jobId), getJobDetails(jobId));
 		return job;
 
@@ -419,14 +416,19 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
 	@Override
 	public Job updateJob(Job job) throws DatabaseException {
-		// TODO Auto-generated method stub
-		return null;
+		return addJob(job);
 	}
 
 	@Override
 	public Job addJob(Job job) throws DatabaseException {
-		// TODO Auto-generated method stub
-		return null;
+		String jobId = job.getHeader().getJobId();
+		deleteJob(job.getHeader().getJobId());
+		addJobHeader(job.getHeader());
+		for(JobDetail jobDetail: job.getDetails()) {
+			addJobDetail(jobDetail);
+		}
+		return getJob(jobId);
+		
 	}
 
 	private JobHeader convertJobHeaderFromResultSet(ResultSet rs) throws SQLException {

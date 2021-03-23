@@ -1,7 +1,5 @@
 package com.nokona.resource;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -19,6 +17,7 @@ import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
+import com.nokona.model.Job;
 import com.nokona.model.JobDetail;
 import com.nokona.model.JobHeader;
 
@@ -140,7 +139,8 @@ public class NokonaJobResource {
 			return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
 		}
 		try {
-			return Response.status(200).entity(db.updateJobDetails(jobDetailIn)).build();
+			db.updateJobDetail(jobDetailIn);
+			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -156,9 +156,9 @@ public class NokonaJobResource {
 
 	@Path("/jobdetails")
 	public Response addJobDetail(JobDetail jobDetailIn) {
-		List<JobDetail> jobDetails;
+
 		try {
-			jobDetails = db.addJobDetails(jobDetailIn);
+		  db.addJobDetail(jobDetailIn);
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -166,7 +166,7 @@ public class NokonaJobResource {
 		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
-		return Response.status(201).entity(jobDetails).build();
+		return Response.status(201).entity("{\"Success\":\"200\"}").build();
 	}
 	
 
@@ -184,8 +184,6 @@ public class NokonaJobResource {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 	}
-
-
 	
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
@@ -220,6 +218,23 @@ public class NokonaJobResource {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 
+	}
+	@PUT
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/")
+	public Response addJob(Job jobIn) {
+		Job job;
+		try {
+			job = db.addJob(jobIn);
+		} catch (DuplicateDataException e) {
+			return Response.status(422).entity(e.getMessage()).build();
+		} catch (DatabaseConnectionException ex) {
+			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (DatabaseException ex) {
+			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+		return Response.status(201).entity(job).build();
 	}
 
 }

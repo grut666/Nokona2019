@@ -22,7 +22,7 @@ public interface NokonaDatabaseJob extends NokonaDatabase {
 	Job getJob(String jobId) throws DatabaseException;
 	Job updateJob(Job job) throws DatabaseException;
 	Job addJob(Job job) throws DatabaseException;
-	void deleteJobByKey(long key) throws DatabaseException;
+//	void deleteJobByKey(long key) throws DatabaseException;
 	void deleteJob(String jobId) throws DatabaseException;
 	
 	

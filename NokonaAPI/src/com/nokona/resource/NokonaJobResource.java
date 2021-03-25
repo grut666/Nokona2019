@@ -202,27 +202,25 @@ public class NokonaJobResource {
 		}
 
 	}
-	@DELETE
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/bykey/{key}")
-	public Response deleteJobByKey(@PathParam("key") Long key) {
-
-		try {
-			db.deleteJobByKey(key);
-			return Response.status(200).entity("{\"Success\":\"200\"}").build();
-		} catch (DataNotFoundException ex) {
-			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
-		} catch (DatabaseConnectionException ex) {
-			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		} catch (DatabaseException ex) {
-			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		}
-
-	}
+//	@DELETE
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@Path("/bykey/{key}")
+//	public Response deleteJobByKey(@PathParam("key") Long key) {
+//
+//		try {
+//			db.deleteJobByKey(key);
+//			return Response.status(200).entity("{\"Success\":\"200\"}").build();
+//		} catch (DataNotFoundException ex) {
+//			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
+//		} catch (DatabaseConnectionException ex) {
+//			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+//		} catch (DatabaseException ex) {
+//			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+//		}
+//	}
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/")
 	public Response addJob(Job jobIn) {
 		Job job;
 		try {

@@ -21,7 +21,7 @@ public class JobValidator {
 			try {
 				addPS = conn.prepareStatement(
 
-						"Select Job.key from JobHeader where JobID = ?");
+						"Select JobHeader.key from JobHeader where JobID = ?");
 
 			} catch (SQLException e) {
 				errors += e.getMessage() + "\n";

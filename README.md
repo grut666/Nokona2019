@@ -398,32 +398,38 @@ operations/XYZ1
         {\
             "sequence": 0,\
             "jobId": "BFG",\
-            "opCode": "111"\
+            "opCode": "111",\
+            "key": 567\
         },\
         {\
             "sequence": 1,\
             "jobId": "BFG",\
-            "opCode": "222"\
+            "opCode": "222",\
+            "key": 568\
         },\
         {\
             "sequence": 2,\
             "jobId": "BFG",\
-            "opCode": "GA7"\
+            "opCode": "GA7",\
+            "key": 569\
         },\
         {\
             "sequence": 3,\
             "jobId": "BFG",\
-            "opCode": "GA8"\
+            "opCode": "GA8",\
+            "key": 570\
         },\
         {\
             "sequence": 4,\
             "jobId": "BFG",\
-            "opCode": "GA9"\
+            "opCode": "GA9",\
+            "key": 571\
         },\
         {\
             "sequence": 5,\
             "jobId": "BFG",\
-            "opCode": "GB3"\
+            "opCode": "GB3",\
+            "key": 572\
         }\
     ]\
 }

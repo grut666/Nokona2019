@@ -200,8 +200,8 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 		if (psDelLaborCodeByKey == null) {
 			try {
 				psDelLaborCodeByKey = conn.prepareStatement("Delete From LaborCode where LaborCode.Key = ?");
-				psMoveDeletedLaborCodeByKey = conn.prepareStatement("INSERT INTO Deleted_LaborCode (Deleted_LaborCode.key, Description, LaborCode, LaborRate) " + 
-						"  SELECT Deleted_LaborCode.key, Description, LaborCode, LaborRate FROM LaborCode WHERE LaborCode.Key = ?");
+				psMoveDeletedLaborCodeByKey = conn.prepareStatement("INSERT INTO Deleted_LaborCode (Deleted_LaborCode.Key, Description, LaborCode, LaborRate) " + 
+						"  SELECT LaborCode.Key, Description, LaborCode, LaborRate FROM LaborCode WHERE LaborCode.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -232,8 +232,8 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 		if (psDelLaborCodeByLaborCode == null) {
 			try {
 				psDelLaborCodeByLaborCode = conn.prepareStatement("Delete From LaborCode where LaborCode = ?");
-				psMoveDeletedLaborCodeByLaborCode = conn.prepareStatement("INSERT INTO Deleted_LaborCode (Deleted_LaborCode.key, Description, LaborCode, LaborRate) " + 
-						"  SELECT Deleted_LaborCode.key, Description, LaborCode, LaborRate FROM LaborCode WHERE LaborCode = ?");
+				psMoveDeletedLaborCodeByLaborCode = conn.prepareStatement("INSERT INTO Deleted_LaborCode (Deleted_LaborCode.Key, Description, LaborCode, LaborRate) " + 
+						"  SELECT LaborCode.Key, Description, LaborCode, LaborRate FROM LaborCode WHERE LaborCode.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());

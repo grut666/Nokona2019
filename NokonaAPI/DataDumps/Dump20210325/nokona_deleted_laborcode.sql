@@ -26,10 +26,10 @@ CREATE TABLE `deleted_laborcode` (
   `LaborCode` int(11) DEFAULT NULL,
   `Description` varchar(20) DEFAULT NULL,
   `LaborRate` double DEFAULT NULL,
-  `Key` int(11) NOT NULL AUTO_INCREMENT,
+  `Key` int(11) NOT NULL,
   `DeleteDate` date DEFAULT NULL,
   PRIMARY KEY (`Key`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,6 +38,7 @@ CREATE TABLE `deleted_laborcode` (
 
 LOCK TABLES `deleted_laborcode` WRITE;
 /*!40000 ALTER TABLE `deleted_laborcode` DISABLE KEYS */;
+INSERT INTO `deleted_laborcode` VALUES (3,'STAMPING',13.2,3,NULL);
 /*!40000 ALTER TABLE `deleted_laborcode` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -50,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-25 18:22:02
+-- Dump completed on 2021-03-26  8:25:23

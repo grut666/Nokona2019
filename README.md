@@ -657,7 +657,7 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
         "ticketDetails": [\
             {\
                 "statusDate": "20190813190000-0500",\
-                "barCodeID": 0,\
+                "employeeBarCodeID": 0,\
                 "operationStatus": "INCOMPLETE",\
                 "operationDescription": "CLICK GLOVE COMPLETE",\
                 "quantity": 10,\
@@ -669,7 +669,7 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
             },\
             {\
                 "statusDate": "20190813190000-0500",\
-                "barCodeID": 0,\
+                "employeeBarCodeID": 0,\
                 "operationStatus": "INCOMPLETE",\
                 "operationDescription": "CLICK SYNTHETIC SHEARLING-WRIST",\
                 "quantity": 10,\
@@ -681,7 +681,7 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
             },\
             {\
                 "statusDate": "20190813190000-0500",\
-                "barCodeID": 1391,\
+                "employeeBarCodeID": 1391,\
                 "operationStatus": "INCOMPLETE",\
                 "operationDescription": "CLICK LINING FINGERS",\
                 "quantity": 10,\
@@ -715,7 +715,7 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
     "ticketDetails": [\
         {\
             "statusDate": "20200216180000-0600",\
-            "barCodeID": 0,\
+            "employeeBarCodeID": 0,\
             "operationStatus": "INCOMPLETE",\
             "operationDescription": "SEW HEEL FELT & PLASTIC",\
             "quantity": 1,\
@@ -727,7 +727,7 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
         },\
         {\
             "statusDate": "20200216180000-0600",\
-            "barCodeID": 0,\
+            "employeeBarCodeID": 0,\
             "operationStatus": "INCOMPLETE",\
             "operationDescription": "SEGMENT A",\
             "quantity": 1,\
@@ -739,7 +739,7 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
         },\
         {\
             "statusDate": "20200216180000-0600",\
-            "barCodeID": 0,\
+            "employeeBarCodeID": 0,\
             "operationStatus": "INCOMPLETE",\
             "operationDescription": "LACE #1 (PADS)",\
             "quantity": 1,\
@@ -751,7 +751,7 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
         },\
         {\
             "statusDate": "20200216180000-0600",\
-            "barCodeID": 0,\
+            "employeeBarCodeID": 0,\
             "operationStatus": "INCOMPLETE",\
             "operationDescription": "LACE #2  (PALM, PUNCH HOLES)",\
             "quantity": 1,\
@@ -763,7 +763,7 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
         },\
         {\
             "statusDate": "20200216180000-0600",\
-            "barCodeID": 0,\
+            "employeeBarCodeID": 0,\
             "operationStatus": "INCOMPLETE",\
             "operationDescription": "LACE STEP 3 (HEEL & WRIST)",\
             "quantity": 1,\
@@ -844,9 +844,10 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
     "dateStatus": "20200216180000-0600"\
 }
 
-### Post tickets # Add 1 ticket
+### Post /tickets # Add 1 ticket
 
 #### In
+
 Body:
 
 {\
@@ -867,7 +868,7 @@ Body:
     },\
     "ticketDetails": [\
         {\
-            "barCodeID": 0,\
+            "employeeBarCodeID": 0,\
             "operationStatus": "INCOMPLETE",\
             "operationDescription": "SEGMENT A",\
             "quantity": 10,\
@@ -878,7 +879,7 @@ Body:
             "key": 40978\
         },\
         {\
-            "barCodeID": 0,\
+            "employeeBarCodeID": 0,\
             "operationStatus": "INCOMPLETE",\
             "operationDescription": "CLICK HEEL FELT               WORTH",\
             "quantity": 10,\

@@ -45,7 +45,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 
 	private PreparedStatement psAddTicketHeader;
 	private PreparedStatement psAddTicketDetail;
-	private PreparedStatement psUpdateTicket;
+
 
 	PreparedStatement psDelTicketByKey;
 	PreparedStatement psDelTicketDetailByKey;

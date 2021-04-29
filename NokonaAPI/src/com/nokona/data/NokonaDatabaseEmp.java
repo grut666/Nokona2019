@@ -2,8 +2,9 @@ package com.nokona.data;
 
 import java.util.List;
 
-import com.nokona.exceptions.DatabaseException;
 import com.nokona.model.Employee;
+
+import com.nokona.exceptions.DatabaseException;
 
 public interface NokonaDatabaseEmp extends NokonaDatabase {
 

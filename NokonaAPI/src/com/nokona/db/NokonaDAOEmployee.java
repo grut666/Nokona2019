@@ -1,54 +1,68 @@
 package com.nokona.db;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.enterprise.inject.Default;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.XMLFormatter;
 
 import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
+import com.nokona.exceptions.InvalidInsertException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.EmployeeFormatter;
 import com.nokona.model.Employee;
 import com.nokona.validator.EmployeeValidator;
 
-@Default
 public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
+	private PreparedStatement psGetEmployeeByKey;
+	private PreparedStatement psGetEmployeeByEmpId;
+	private PreparedStatement psGetEmployees;
+	private PreparedStatement psAddEmployee;
+	private PreparedStatement psAddEmployeeDupeCheck;
+	private PreparedStatement psAddEmployeeLaborCodeCheck;
+	private PreparedStatement psUpdateEmployee;
+
+	private PreparedStatement psMoveDeletedEmployeeByKey;
+	private PreparedStatement psMoveDeletedEmployeeByEmpId;
+	private PreparedStatement psDelEmployeeByKey;
+	private PreparedStatement psDelEmployeeByEmpId;
+
+	// private Connection accessConn;
+	private static final Logger LOGGER = Logger.getLogger("EmployeeLogger");
+
+	// private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+
 	public NokonaDAOEmployee() throws DatabaseException {
 		super();
+		// try {
+		// Class.forName(JDBC_DRIVER);
+		// } catch (ClassNotFoundException e) {
+		// System.out.println("Class not registered: " + e.getMessage());
+		// }
 
 	}
+
 	public NokonaDAOEmployee(String userName, String password) throws DatabaseException {
 		super(userName, password);
 
 	}
-
-	PreparedStatement psGetEmployeeByKey;
-	PreparedStatement psGetEmployeeByEmpId;
-	PreparedStatement psGetEmployees;
-	PreparedStatement psAddEmployee;
-	PreparedStatement psAddEmployeeDupeCheck;
-	PreparedStatement psAddEmployeeLaborCodeCheck;
-	PreparedStatement psUpdateEmployee;
-
-	PreparedStatement psGetOperationByKey;
-	PreparedStatement psGetOperationByOpCode;
-	PreparedStatement psGetOperations;
-
-	PreparedStatement psDelEmployeeByKey;
-	PreparedStatement psDelEmployeeByEmpId;
 
 	@Override
 	public List<Employee> getEmployees() throws DatabaseException {
 		List<Employee> employees = new ArrayList<Employee>();
 		if (psGetEmployees == null) {
 			try {
-				psGetEmployees = getConn().prepareStatement("Select * from Employee where isDeleted <> 'T' order by EmpID");
+				psGetEmployees = getConn().prepareStatement("Select * from Employee order by EmpID");
 
 			} catch (SQLException e) {
 				throw new DatabaseException(e.getMessage(), e);
@@ -70,7 +84,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 		Employee emp = null;
 		if (psGetEmployeeByKey == null) {
 			try {
-				psGetEmployeeByKey = conn.prepareStatement("Select * from Employee where Employee.key = ? and isDeleted <> 'T'");
+				psGetEmployeeByKey = conn.prepareStatement("Select * from Employee where Employee.key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -94,14 +108,14 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 	}
 
 	@Override
-	public Employee getEmployee(String empID) throws DatabaseException {
+	public Employee getEmployee(String empID) throws DatabaseException, NullInputDataException {
 		if (empID == null) {
 			throw new NullInputDataException("empID cannot be null");
 		}
 		Employee emp = null;
 		if (psGetEmployeeByEmpId == null) {
 			try {
-				psGetEmployeeByEmpId = conn.prepareStatement("Select * from Employee where Employee.EmpID = ? and isDeleted <> 'T'");
+				psGetEmployeeByEmpId = conn.prepareStatement("Select * from Employee where Employee.EmpID = ?");
 
 			} catch (SQLException e) {
 				throw new DatabaseException(e.getMessage(), e);
@@ -165,6 +179,8 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
 			}
+			// Remove next line when finished with Beta testing
+			logit("UPDATE", employeeIn);
 			return getEmployeeByKey(formattedEmployee.getKey());
 
 		} catch (SQLException e) {
@@ -191,14 +207,13 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			}
 		}
 		try {
-		psAddEmployeeDupeCheck.setInt(1, formattedEmployee.getBarCodeID());
-		psAddEmployeeDupeCheck.setString(2, formattedEmployee.getEmpId());
-		ResultSet rs = psAddEmployeeDupeCheck.executeQuery();
-		if (rs.next()) {
-			throw new DuplicateDataException("BarCodeID or EmpID is already in use");
-		}
-		}
-		catch(SQLException e) {
+			psAddEmployeeDupeCheck.setInt(1, formattedEmployee.getBarCodeID());
+			psAddEmployeeDupeCheck.setString(2, formattedEmployee.getEmpId());
+			ResultSet rs = psAddEmployeeDupeCheck.executeQuery();
+			if (rs.next()) {
+				throw new DuplicateDataException("BarCodeID or EmpID is already in use");
+			}
+		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DuplicateDataException(e.getMessage(), e);
 		}
@@ -255,6 +270,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			try (ResultSet generatedKeys = psAddEmployee.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
 					newEmp.setKey(generatedKeys.getLong(1));
+					logit("ADD", newEmp);
 					return getEmployeeByKey(generatedKeys.getLong(1));
 				} else {
 					throw new SQLException("Creating user failed, no ID obtained.");
@@ -268,11 +284,13 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 
 	@Override
 	public void deleteEmployeeByKey(long key) throws DatabaseException {
-		// TODO Set active status to false instead?
-		
+
 		if (psDelEmployeeByKey == null) {
 			try {
 				psDelEmployeeByKey = conn.prepareStatement("Delete From Employee where Employee.Key = ?");
+				psMoveDeletedEmployeeByKey = conn.prepareStatement(
+						"INSERT INTO Deleted_Employee (Deleted_Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) "
+								+ "  SELECT Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active FROM Employee WHERE Employee.Key = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -280,12 +298,19 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			}
 		}
 		try {
+			psMoveDeletedEmployeeByKey.setLong(1, key);
+			int rowCount = psMoveDeletedEmployeeByKey.executeUpdate();
+			if (rowCount == 0) {
+				throw new DataNotFoundException("Key " + key + " could not be inserted into delete table");
+			}
 			psDelEmployeeByKey.setLong(1, key);
-			int rowCount = psDelEmployeeByKey.executeUpdate();
+			rowCount = psDelEmployeeByKey.executeUpdate();
 
 			if (rowCount == 0) {
+				conn.rollback();
 				throw new DataNotFoundException("Error.  Delete Employee key " + key + " failed");
 			}
+			logit("DELETE_BY_KEY", new Employee(key, null, null, 0, 0, null, false));
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -295,13 +320,14 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 	}
 
 	@Override
-	public void deleteEmployee(String empID) throws DatabaseException {
-		if (empID == null) {
-			throw new NullInputDataException("empID cannot be null");
-		}
+	public void deleteEmployee(String empId) throws DatabaseException {
+
 		if (psDelEmployeeByEmpId == null) {
 			try {
-				psDelEmployeeByEmpId = conn.prepareStatement("Delete From Employee where EmpID = ?");
+				psDelEmployeeByEmpId = conn.prepareStatement("Delete From Employee where empID = ?");
+				psMoveDeletedEmployeeByEmpId = conn.prepareStatement(
+						"INSERT INTO Deleted_Employee (Deleted_Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) "
+								+ "  SELECT Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active FROM Employee WHERE empid = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -309,17 +335,51 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			}
 		}
 		try {
-			psDelEmployeeByEmpId.setString(1, empID);
-			int rowCount = psDelEmployeeByEmpId.executeUpdate();
+			psMoveDeletedEmployeeByEmpId.setString(1, empId);
+			int rowCount = psMoveDeletedEmployeeByEmpId.executeUpdate();
+			if (rowCount == 0) {
+				throw new InvalidInsertException("Empid " + empId + " could not be inserted into delete table");
+			}
+			psDelEmployeeByEmpId.setString(1, empId);
+			rowCount = psDelEmployeeByEmpId.executeUpdate();
 
 			if (rowCount == 0) {
-				throw new DataNotFoundException("Error.  Delete Emp ID " + empID + " failed");
+				conn.rollback();
+				throw new DataNotFoundException("Error.  Delete Employee empId " + empId + " failed");
 			}
-
+			logit("DELETE_BY_ID", new Employee(0, null, null, 0, 0, empId, false));
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
 		}
 	}
 
+	// Remove below when finished with Beta testing
+
+	protected void logit(String TypeOfUpdate, Employee employeeIn) {
+		Handler consoleHandler = null;
+		Handler fileHandler = null;
+		try {
+			// Creating consoleHandler and fileHandler
+			consoleHandler = new ConsoleHandler();
+			fileHandler = new FileHandler("/logs/employee.log", 0, 1, true);
+			fileHandler.setFormatter(new XMLFormatter());
+
+			// Assigning handlers to LOGGER object
+			LOGGER.addHandler(consoleHandler);
+			LOGGER.addHandler(fileHandler);
+
+			// Setting levels to handlers and LOGGER
+			consoleHandler.setLevel(Level.ALL);
+			fileHandler.setLevel(Level.ALL);
+			LOGGER.setLevel(Level.ALL);
+
+			LOGGER.config("Configuration done.");
+
+			LOGGER.log(Level.INFO, TypeOfUpdate, employeeIn);
+			fileHandler.close();
+		} catch (IOException exception) {
+			LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
+		}
+	}
 }

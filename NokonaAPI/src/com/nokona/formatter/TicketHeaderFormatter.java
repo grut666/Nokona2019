@@ -5,12 +5,12 @@ import com.nokona.model.TicketHeader;
 public class TicketHeaderFormatter {
 	
 	public static TicketHeader format(TicketHeader ticketHeader) {
-		ticketHeader.setModel(formatTicketModel(ticketHeader.getModel()));
+		ticketHeader.setJobId(formatTicketJob(ticketHeader.getJobId()));
 		return ticketHeader;
 	}
 
-	public static String formatTicketModel(String ticketModel) {
-		return ticketModel.trim().toUpperCase();
+	public static String formatTicketJob(String ticketJob) {
+		return ticketJob.trim().toUpperCase();
 	}
 	
 

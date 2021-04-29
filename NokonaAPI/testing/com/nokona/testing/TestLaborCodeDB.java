@@ -42,7 +42,7 @@ class TestLaborCodeDB {
 	@Test
 	void testGetEmployeeZeroArguments() throws DatabaseException {
 		LaborCode laborCode = new LaborCode();
-		assertEquals(0, laborCode.getCode());
+		assertEquals(0, laborCode.getLaborCode());
 		assertEquals("", laborCode.getDescription());
 		assertEquals(0, laborCode.getKey());
 		assertEquals(0, laborCode.getRate());
@@ -50,7 +50,7 @@ class TestLaborCodeDB {
 	@Test
 	void testGetEmployeeFullArguments() throws DatabaseException {
 		LaborCode laborCode = new LaborCode(10, 50, "Testing Labor Code", 5.16 );
-		assertEquals(50, laborCode.getCode());
+		assertEquals(50, laborCode.getLaborCode());
 		assertEquals("Testing Labor Code", laborCode.getDescription());
 		assertEquals(10, laborCode.getKey());
 		assertEquals(5.16, laborCode.getRate());
@@ -60,19 +60,19 @@ class TestLaborCodeDB {
 	@Test
 	void testGetEmployeeFromDBByID() throws DatabaseException {
 		LaborCode laborCode = db.getLaborCode(7);
-		assertEquals(7, laborCode.getCode());
+		assertEquals(7, laborCode.getLaborCode());
 		assertEquals("CLICK LEATHER", laborCode.getDescription());
 		assertEquals(12, laborCode.getKey());
-		assertEquals(8.15, laborCode.getRate());
+		assertEquals(10.0, laborCode.getRate());
 
 	}
 	@Test
 	void testGetEmployeeFromDBByKey() throws DatabaseException {
 		LaborCode laborCode = db.getLaborCodeByKey(12);
-		assertEquals(7, laborCode.getCode());
+		assertEquals(7, laborCode.getLaborCode());
 		assertEquals("CLICK LEATHER", laborCode.getDescription());
 		assertEquals(12, laborCode.getKey());
-		assertEquals(8.15, laborCode.getRate());
+		assertEquals(10.0, laborCode.getRate());
 
 	}
 

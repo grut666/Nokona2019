@@ -20,7 +20,7 @@ public class OperationValidator {
 		if (addPS == null) {
 			try {
 				addPS = conn.prepareStatement(
-						"Select Operation.key from Operation where opID = ?");
+						"Select Operation.key from Operation where opCode = ?");
 			} catch (SQLException e) {
 				errors += e.getMessage() + "\n";
 			}	
@@ -44,7 +44,7 @@ public class OperationValidator {
 		if (updatePS == null) {
 			try {
 				updatePS = conn.prepareStatement(
-						"Select Operation.key from Operation where Operation.key <> ? and (OpCodeID = ?)");
+						"Select Operation.key from Operation where Operation.key <> ? and (OpCode = ?)");
 			} catch (SQLException e) {
 				errors += e.getMessage() + "\n";
 			}	

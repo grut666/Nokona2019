@@ -1,35 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="lib" path="lib/jdbc_lib/commons-lang3-3.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/jdbc_lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/jdbc_lib/hsqldb-2.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/jdbc_lib/jackcess-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jdbc_lib/ucanaccess-5.0.0.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="testing"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+	<classpathentry kind="src" path="reports"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_162">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.5">
+		<attributes>
+			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="Library/javaee-api-7.0-1 - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/mysql-connector-java-8.0.13.jar"/>
-	<classpathentry kind="lib" path="Library/slf4j-api-1.7.21 - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/slf4j-jdk14-1.7.21 - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomcat-api - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomcat-coyote - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomcat-dbcp - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomcat-i18n-es - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomcat-i18n-fr - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomcat-i18n-ja - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomcat-jdbc - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomcat-jni - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomcat-util - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomcat-util-scan - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomcat-websocket - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomee-catalina-7.0.2 - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomee-common-7.0.2 - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomee-jaxrs-7.0.2 - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomee-loader-7.0.2 - Copy.jar"/>
-	<classpathentry kind="lib" path="Library/tomee-webapp-7.0.2.jar"/>
-	<classpathentry kind="lib" path="Library/tomee-webservices-7.0.2 - Copy.jar"/>
+	<classpathentry kind="lib" path="lib/byte-buddy-1.10.4.jar"/>
+	<classpathentry kind="lib" path="lib/geronimo-osgi-locator-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-client-2.29.1.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-common-2.29.1.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-server-2.29.1.jar"/>
+	<classpathentry kind="lib" path="lib/lombok.jar"/>
+	<classpathentry kind="lib" path="lib/mockito-all-1.9.0.jar"/>
+	<classpathentry kind="lib" path="lib/mockito-core-3.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/mockito-core-3.2.0.zip"/>
+	<classpathentry kind="lib" path="lib/mockito-errorprone-3.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/mockito-inline-3.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/mockito-junit-jupiter-3.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-8.0.13.jar"/>
+	<classpathentry kind="lib" path="lib/objenesis-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/swagger-annotations-1.5.17.jar"/>
+	<classpathentry kind="lib" path="lib/tomee-webapp-7.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jasper/jasperreports-6.11.0.jar"/>
+	<classpathentry kind="lib" path="lib/jasper/commons-collections4-4.2.jar"/>
+	<classpathentry kind="lib" path="lib/jasper/commons-math3-3.6.1-tests.jar"/>
+	<classpathentry kind="lib" path="lib/jasper/commons-math3-3.6.1-tools.jar"/>
+	<classpathentry kind="lib" path="lib/jasper/commons-math3-3.6.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-io-2.7.jar"/>
+	<classpathentry kind="lib" path="lib/javaee-api-7.0-1.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.21.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-jdk14-1.7.21.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-api.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-coyote.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-dbcp.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-i18n-es.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-i18n-fr.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-i18n-ja.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-jdbc.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-jni.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-util-scan.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-util.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-websocket.jar"/>
+	<classpathentry kind="lib" path="lib/tomee-catalina-7.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/tomee-common-7.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/tomee-jaxrs-7.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/tomee-loader-7.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/tomee-webservices-7.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/pdf_box/pdfbox-app-2.0.20.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

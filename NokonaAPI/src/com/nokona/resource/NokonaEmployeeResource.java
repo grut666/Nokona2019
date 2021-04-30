@@ -1,5 +1,7 @@
 package com.nokona.resource;
 
+import java.sql.SQLException;
+
 import javax.annotation.security.PermitAll;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -23,13 +25,14 @@ import com.nokona.exceptions.NullInputDataException;
 import com.nokona.model.Employee;
 import com.nokona.model.Labels;
 import com.nokona.utilities.BarCodeUtilities;
+import com.nokona.utilities.MySqlToAccess;
 
 @Path("/employees")
 @PermitAll
 public class NokonaEmployeeResource {
 	@ApplicationScoped
 
-	@Inject 
+	@Inject
 	private NokonaDatabaseEmp db;
 
 	public NokonaEmployeeResource() {
@@ -45,7 +48,7 @@ public class NokonaEmployeeResource {
 		Employee emp;
 
 		try {
-			emp = db.getEmployee(empId); 
+			emp = db.getEmployee(empId);
 
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + empId + " not found\"}").build();
@@ -86,12 +89,13 @@ public class NokonaEmployeeResource {
 	public Response getEmployees() {
 
 		try {
+//			MySqlToAccess.main(null);
 			return Response.status(200).entity(db.getEmployees()).build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
-		}
+		} 
 
 	}
 

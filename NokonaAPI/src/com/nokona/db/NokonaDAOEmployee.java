@@ -11,13 +11,12 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.XMLFormatter;
 
 import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
-import com.nokona.exceptions.InvalidInsertException;
+//import com.nokona.exceptions.InvalidInsertException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.EmployeeFormatter;
 import com.nokona.model.Employee;
@@ -32,10 +31,12 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 	private PreparedStatement psAddEmployeeLaborCodeCheck;
 	private PreparedStatement psUpdateEmployee;
 
-	private PreparedStatement psMoveDeletedEmployeeByKey;
-	private PreparedStatement psMoveDeletedEmployeeByEmpId;
+//	private PreparedStatement psMoveDeletedEmployeeByKey;
+//	private PreparedStatement psMoveDeletedEmployeeByEmpId;
 	private PreparedStatement psDelEmployeeByKey;
 	private PreparedStatement psDelEmployeeByEmpId;
+
+	private PreparedStatement psTransferEmployee;
 
 	// private Connection accessConn;
 	private static final Logger LOGGER = Logger.getLogger("EmployeeLogger");
@@ -180,7 +181,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
 			}
 			// Remove next line when finished with Beta testing
-			logit("UPDATE", employeeIn);
+			loggit("UPDATE", employeeIn);
 			return getEmployeeByKey(formattedEmployee.getKey());
 
 		} catch (SQLException e) {
@@ -270,7 +271,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			try (ResultSet generatedKeys = psAddEmployee.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
 					newEmp.setKey(generatedKeys.getLong(1));
-					logit("ADD", newEmp);
+					loggit("ADD", newEmp);
 					return getEmployeeByKey(generatedKeys.getLong(1));
 				} else {
 					throw new SQLException("Creating user failed, no ID obtained.");
@@ -288,29 +289,29 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 		if (psDelEmployeeByKey == null) {
 			try {
 				psDelEmployeeByKey = conn.prepareStatement("Delete From Employee where Employee.Key = ?");
-				psMoveDeletedEmployeeByKey = conn.prepareStatement(
-						"INSERT INTO Deleted_Employee (Deleted_Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) "
-								+ "  SELECT Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active FROM Employee WHERE Employee.Key = ?");
-
+//				psMoveDeletedEmployeeByKey = conn.prepareStatement(
+//						"INSERT INTO Deleted_Employee (Deleted_Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) "
+//								+ "  SELECT Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active FROM Employee WHERE Employee.Key = ?");
+//
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage());
 			}
 		}
 		try {
-			psMoveDeletedEmployeeByKey.setLong(1, key);
-			int rowCount = psMoveDeletedEmployeeByKey.executeUpdate();
-			if (rowCount == 0) {
-				throw new DataNotFoundException("Key " + key + " could not be inserted into delete table");
-			}
+//			psMoveDeletedEmployeeByKey.setLong(1, key);
+//			int rowCount = psMoveDeletedEmployeeByKey.executeUpdate();
+//			if (rowCount == 0) {
+//				throw new DataNotFoundException("Key " + key + " could not be inserted into delete table");
+//			}
 			psDelEmployeeByKey.setLong(1, key);
-			rowCount = psDelEmployeeByKey.executeUpdate();
+			int rowCount = psDelEmployeeByKey.executeUpdate();
 
 			if (rowCount == 0) {
 				conn.rollback();
 				throw new DataNotFoundException("Error.  Delete Employee key " + key + " failed");
 			}
-			logit("DELETE_BY_KEY", new Employee(key, null, null, 0, 0, null, false));
+			loggit("DELETE_BY_KEY", new Employee(key, null, null, 0, 0, null, false));
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -325,9 +326,9 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 		if (psDelEmployeeByEmpId == null) {
 			try {
 				psDelEmployeeByEmpId = conn.prepareStatement("Delete From Employee where empID = ?");
-				psMoveDeletedEmployeeByEmpId = conn.prepareStatement(
-						"INSERT INTO Deleted_Employee (Deleted_Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) "
-								+ "  SELECT Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active FROM Employee WHERE empid = ?");
+//				psMoveDeletedEmployeeByEmpId = conn.prepareStatement(
+//						"INSERT INTO Deleted_Employee (Deleted_Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) "
+//								+ "  SELECT Employee.key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active FROM Employee WHERE empid = ?");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -335,19 +336,19 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			}
 		}
 		try {
-			psMoveDeletedEmployeeByEmpId.setString(1, empId);
-			int rowCount = psMoveDeletedEmployeeByEmpId.executeUpdate();
-			if (rowCount == 0) {
-				throw new InvalidInsertException("Empid " + empId + " could not be inserted into delete table");
-			}
+//			psMoveDeletedEmployeeByEmpId.setString(1, empId);
+//			int rowCount = psMoveDeletedEmployeeByEmpId.executeUpdate();
+//			if (rowCount == 0) {
+//				throw new InvalidInsertException("Empid " + empId + " could not be inserted into delete table");
+//			}
 			psDelEmployeeByEmpId.setString(1, empId);
-			rowCount = psDelEmployeeByEmpId.executeUpdate();
+			int rowCount = psDelEmployeeByEmpId.executeUpdate();
 
 			if (rowCount == 0) {
 				conn.rollback();
 				throw new DataNotFoundException("Error.  Delete Employee empId " + empId + " failed");
 			}
-			logit("DELETE_BY_ID", new Employee(0, null, null, 0, 0, empId, false));
+			loggit("DELETE_BY_ID", new Employee(0, null, null, 0, 0, empId, false));
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
@@ -356,14 +357,47 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 
 	// Remove below when finished with Beta testing
 
-	protected void logit(String TypeOfUpdate, Employee employeeIn) {
+	protected void loggit(String TypeOfUpdate, Employee employeeIn) throws DatabaseException {
+		flatLog(TypeOfUpdate, employeeIn);
+		// This is for moving updates to the Access DB until the application has been
+		// completely ported over
+		if (psTransferEmployee == null) {
+			try {
+				psTransferEmployee = conn.prepareStatement(
+						"Insert into Transfer_Employee (LastName, FirstName, BarCodeID, LaborCode, EmpID, Active, UDorI) values (?,?,?,?,?,?,?)");
+
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DatabaseException(e.getMessage());
+			}
+		}
+		try {
+			psTransferEmployee.setString(1, employeeIn.getLastName());
+			psTransferEmployee.setString(2, employeeIn.getFirstName());
+			psTransferEmployee.setInt(3, employeeIn.getBarCodeID());
+			psTransferEmployee.setInt(4, employeeIn.getLaborCode());
+			psTransferEmployee.setString(5, employeeIn.getEmpId());
+			psTransferEmployee.setInt(6, employeeIn.isActive() ? 1 : 0);
+			psTransferEmployee.setString(7, TypeOfUpdate);
+			int rowCount = psTransferEmployee.executeUpdate();
+			if (rowCount != 1) {
+				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
+			}
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage(), e);
+		}
+
+	}
+
+	protected void flatLog(String TypeOfUpdate, Employee employeeIn) {
 		Handler consoleHandler = null;
 		Handler fileHandler = null;
 		try {
 			// Creating consoleHandler and fileHandler
 			consoleHandler = new ConsoleHandler();
 			fileHandler = new FileHandler("/logs/employee.log", 0, 1, true);
-			fileHandler.setFormatter(new XMLFormatter());
 
 			// Assigning handlers to LOGGER object
 			LOGGER.addHandler(consoleHandler);
@@ -374,9 +408,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			fileHandler.setLevel(Level.ALL);
 			LOGGER.setLevel(Level.ALL);
 
-			LOGGER.config("Configuration done.");
-
-			LOGGER.log(Level.INFO, TypeOfUpdate, employeeIn);
+			LOGGER.log(Level.INFO, TypeOfUpdate, gson.toJson(employeeIn));
 			fileHandler.close();
 		} catch (IOException exception) {
 			LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);

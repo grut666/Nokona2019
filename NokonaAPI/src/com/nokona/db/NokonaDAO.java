@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.google.gson.Gson;
 import com.nokona.data.NokonaDatabase;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.qualifiers.BaseDaoQualifier;
@@ -13,6 +14,7 @@ public class NokonaDAO  implements NokonaDatabase {
 	private static String DB_URL = "jdbc:mysql://localhost:3306/Nokona?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 	private static String USER_NAME = "root";
 	private static String PASSWORD = "xyz";
+	protected static Gson gson = new Gson();
 	protected Connection conn;
 	// SuperClass for all DAO classes
 	public NokonaDAO() throws DatabaseConnectionException {

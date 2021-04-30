@@ -10,9 +10,9 @@ import com.nokona.qualifiers.BaseDaoQualifier;
 @BaseDaoQualifier
 public class NokonaDAO  implements NokonaDatabase {
 	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-	private static String DB_URL = "jdbc:mysql://localhost:3306/Nokona?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-	private static String USER_NAME = "root";
-	private static String PASSWORD = "xyz";
+	private static String DB_URL = "jdbc:mysql://192.168.1.2:3306/Nokona?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+	private static String USER_NAME = "nokona";
+	private static String PASSWORD = "xyz123";
 	protected Connection conn;
 	// SuperClass for all DAO classes
 	public NokonaDAO() throws DatabaseConnectionException {
@@ -33,6 +33,7 @@ public class NokonaDAO  implements NokonaDatabase {
 	private void connectToDB(String userName, String password) throws DatabaseConnectionException {
 		if (conn == null) {
 			try {
+				System.err.println("Logging in with " + userName + " and " + password);
 				Class.forName(JDBC_DRIVER);
 				conn = DriverManager.getConnection(DB_URL, userName, password);
 				conn.setAutoCommit(true);

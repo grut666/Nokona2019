@@ -83,7 +83,9 @@ public class MySqlToAccess {
 // For local testing		
 //        String accessDB = "jdbc:ucanaccess://C:/codebase/Data/nokona.mdb";
 //      For Nokona onsite testing
-		String accessDB = "jdbc:ucanaccess://T:/nokona/nokona.mdb";
+		// Don't use T: because the task scheduler cannot see mapped drives
+		
+		String accessDB = "jdbc:ucanaccess://E:Apps/nokona/nokona.mdb";
 		try {
 			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 			accessConn = DriverManager.getConnection(accessDB);

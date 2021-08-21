@@ -31,29 +31,41 @@ public class MySqlToAccess {
 	private static PreparedStatement psSelect;
 	private static PreparedStatement psDelete;
 	private static PreparedStatement psInsert;
+	private static PreparedStatement psUpdate;
 
 	public static void main(String[] args) throws SQLException {
 		// long startTime = System.currentTimeMillis();
-		connect();
-		// DatabaseMetaData dbmd = accessConn.getMetaData();
-		// String[] types = { "TABLE" };
-		// ResultSet rs = dbmd.getTables(null, null, "%", types);
-		// while (rs.next()) {
-		// Syste"
-//			case "OPERATION":
-//				doOperations();
-//				break;
-//			}
-//		}
+				connect();
+				// DatabaseMetaData dbmd = accessConn.getMetaData();
+				// String[] types = { "TABLE" };
+				// ResultSet rs = dbmd.getTables(null, null, "%", types);
+				// while (rs.next()) {
+				// System.out.println(rs.getString("TABLE_NAME"));
+				// }
+				if (args.length == 0) {
+					doAll();
+					return;
+				}
+				for (String operation : args) {
+					switch (operation) {
+					case "EMP":
+						doEmployees();
+						break;
+					case "LABOR":
+						doLaborCodes();
+						break;
+					case "OPERATION":
+						doOperations();
+						break;
+					}
+				}
 
-		try {
-			mySqlConn.close();
-			accessConn.close();
-		} catch (SQLException e) {
-			System.err.println("Close failed: " + e.getMessage());
-		}
-		System.out.println("Success open and close");
-		
+				try {
+					mySqlConn.close();
+					accessConn.close();
+				} catch (SQLException e) {
+					System.err.println("Close failed: " + e.getMessage());
+				}
 	}
 	private static void doAll() {
 		doEmployees();
@@ -81,11 +93,11 @@ public class MySqlToAccess {
 
 	private static void connectToAccess() {
 // For local testing		
-//        String accessDB = "jdbc:ucanaccess://C:/codebase/Data/nokona.mdb";
+        String accessDB = "jdbc:ucanaccess://C:/codebase/Data/nokona.mdb";
 //      For Nokona onsite testing
 		// Don't use T: because the task scheduler cannot see mapped drives
 		
-		String accessDB = "jdbc:ucanaccess://E:Apps/nokona/nokona.mdb";
+//		String accessDB = "jdbc:ucanaccess://E:Apps/nokona/nokona.mdb";
 		try {
 			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 			accessConn = DriverManager.getConnection(accessDB);
@@ -570,11 +582,25 @@ public class MySqlToAccess {
 			String updateString = null;
 			for(int i = 0; i < autoKeys.size(); i++) {
 				switch (modType.get(i)) {
+			
 				case "UPDATE":
-					updateString = "Update Employee set xxx to yyy where Key = ?";
-
+					updateString = "Update Employee set [Last Name] to ?, [First Name] to ?, [Bar Code ID] to ?, [Labor Code] to ?, " +
+							"Active to ? where [Emp ID] = ?";
+					psUpdate = accessConn.prepareStatement(updateString);
+					psUpdate.setString(1,  recordsIn.get(i).getLastName());
+					psUpdate.setString(2,  recordsIn.get(i).getFirstName());
+					psUpdate.setInt(3,  recordsIn.get(i).getBarCodeID());
+					psUpdate.setInt(4,  recordsIn.get(i).getLaborCode());
+					psUpdate.setString(5,  recordsIn.get(i).isActive() ? "TRUE" : "FALSE");
+					psUpdate.setString(6,  recordsIn.get(i).getEmpId());
+					psUpdate.executeUpdate();
+					// Stopped here on 8/21/2021
 					
-					break;
+//
+//				    		
+//
+//					
+//					break;
 				case "ADD":
 					updateString = "Insert into Employee set xxx to yyy where Key = ?";
 					break;
@@ -589,14 +615,31 @@ public class MySqlToAccess {
 				}				
 				
 			}
-			accessConn.prepareStatement(updateString);
-			// Assuming success, kill all of the transfer_employee records
-			psSelect = mySqlConn
-					.prepareStatement("Delete from Transfer_Employee where UDorI != ' '");
-			psSelect.executeUpdate();
+			System.out.println("Update String is " + updateString);
+//			// Temporary
+//			updateString = "Select * from EMPLOYEE";
+//			PreparedStatement acSelect = accessConn.prepareStatement(updateString);
+//			ResultSet acRs = acSelect.executeQuery();
+//			ResultSetMetaData rsmd2 = acRs.getMetaData();
+//			System.out.println(rsmd2.getColumnLabel(1));
+//			System.out.println(rsmd2.getColumnLabel(2));
+//			System.out.println(rsmd2.getColumnLabel(3));
+//			System.out.println(rsmd2.getColumnLabel(4));
+//			System.out.println(rsmd2.getColumnLabel(5));
+//			System.out.println(rsmd2.getColumnLabel(6));
+//			System.out.println(rsmd2.getColumnLabel(7));
+//			acRs.next();
+//			System.out.println(acRs.getString(7));
+//			System.out.println(rsmd2.getColumnType(7));
+////			
 			
-			System.out.println("Records In is " + recordsIn.size());
-			psSelect.close();
+//			// Assuming success, kill all of the transfer_employee records
+//			psSelect = mySqlConn
+//					.prepareStatement("Delete from Transfer_Employee where UDorI != ' '");
+//			psSelect.executeUpdate();
+//			
+//			System.out.println("Records In is " + recordsIn.size());
+//			psSelect.close();
 		} catch (SQLException e) {
 
 			System.err.println(e.getMessage());

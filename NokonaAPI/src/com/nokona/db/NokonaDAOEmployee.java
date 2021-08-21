@@ -364,7 +364,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 		if (psTransferEmployee == null) {
 			try {
 				psTransferEmployee = conn.prepareStatement(
-						"Insert into Transfer_Employee (LastName, FirstName, BarCodeID, LaborCode, EmpID, Active, UDorI) values (?,?,?,?,?,?,?)");
+						"Insert into Transfer_Employee (LastName, FirstName, BarCodeID, LaborCode, EmpID, Active, UDorI, Transfer_Employee.Key) values (?,?,?,?,?,?,?,?)");
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
@@ -379,6 +379,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			psTransferEmployee.setString(5, employeeIn.getEmpId());
 			psTransferEmployee.setInt(6, employeeIn.isActive() ? 1 : 0);
 			psTransferEmployee.setString(7, TypeOfUpdate);
+			psTransferEmployee.setLong(8, employeeIn.getKey());
 			int rowCount = psTransferEmployee.executeUpdate();
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");

@@ -308,7 +308,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			int rowCount = psDelEmployeeByKey.executeUpdate();
 
 			if (rowCount == 0) {
-				conn.rollback();
+//				conn.rollback();
 				throw new DataNotFoundException("Error.  Delete Employee key " + key + " failed");
 			}
 			loggit("DELETE_BY_KEY", new Employee(key, null, null, 0, 0, null, false));
@@ -345,7 +345,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			int rowCount = psDelEmployeeByEmpId.executeUpdate();
 
 			if (rowCount == 0) {
-				conn.rollback();
+//				conn.rollback();
 				throw new DataNotFoundException("Error.  Delete Employee empId " + empId + " failed");
 			}
 			loggit("DELETE_BY_ID", new Employee(0, null, null, 0, 0, empId, false));

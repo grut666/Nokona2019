@@ -12,9 +12,9 @@ import com.nokona.qualifiers.BaseDaoQualifier;
 @BaseDaoQualifier
 public class NokonaDAO  implements NokonaDatabase {
 	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-	private static String DB_URL = "jdbc:mysql://192.168.1.2:3306/Nokona?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+	private static String DB_URL =Constants.DB_URL;
 	private static String USER_NAME = Constants.USER_NAME;
-	private static String PASSWORD = "xyz123";
+	private static String PASSWORD = Constants.PASSWORD;
 
 	protected static Gson gson = new Gson();
 

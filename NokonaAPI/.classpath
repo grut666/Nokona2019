@@ -9,33 +9,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="lib/lombok.jar"/>
 	<classpathentry kind="lib" path="lib/mockito-all-1.9.0.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-api.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-coyote.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-dbcp.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-i18n-cs.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-i18n-de.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-i18n-es.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-i18n-fr.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-i18n-ja.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-i18n-ko.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-i18n-pt-BR.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-i18n-ru.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-i18n-zh-CN.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-jdbc.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-jni.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-util.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-util-scan.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomcat-websocket.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomee-catalina-8.0.5.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomee-common-8.0.5.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomee-config-8.0.5.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomee-jaxrs-8.0.5.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomee-jdbc-8.0.5.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomee-loader-8.0.5.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomee-mojarra-8.0.5.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomee-security-8.0.5.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomee-webapp-8.0.5.jar"/>
-	<classpathentry kind="lib" path="T:/Development/apache-tomee-plume-9.0.0-M3/lib/tomee-webservices-8.0.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.5">
 		<attributes>
 			<attribute name="owner.project.facets" value="jst.web"/>

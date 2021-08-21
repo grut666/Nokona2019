@@ -29,7 +29,7 @@ class TestLaborCodeDB {
 
 	@BeforeAll
 	private static void setup() throws DatabaseException, SQLException {
-		db = new NokonaDAOLaborCode("root", "xyz");
+		db = new NokonaDAOLaborCode("root", "xyz1234!");
 		conn = db.getConn();
 		conn.setAutoCommit(false);
 	}

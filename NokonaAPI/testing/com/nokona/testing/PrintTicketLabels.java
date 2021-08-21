@@ -28,7 +28,7 @@ public class PrintTicketLabels {
 
 	public static void main(String[] args) throws PrintException, IOException, DatabaseException, SQLException, NullInputDataException {
 		Connection conn;
-		NokonaDatabaseTicket db =  new NokonaDAOTicket("root", "xyz");
+		NokonaDatabaseTicket db =  new NokonaDAOTicket("root", "xyz1234!");
 		conn = db.getConn();
 		conn.setAutoCommit(false);
 //		String defaultPrinter = PrintServiceLookup.lookupDefaultPrintService().getName();

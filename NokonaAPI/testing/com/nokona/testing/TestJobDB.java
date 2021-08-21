@@ -29,7 +29,7 @@ class TestJobDB {
 
 	@BeforeAll
 	private static void setup() throws DatabaseException, SQLException {
-		db = new NokonaDAOJob("root", "xyz");
+		db = new NokonaDAOJob("root", "xyz1234!");
 		conn = db.getConn();
 		conn.setAutoCommit(false);
 	}

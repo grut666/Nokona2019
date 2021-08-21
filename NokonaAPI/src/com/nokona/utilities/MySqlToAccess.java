@@ -83,7 +83,7 @@ public class MySqlToAccess {
 // For local testing		
 //	String accessDB = "jdbc:ucanaccess://C:/codebase/Data/nokona.mdb";
 //      For Nokona onsite testing
-		String accessDB = "jdbc:ucanaccess://T:/nocona/nokona.mdb";
+		String accessDB = "jdbc:ucanaccess://T:/nokna/nokona.mdb";
 		try {
 			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 			accessConn = DriverManager.getConnection(accessDB);

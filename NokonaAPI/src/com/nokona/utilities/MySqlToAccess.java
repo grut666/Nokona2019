@@ -80,8 +80,9 @@ public class MySqlToAccess {
 	}
 
 	private static void connectToAccess() {
-		
-		String accessDB = "jdbc:ucanaccess://C:/codebase/Data/nokona.mdb";
+// For local testing		
+//		String accessDB = "jdbc:ucanaccess://C:/codebase/Data/nokona.mdb";
+		String accessDB = "jdbc:ucanaccess://T:/codebase/Data/nokona.mdb";
 		try {
 			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 			accessConn = DriverManager.getConnection(accessDB);

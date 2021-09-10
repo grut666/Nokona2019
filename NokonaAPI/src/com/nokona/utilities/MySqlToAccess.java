@@ -569,6 +569,8 @@ public class MySqlToAccess {
 //			private int laborCode;
 //			private String empId;
 //			boolean active;
+			
+			// Add add all records into a 
 			while (rs.next()) {
 				Employee emp = new Employee (rs.getInt(key),rs.getString(lastName),
 						rs.getString(firstName), rs.getInt(barCodeId), rs.getInt(laborCode),
@@ -597,21 +599,32 @@ public class MySqlToAccess {
 					psUpdate.executeUpdate();
 					// Stopped here on 8/21/2021
 					
-//
-//				    		
-//
-//					
-//					break;
+					break;
 				case "ADD":
-					updateString = "Insert into Employee set xxx to yyy where Key = ?";
+					updateString = "Insert into Employee ([Last Name], [First Name], [Bar Code ID], [Labor Code], Active, [Emp ID] " +
+									" VALUES (?, ?, ?, ?, ?, ?)";
+					psUpdate = accessConn.prepareStatement(updateString);
+					psUpdate.setString(1,  recordsIn.get(i).getLastName());
+					psUpdate.setString(2,  recordsIn.get(i).getFirstName());
+					psUpdate.setInt(3,  recordsIn.get(i).getBarCodeID());
+					psUpdate.setInt(4,  recordsIn.get(i).getLaborCode());
+					psUpdate.setString(5,  recordsIn.get(i).isActive() ? "TRUE" : "FALSE");
+					psUpdate.setString(6,  recordsIn.get(i).getEmpId());
+					psUpdate.executeUpdate();
 					break;
 
 				case "DELETE_BY_ID":
 					updateString = "Delete Employee where Emp_ID = ?";
+					psUpdate = accessConn.prepareStatement(updateString);
+					psUpdate.setString(1,  recordsIn.get(i).getEmpId());
+					psUpdate.executeUpdate();
 					break;
 
 				case "DELETE_BY_KEY":
 					updateString = "Delete Employee where Key = ?";
+					psUpdate = accessConn.prepareStatement(updateString);
+					psUpdate.setLong(1,  recordsIn.get(i).getKey());
+					psUpdate.executeUpdate();
 					break;
 				}				
 				

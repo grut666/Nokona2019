@@ -1,10 +1,16 @@
 package com.nokona.db;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.nokona.data.NokonaDatabaseOperation;
 import com.nokona.exceptions.DataNotFoundException;
@@ -13,6 +19,7 @@ import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.InvalidInsertException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.OperationFormatter;
+import com.nokona.model.Employee;
 import com.nokona.model.Operation;
 import com.nokona.validator.OperationValidator;
 
@@ -29,6 +36,13 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 	
 	private PreparedStatement psMoveDeletedOperationByKey;
 	private PreparedStatement psMoveDeletedOperationByOpCode;
+	
+
+	private PreparedStatement psTransferOperation;
+
+	// private Connection accessConn;
+	private static final Logger LOGGER = Logger.getLogger("OperationLogger");
+	
 	public NokonaDAOOperation() throws DatabaseException {
 		super();
 	}
@@ -145,6 +159,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
 			}
+			loggit("UPDATE", operationIn);
 			return getOperationByKey(formattedOperation.getKey());
 			
 		} catch (SQLException e) {
@@ -187,6 +202,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			try (ResultSet generatedKeys = psAddOperation.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
 					newOp.setKey(generatedKeys.getLong(1));
+					loggit("ADD", newOp);
 					return getOperationByKey(generatedKeys.getLong(1));
 				} else {
 					throw new SQLException("Creating operation failed, no ID obtained.");
@@ -221,6 +237,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			if (rowCount == 0) {
 				throw new DataNotFoundException("Error.  Delete Operation Key " + key + " failed");
 			}
+			loggit("DELETE_BY_KEY", new Operation(null, null,  0, 0, key, 0));
 
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage(), e);
@@ -254,6 +271,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			if (rowCount == 0) {
 				throw new DataNotFoundException("Error.  Delete Operation ID " + opCode + " failed");
 			}
+			loggit("DELETE_BY_ID", new Operation(opCode,  null, 0, 0, 0, 0));
 
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage(), e);
@@ -270,4 +288,63 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 
 		return new Operation(opCode, description, hourlyRateSAH, laborCode, key, lastStudyYear);
 	}
+	// Remove below when finished with Beta testing
+
+		protected void loggit(String TypeOfUpdate, Operation operationIn) throws DatabaseException {
+			flatLog(TypeOfUpdate, operationIn);
+			// This is for moving updates to the Access DB until the application has been
+			// completely ported over
+			if (psTransferOperation == null) {
+				try {
+					psTransferOperation = conn.prepareStatement(
+							"Insert into Transfer_Operation (OpCode, Description, HourlyRateSAH, LaborCode, LastStudyYear, UDorI, Transfer_Operation.Key) values (?,?,?,?,?,?,?)");
+
+				} catch (SQLException e) {
+					System.err.println(e.getMessage());
+					throw new DatabaseException(e.getMessage());
+				}
+			}
+			try {
+				psTransferOperation.setString(1, operationIn.getOpCode());
+				psTransferOperation.setString(2, operationIn.getDescription());
+				psTransferOperation.setDouble(3, operationIn.getHourlyRateSAH());
+				psTransferOperation.setInt(4, operationIn.getLaborCode());
+				psTransferOperation.setInt(5, operationIn.getLastStudyYear());
+				psTransferOperation.setString(6, TypeOfUpdate);
+				psTransferOperation.setLong(7, operationIn.getKey());
+				int rowCount = psTransferOperation.executeUpdate();
+				if (rowCount != 1) {
+					throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
+				}
+
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DatabaseException(e.getMessage(), e);
+			}
+
+		}
+
+		protected void flatLog(String TypeOfUpdate, Operation operationIn) {
+			Handler consoleHandler = null;
+			Handler fileHandler = null;
+			try {
+				// Creating consoleHandler and fileHandler
+				consoleHandler = new ConsoleHandler();
+				fileHandler = new FileHandler("/logs/operation.log", 0, 1, true);
+
+				// Assigning handlers to LOGGER object
+				LOGGER.addHandler(consoleHandler);
+				LOGGER.addHandler(fileHandler);
+
+				// Setting levels to handlers and LOGGER
+				consoleHandler.setLevel(Level.ALL);
+				fileHandler.setLevel(Level.ALL);
+				LOGGER.setLevel(Level.ALL);
+
+				LOGGER.log(Level.INFO, TypeOfUpdate, gson.toJson(operationIn));
+				fileHandler.close();
+			} catch (IOException exception) {
+				LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
+			}
+		}
 }

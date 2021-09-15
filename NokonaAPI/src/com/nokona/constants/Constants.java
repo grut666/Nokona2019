@@ -16,6 +16,6 @@ public class Constants {
 //	public final static String PASSWORD="xyz123";
 	
 	public final static String USER_NAME="root";  // Local development
-	public final static String PASSWORD="xyz1234!";    // Local development
+	public final static String PASSWORD="xyz1234! ";    // Local development
 	
 }

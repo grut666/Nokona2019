@@ -1,10 +1,16 @@
 package com.nokona.db;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.nokona.data.NokonaDatabaseJob;
 import com.nokona.enums.JobType;
@@ -14,6 +20,7 @@ import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.InvalidInsertException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.JobFormatter;
+import com.nokona.model.Employee;
 import com.nokona.model.Job;
 import com.nokona.model.JobDetail;
 import com.nokona.model.JobHeader;
@@ -34,6 +41,13 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	private PreparedStatement psDelJobDetailByJobId;
 	private PreparedStatement psMoveDeletedJobByJobId;
 	private PreparedStatement psMoveDeletedJobDetailByJobId;
+	
+	private PreparedStatement psTransferJobHeader;
+	private PreparedStatement psTransferJobDetail;
+
+	// private Connection accessConn;
+	private static final Logger LOGGER = Logger.getLogger("JobLogger");
+	
 
 	public NokonaDAOJob() throws DatabaseException {
 		super();
@@ -152,6 +166,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Updated " + rowCount + " rows");
 			}
+			loggitHeader("UPDATE", jobHeaderIn);
 			return getJobHeaderByKey(formattedJobHeader.getKey());
 
 		} catch (SQLException e) {
@@ -217,6 +232,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			try (ResultSet generatedKeys = psAddJobHeader.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
 					newJobHeader.setKey(generatedKeys.getInt(1));
+					loggitHeader("ADD", newJobHeader);
 					return getJobHeaderByKey(generatedKeys.getLong(1));
 				} else {
 					throw new SQLException("Creating JobHeader failed, no ID obtained.");
@@ -302,6 +318,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 				throw new DataNotFoundException("Error.  Delete JobHeader JobID " + jobId + " failed");
 			}
 			deleteJobDetailsByJobId(jobId, jobHeaderKey);
+			loggitHeader("DELETE_BY_ID", new JobHeader(jobId, null, 0, null, 0));
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -374,7 +391,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			if (rowCount == 0) {
 				throw new DataNotFoundException("Error.  JobDetail  " + jobId + " failed");
 			}
-
+			loggitDetail("DELETE_BY_ID", new JobDetail(jobId, null, 0));
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
@@ -436,6 +453,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			if (rowsAffected != 1) {
 				throw new DatabaseException("Detail row not added");
 			}
+			loggitDetail("ADD", jobDetail);
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage());
@@ -500,6 +518,119 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			details.add(new JobDetail(jobId, opCode, sequence));
 		}
 		return details;
-
 	}
+	
+	// Remove below when finished with Beta testing
+
+		protected void loggitHeader(String TypeOfUpdate, JobHeader jobHeaderIn) throws DatabaseException {
+			flatLogHeader(TypeOfUpdate, jobHeaderIn);
+			// This is for moving updates to the Access DB until the application has been
+			// completely ported over
+			if (psTransferJobHeader == null) {
+				try {
+					psTransferJobHeader = conn.prepareStatement(
+							"Insert into Transfer_JobHeader (JobId, Description, StandardQuantity, JobType, UDorI, Transfer_JobHeader.Key) values (?,?,?,?,?,?)");
+
+				} catch (SQLException e) {
+					System.err.println(e.getMessage());
+					throw new DatabaseException(e.getMessage());
+				}
+			}
+
+			try {
+				psTransferJobHeader.setString(1, jobHeaderIn.getJobId());
+				psTransferJobHeader.setString(2, jobHeaderIn.getDescription());
+				psTransferJobHeader.setInt(3, jobHeaderIn.getStandardQuantity());
+				psTransferJobHeader.setString(4, jobHeaderIn.getJobType().getJobType());
+				psTransferJobHeader.setString(5, TypeOfUpdate);
+				psTransferJobHeader.setLong(6, jobHeaderIn.getKey());
+				int rowCount = psTransferJobHeader.executeUpdate();
+				if (rowCount != 1) {
+					throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
+				}
+
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DatabaseException(e.getMessage(), e);
+			}
+
+		}
+		protected void loggitDetail(String TypeOfUpdate, JobDetail jobDetailIn) throws DatabaseException {
+			flatLogDetail(TypeOfUpdate, jobDetailIn);
+			// This is for moving updates to the Access DB until the application has been
+			// completely ported over
+			if (psTransferJobDetail == null) {
+				try {
+					psTransferJobDetail = conn.prepareStatement(
+							"Insert into Transfer_JobDetail (JobID, OpCode, Sequence, UDorI) values (?,?,?,?)");
+
+				} catch (SQLException e) {
+					System.err.println(e.getMessage());
+					throw new DatabaseException(e.getMessage());
+				}
+			}
+			try {
+				psTransferJobDetail.setString(1, jobDetailIn.getJobId());
+				psTransferJobDetail.setString(2, jobDetailIn.getOpCode());
+				psTransferJobDetail.setInt(3, jobDetailIn.getSequence());
+				psTransferJobDetail.setString(7, TypeOfUpdate);
+
+				int rowCount = psTransferJobDetail.executeUpdate();
+				if (rowCount != 1) {
+					throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
+				}
+
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DatabaseException(e.getMessage(), e);
+			}
+
+		}
+
+		protected void flatLogHeader(String TypeOfUpdate, JobHeader jobHeaderIn) {
+			Handler consoleHandler = null;
+			Handler fileHandler = null;
+			try {
+				// Creating consoleHandler and fileHandler
+				consoleHandler = new ConsoleHandler();
+				fileHandler = new FileHandler("/logs/jobheader.log", 0, 1, true);
+
+				// Assigning handlers to LOGGER object
+				LOGGER.addHandler(consoleHandler);
+				LOGGER.addHandler(fileHandler);
+
+				// Setting levels to handlers and LOGGER
+				consoleHandler.setLevel(Level.ALL);
+				fileHandler.setLevel(Level.ALL);
+				LOGGER.setLevel(Level.ALL);
+
+				LOGGER.log(Level.INFO, TypeOfUpdate, gson.toJson(jobHeaderIn));
+				fileHandler.close();
+			} catch (IOException exception) {
+				LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
+			}
+		}
+		protected void flatLogDetail(String TypeOfUpdate, JobDetail jobDetailIn) {
+			Handler consoleHandler = null;
+			Handler fileHandler = null;
+			try {
+				// Creating consoleHandler and fileHandler
+				consoleHandler = new ConsoleHandler();
+				fileHandler = new FileHandler("/logs/jobdetail.log", 0, 1, true);
+
+				// Assigning handlers to LOGGER object
+				LOGGER.addHandler(consoleHandler);
+				LOGGER.addHandler(fileHandler);
+
+				// Setting levels to handlers and LOGGER
+				consoleHandler.setLevel(Level.ALL);
+				fileHandler.setLevel(Level.ALL);
+				LOGGER.setLevel(Level.ALL);
+
+				LOGGER.log(Level.INFO, TypeOfUpdate, gson.toJson(jobDetailIn));
+				fileHandler.close();
+			} catch (IOException exception) {
+				LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
+			}
+		}
 }

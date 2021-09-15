@@ -1,10 +1,16 @@
 package com.nokona.db;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.nokona.data.NokonaDatabaseLaborCode;
 import com.nokona.exceptions.DataNotFoundException;
@@ -12,11 +18,18 @@ import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.InvalidInsertException;
 import com.nokona.formatter.LaborCodeFormatter;
+import com.nokona.model.Employee;
 import com.nokona.model.LaborCode;
 import com.nokona.model.Operation;
 import com.nokona.validator.LaborCodeValidator;
 
 public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLaborCode {
+//	
+//	private long key;
+//	private int laborCode;
+//	private String description;
+//	private double rate;
+	
 	private PreparedStatement psGetLaborCode;
 	private PreparedStatement psGetLaborCodeByKey;
 	private PreparedStatement psGetLaborCodes;
@@ -28,6 +41,11 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 	
 	private PreparedStatement psMoveDeletedLaborCodeByLaborCode;
 	private PreparedStatement psMoveDeletedLaborCodeByKey;
+	
+	private PreparedStatement psTransferLaborCode;
+	
+	private static final Logger LOGGER = Logger.getLogger("LaborCodeLogger");
+	
 	public NokonaDAOLaborCode() throws DatabaseException {
 		super();	
 	}
@@ -143,6 +161,8 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Updated " + rowCount + " rows");
 			}
+			// Remove next line when finished with Beta testing
+			loggit("UPDATE", laborCodeIn);
 			return getLaborCodeByKey(formattedLaborCode.getKey());
 			
 		} catch (SQLException e) {
@@ -180,10 +200,11 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
 			}
-			Operation newOp = new Operation();
+			LaborCode newLaborCode = new LaborCode();
 			try (ResultSet generatedKeys = psAddLaborCode.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
-					newOp.setKey(generatedKeys.getLong(1));
+					newLaborCode.setKey(generatedKeys.getLong(1));
+					loggit("ADD", newLaborCode);
 					return getLaborCodeByKey(generatedKeys.getLong(1));
 				} else {
 					throw new SQLException("Creating operation failed, no ID obtained.");
@@ -220,6 +241,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			if (rowCount == 0) {
 				throw new DataNotFoundException("Error.  Delete Operation Key " + key + " failed");
 			}
+			loggit("DELETE_BY_KEY", new LaborCode(key, 0, null, 0));
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -252,7 +274,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			if (rowCount == 0) {
 				throw new DataNotFoundException("Error.  Delete Labor Code " + laborCode + " failed");
 			}
-
+			loggit("DELETE_BY_ID", new LaborCode(0, 0, null, 0));
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
@@ -267,5 +289,60 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 		double laborRate = rs.getDouble("LaborRate");
 
 		return new LaborCode(key, laborCode, description, laborRate);
+	}
+	protected void loggit(String TypeOfUpdate, LaborCode laborCodeIn) throws DatabaseException {
+		flatLog(TypeOfUpdate, laborCodeIn);
+		// This is for moving updates to the Access DB until the application has been
+		// completely ported over
+		if (psTransferLaborCode == null) {
+			try {
+				psTransferLaborCode = conn.prepareStatement(
+						"Insert into Transfer_LaborCode (LaborCode, Description, LaborRate, UDorI, Transfer_LaborCode.Key) values (?,?,?,?,?)");
+
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				throw new DatabaseException(e.getMessage());
+			}
+		}
+		try {
+			psTransferLaborCode.setInt(1, laborCodeIn.getLaborCode());
+			psTransferLaborCode.setString(2, laborCodeIn.getDescription());
+			psTransferLaborCode.setDouble(3, laborCodeIn.getRate());
+			psTransferLaborCode.setString(4, TypeOfUpdate);
+			psTransferLaborCode.setLong(5, laborCodeIn.getKey());
+			int rowCount = psTransferLaborCode.executeUpdate();
+			if (rowCount != 1) {
+				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
+			}
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage(), e);
+		}
+
+	}
+
+	protected void flatLog(String TypeOfUpdate, LaborCode laborCodeIn) {
+		Handler consoleHandler = null;
+		Handler fileHandler = null;
+		try {
+			// Creating consoleHandler and fileHandler
+			consoleHandler = new ConsoleHandler();
+			fileHandler = new FileHandler("/logs/laborcode.log", 0, 1, true);
+
+			// Assigning handlers to LOGGER object
+			LOGGER.addHandler(consoleHandler);
+			LOGGER.addHandler(fileHandler);
+
+			// Setting levels to handlers and LOGGER
+			consoleHandler.setLevel(Level.ALL);
+			fileHandler.setLevel(Level.ALL);
+			LOGGER.setLevel(Level.ALL);
+
+			LOGGER.log(Level.INFO, TypeOfUpdate, gson.toJson(laborCodeIn));
+			fileHandler.close();
+		} catch (IOException exception) {
+			LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
+		}
 	}
 }

@@ -423,7 +423,7 @@
   <!--                                                                      -->
   <!--   allowExec           Is use of the exec command enabled? [false]    -->
 
-
+<!--  
 <filter>
   <filter-name>CorsFilter</filter-name>
   <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
@@ -448,7 +448,7 @@
 
 </filter-mapping>
 
-
+-->
 <!--
     <filter>
         <filter-name>ssi</filter-name>

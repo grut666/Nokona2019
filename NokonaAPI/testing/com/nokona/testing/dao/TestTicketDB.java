@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.nokona.constants.Constants;
 import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.data.NokonaDatabaseTicket;
 import com.nokona.db.NokonaDAOEmployee;
@@ -30,7 +31,7 @@ class TestTicketDB {
 
 	@BeforeAll
 	private static void setup() throws DatabaseException, SQLException {
-		db = new NokonaDAOTicket("root", "xyz");
+		db = new NokonaDAOTicket(Constants.USER_NAME, Constants.PASSWORD);
 		conn = db.getConn();
 		conn.setAutoCommit(false);
 	}

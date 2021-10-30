@@ -9,20 +9,23 @@ import com.nokona.constants.Constants;
 import com.nokona.data.NokonaDatabase;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.qualifiers.BaseDaoQualifier;
+
 @BaseDaoQualifier
-public class NokonaDAO  implements NokonaDatabase {
-	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-	private static String DB_URL =Constants.DB_URL;
+public class NokonaDAO implements NokonaDatabase {
+	private static final String JDBC_DRIVER = Constants.JDBC_DRIVER;
+	private static String DB_URL = Constants.DB_URL;
 	private static String USER_NAME = Constants.USER_NAME;
 	private static String PASSWORD = Constants.PASSWORD;
 
 	protected static Gson gson = new Gson();
 
 	protected Connection conn;
+
 	// SuperClass for all DAO classes
 	public NokonaDAO() throws DatabaseConnectionException {
 		connectToDB(USER_NAME, PASSWORD);
 	}
+
 	public NokonaDAO(String userName, String password) throws DatabaseConnectionException {
 		connectToDB(userName, password);
 	}
@@ -51,19 +54,21 @@ public class NokonaDAO  implements NokonaDatabase {
 			}
 		}
 	}
+
 	public void rollback() {
 		try {
 			conn.rollback();
 		} catch (SQLException e) {
-			
+
 			e.printStackTrace();
 		}
 	}
-	public void commit()  {
+
+	public void commit() {
 		try {
 			conn.commit();
 		} catch (SQLException e) {
-			
+
 			e.printStackTrace();
 		}
 	}

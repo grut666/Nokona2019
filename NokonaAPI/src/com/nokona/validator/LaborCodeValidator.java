@@ -22,6 +22,8 @@ public class LaborCodeValidator {
 						"Select LaborCode.Key from LaborCode where LaborCode = ?");
 			} catch (SQLException e) {
 				errors += e.getMessage() + "\n";
+				System.out.println(e);
+				
 			}	
 		} else {
 				try {

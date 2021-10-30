@@ -17,6 +17,7 @@ import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.InvalidInsertException;
+import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.LaborCodeFormatter;
 import com.nokona.model.Employee;
 import com.nokona.model.LaborCode;
@@ -51,11 +52,9 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 	}
 	public NokonaDAOLaborCode(String userName, String password) throws DatabaseException {
 		super(userName, password);
-
+		
 	}
 
-	
-	
 	@Override
 	public LaborCode getLaborCodeByKey(long key) throws DataNotFoundException {
 		LaborCode laborCode = null;
@@ -173,6 +172,9 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 
 	@Override
 	public LaborCode addLaborCode(LaborCode laborCodeIn) throws DatabaseException {
+		if (laborCodeIn == null) {
+			throw new NullInputDataException("Labor Code cannot be null");
+		}
 		if (psAddLaborCode == null) {
 			try {
 				psAddLaborCode = conn.prepareStatement(
@@ -187,18 +189,18 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 		LaborCode formattedLaborCode = LaborCodeFormatter.format(laborCodeIn);
 		String validateMessage = LaborCodeValidator.validateAdd(laborCodeIn, conn);
 		if (!"".equals(validateMessage)) {
-			throw new DatabaseException(validateMessage);
+			System.out.println(validateMessage);
+			throw new DuplicateDataException(validateMessage);
 		}
 		try {
 			psAddLaborCode.setInt(1, formattedLaborCode.getLaborCode());
 			psAddLaborCode.setString(2, formattedLaborCode.getDescription());
 			psAddLaborCode.setDouble(3, formattedLaborCode.getRate());
-	//		psAddLaborCode.setLong(4, formattedLaborCode.getKey());
 
 			int rowCount = psAddLaborCode.executeUpdate();
 
 			if (rowCount != 1) {
-				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
+				throw new DuplicateDataException("Error.  Inserted " + rowCount + " rows");
 			}
 			LaborCode newLaborCode = new LaborCode();
 			try (ResultSet generatedKeys = psAddLaborCode.getGeneratedKeys()) {
@@ -233,7 +235,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			psMoveDeletedLaborCodeByKey.setLong(1, key);
 			int rowCount = psMoveDeletedLaborCodeByKey.executeUpdate();
 			if (rowCount == 0) {
-				throw new InvalidInsertException("LaborCode key "+ key + " could not be inserted into delete table");
+				throw new DataNotFoundException("LaborCode key "+ key + " could not be inserted into delete table");
 			}
 			psDelLaborCodeByKey.setLong(1, key);
 			rowCount = psDelLaborCodeByKey.executeUpdate();

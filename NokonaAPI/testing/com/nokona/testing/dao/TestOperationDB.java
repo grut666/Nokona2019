@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.nokona.constants.Constants;
 import com.nokona.data.NokonaDatabaseOperation;
 import com.nokona.db.NokonaDAOOperation;
 import com.nokona.exceptions.DataNotFoundException;
@@ -25,7 +26,7 @@ class TestOperationDB {
 
 	@BeforeAll
 	private static void setupBeforeEach() throws DatabaseException, SQLException {
-		db = new NokonaDAOOperation("root", "xyz");
+		db = new NokonaDAOOperation(Constants.USER_NAME, Constants.PASSWORD);
 		conn = db.getConn();
 		conn.setAutoCommit(false);
 	}

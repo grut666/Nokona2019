@@ -14,7 +14,7 @@ public class LaborCode {
 	private double rate;
 	
 	public LaborCode() {
-		this(0, 0,"",0);
+		this(-1, 0,"",0);
 	}
 
 }

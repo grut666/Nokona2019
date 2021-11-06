@@ -1,0 +1,12 @@
+alias ltr='ls -ltr'
+alias c='clear'
+alias cdn="alias cdn;cd /c/codebase/Nokona2019"
+alias react="cd /c/Users/Mark/codebase/react_wes_bos"
+alias nok="alias nok;cd /c/codebase/Nokona2019"
+alias jpa="alias jpa;cd /c/codebase/gs-accessing-data-rest"
+alias gcb='alias gcb;gradlew clean build'
+alias run='alias run;gradlew bootRun'
+alias stop='alias stop;gradlew -stop'
+alias spring='cd /c/codebase/springdemo'
+alias justin='cd /c/codebase/Justin/Nokona/nokona'
+alias cd..='cd ..'

@@ -1,5 +1,7 @@
 package com.nokona.resource;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.annotation.security.PermitAll;
@@ -16,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.nokona.constants.Constants;
 import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
@@ -25,7 +28,7 @@ import com.nokona.exceptions.NullInputDataException;
 import com.nokona.model.Employee;
 import com.nokona.model.Labels;
 import com.nokona.utilities.BarCodeUtilities;
-import com.nokona.utilities.MySqlToAccess;
+
 
 @Path("/employees")
 @PermitAll
@@ -44,7 +47,30 @@ public class NokonaEmployeeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{empId}")
 	public Response getEmployee(@PathParam("empId") String empId) {
+		File file = new File(Constants.PATH_TO_JAVA);
+		try {
+			System.err.println("Path is " + file.getAbsolutePath() + "  Canonical is " + file.getCanonicalPath() + "  Exists: + " + file.exists());
+		} catch (IOException e) {
+			System.err.println("Error is " + e.getMessage());
+		}
+		
+		ProcessBuilder pb = new ProcessBuilder(Constants.PATH_TO_JAVA,  
+				 "-jar", "JavaBatch.jar");
+		pb.directory(new File(Constants.PATH_TO_TRANSFER_JAR));
+		try {
+			Process p = pb.start();
+			p.waitFor();
+			p.destroy();
+			p = null;
+			pb = null;
 
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Employee emp;
 
 		try {

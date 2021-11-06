@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.nokona.constants.Constants;
 import com.nokona.model.Employee;
 
 //import lombok.Data; 
@@ -24,10 +25,10 @@ public class MySqlToAccess {
 	private static int rowsDeleted;
 	private static int[] insertedRows;
 
-	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-	private static String DB_URL = "jdbc:mysql://localhost:3306/Nokona?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useServerPrepStmts=false&rewriteBatchedStatements=true&useSSL=false";
-	private static String USER_NAME = "root";
-	private static String PASSWORD = "xyz1234!";
+	private static final String JDBC_DRIVER = Constants.MYSQL_JDBC_DRIVER;
+	private static String MYSQL_DB_URL = "jdbc:mysql://localhost:3306/Nokona?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useServerPrepStmts=false&rewriteBatchedStatements=true&useSSL=false";
+	private static String USER_NAME = Constants.USER_NAME;
+	private static String PASSWORD = Constants.PASSWORD;
 
 	private static PreparedStatement psSelect;
 	private static PreparedStatement psDelete;
@@ -99,9 +100,10 @@ public class MySqlToAccess {
 		// Don't use T: because the task scheduler cannot see mapped drives
 		
 //		String accessDB = "jdbc:ucanaccess://E:Apps/nokona/nokona.mdb";
-		String accessDB = "jdbc:ucanaccess://E:Apps/nokona/noktest.mdb";
+//		String accessDB = "jdbc:ucanaccess://E:Apps/nokona/noktest.mdb";
+		String accessDB = Constants.ACCESS_DB_URL;
 		try {
-			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+			Class.forName(Constants.ACCESS_JDBC_DRIVER);
 			accessConn = DriverManager.getConnection(accessDB);
 		} catch (SQLException e) {
 			System.err.println("Bad Access connection.  Aborting: " + e.getMessage());
@@ -116,7 +118,7 @@ public class MySqlToAccess {
 	private static void connectToMySQL() {
 		try {
 			Class.forName(JDBC_DRIVER);
-			mySqlConn = DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD);
+			mySqlConn = DriverManager.getConnection(MYSQL_DB_URL, USER_NAME, PASSWORD);
 			mySqlConn.setAutoCommit(false);
 		} catch (ClassNotFoundException e) {
 			System.err.println(e.getMessage());

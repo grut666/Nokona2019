@@ -12,8 +12,8 @@ import com.nokona.qualifiers.BaseDaoQualifier;
 
 @BaseDaoQualifier
 public class NokonaDAO implements NokonaDatabase {
-	private static final String JDBC_DRIVER = Constants.JDBC_DRIVER;
-	private static String DB_URL = Constants.DB_URL;
+	private static final String JDBC_DRIVER = Constants.MYSQL_JDBC_DRIVER;
+	private static String DB_URL = Constants.MYSQL_DB_URL;
 	private static String USER_NAME = Constants.USER_NAME;
 	private static String PASSWORD = Constants.PASSWORD;
 

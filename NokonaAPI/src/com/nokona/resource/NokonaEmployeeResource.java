@@ -43,34 +43,10 @@ public class NokonaEmployeeResource {
 	}
 
 	@GET
-
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{empId}")
 	public Response getEmployee(@PathParam("empId") String empId) {
-		File file = new File(Constants.PATH_TO_JAVA);
-		try {
-			System.err.println("Path is " + file.getAbsolutePath() + "  Canonical is " + file.getCanonicalPath() + "  Exists: + " + file.exists());
-		} catch (IOException e) {
-			System.err.println("Error is " + e.getMessage());
-		}
 		
-		ProcessBuilder pb = new ProcessBuilder(Constants.PATH_TO_JAVA,  
-				 "-jar", "JavaBatch.jar");
-		pb.directory(new File(Constants.PATH_TO_TRANSFER_JAR));
-		try {
-			Process p = pb.start();
-			p.waitFor();
-			p.destroy();
-			p = null;
-			pb = null;
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		Employee emp;
 
 		try {
@@ -135,7 +111,9 @@ public class NokonaEmployeeResource {
 			return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
 		}
 		try {
-			return Response.status(200).entity(db.updateEmployee(empIn)).build();
+			Employee emp = db.updateEmployee(empIn);
+			transferToAccess("EMP_U");
+			return Response.status(200).entity(emp).build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -154,6 +132,7 @@ public class NokonaEmployeeResource {
 		Employee emp;
 		try {
 			emp = db.addEmployee(empIn);
+			transferToAccess("EMP_C");
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -171,6 +150,7 @@ public class NokonaEmployeeResource {
 
 		try {
 			db.deleteEmployee(user);
+			transferToAccess("EMP_D");
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + user + " not found\"}").build();
@@ -189,6 +169,7 @@ public class NokonaEmployeeResource {
 
 		try {
 			db.deleteEmployeeByKey(key);
+			transferToAccess("EMP_D");
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
@@ -230,6 +211,34 @@ public class NokonaEmployeeResource {
 	@Path("/labels/{user}")
 	public Response getEmployeeLabelsDefaultOnePage(@PathParam("user") String user) {
 		return getEmployeeLabels(user, 1);
+	}
+	
+	protected void transferToAccess(String ducEntry) {
+		// Temp testing for launching auto transfer from MySQL to Access
+				File file = new File(Constants.PATH_TO_JAVA);
+				try {
+					System.err.println("Path is " + file.getAbsolutePath() + "  Canonical is " + file.getCanonicalPath() + "  Exists: + " + file.exists());
+				} catch (IOException e) {
+					System.err.println("Error is " + e.getMessage());
+				}
+				
+				ProcessBuilder pb = new ProcessBuilder(Constants.PATH_TO_JAVA,  
+						 "-jar", "JavaBatch.jar", ducEntry);
+				pb.directory(new File(Constants.PATH_TO_TRANSFER_JAR));
+				try {
+					Process p = pb.start();
+					p.waitFor();
+					p.destroy();
+					p = null;
+					pb = null;
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	}
 
 }

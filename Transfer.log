@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2021-12-14T09:44:39</date>
+  <millis>1639496679596</millis>
+  <sequence>0</sequence>
+  <logger>com.nokona.utilities.MySqlToAccess</logger>
+  <level>SEVERE</level>
+  <class>com.nokona.utilities.MySqlToAccess</class>
+  <method>doEmployeeCreate</method>
+  <thread>1</thread>
+  <message>Access Error: Insert INTO EMPLOYEE ([Last Name], [First Name], [Bar Code ID], [Labor Code], [EMP ID], Active) values (?,?,?,?,?,?,?):UCAExc:::4.x.x row column count mismatch in statement [Insert INTO EMPLOYEE ("LAST NAME", "FIRST NAME", "BAR CODE ID", "LABOR CODE", "EMP ID", Active) values (?,?,?,?,?,?,?)]</message>
+</record>
+</log>

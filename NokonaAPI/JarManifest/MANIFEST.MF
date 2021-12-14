@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: com.nokona.utilities.MySqlToAccess
+Class-Path: . lib/jdbc_lib/ucanaccess-5.0.0.jar lib/jdbc_lib/jackcess-3.0.1.jar lib/jdbc_lib/hsqldb-2.5.0.jar lib/jdbc_lib/commons-lang3-3.8.1.jar lib/jdbc_lib/commons-logging-1.2.jar
+

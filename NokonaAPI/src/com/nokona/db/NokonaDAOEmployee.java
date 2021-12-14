@@ -181,7 +181,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
 			}
 			// Remove next line when finished with Beta testing
-			loggit("UPDATE", employeeIn);
+//			loggit("UPDATE", employeeIn);
 			return getEmployeeByKey(formattedEmployee.getKey());
 
 		} catch (SQLException e) {
@@ -271,7 +271,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			try (ResultSet generatedKeys = psAddEmployee.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
 					newEmp.setKey(generatedKeys.getLong(1));
-					loggit("ADD", newEmp);
+//					loggit("ADD", newEmp);
 					return getEmployeeByKey(generatedKeys.getLong(1));
 				} else {
 					throw new SQLException("Creating user failed, no ID obtained.");
@@ -311,7 +311,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 //				conn.rollback();
 				throw new DataNotFoundException("Error.  Delete Employee key " + key + " failed");
 			}
-			loggit("DELETE_BY_KEY", new Employee(key, null, null, 0, 0, null, false));
+//			loggit("DELETE_BY_KEY", new Employee(key, null, null, 0, 0, null, false));
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -348,7 +348,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 //				conn.rollback();
 				throw new DataNotFoundException("Error.  Delete Employee empId " + empId + " failed");
 			}
-			loggit("DELETE_BY_ID", new Employee(0, null, null, 0, 0, empId, false));
+//			loggit("DELETE_BY_ID", new Employee(0, null, null, 0, 0, empId, false));
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
@@ -357,62 +357,62 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 
 	// Remove below when finished with Beta testing
 
-	protected void loggit(String TypeOfUpdate, Employee employeeIn) throws DatabaseException {
-		flatLog(TypeOfUpdate, employeeIn);
-		// This is for moving updates to the Access DB until the application has been
-		// completely ported over
-		if (psTransferEmployee == null) {
-			try {
-				psTransferEmployee = conn.prepareStatement(
-						"Insert into Transfer_Employee (LastName, FirstName, BarCodeID, LaborCode, EmpID, Active, UDorI, Transfer_Employee.Key) values (?,?,?,?,?,?,?,?)");
+//	protected void loggit(String TypeOfUpdate, Employee employeeIn) throws DatabaseException {
+//		flatLog(TypeOfUpdate, employeeIn);
+//		// This is for moving updates to the Access DB until the application has been
+//		// completely ported over
+//		if (psTransferEmployee == null) {
+//			try {
+//				psTransferEmployee = conn.prepareStatement(
+//						"Insert into Transfer_Employee (LastName, FirstName, BarCodeID, LaborCode, EmpID, Active, UDorI, Transfer_Employee.Key) values (?,?,?,?,?,?,?,?)");
+//
+//			} catch (SQLException e) {
+//				System.err.println(e.getMessage());
+//				throw new DatabaseException(e.getMessage());
+//			}
+//		}
+//		try {
+//			psTransferEmployee.setString(1, employeeIn.getLastName());
+//			psTransferEmployee.setString(2, employeeIn.getFirstName());
+//			psTransferEmployee.setInt(3, employeeIn.getBarCodeID());
+//			psTransferEmployee.setInt(4, employeeIn.getLaborCode());
+//			psTransferEmployee.setString(5, employeeIn.getEmpId());
+//			psTransferEmployee.setInt(6, employeeIn.isActive() ? 1 : 0);
+//			psTransferEmployee.setString(7, TypeOfUpdate);
+//			psTransferEmployee.setLong(8, employeeIn.getKey());
+//			int rowCount = psTransferEmployee.executeUpdate();
+//			if (rowCount != 1) {
+//				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
+//			}
+//
+//		} catch (SQLException e) {
+//			System.err.println(e.getMessage());
+//			throw new DatabaseException(e.getMessage(), e);
+//		}
+//
+//	}
 
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage());
-			}
-		}
-		try {
-			psTransferEmployee.setString(1, employeeIn.getLastName());
-			psTransferEmployee.setString(2, employeeIn.getFirstName());
-			psTransferEmployee.setInt(3, employeeIn.getBarCodeID());
-			psTransferEmployee.setInt(4, employeeIn.getLaborCode());
-			psTransferEmployee.setString(5, employeeIn.getEmpId());
-			psTransferEmployee.setInt(6, employeeIn.isActive() ? 1 : 0);
-			psTransferEmployee.setString(7, TypeOfUpdate);
-			psTransferEmployee.setLong(8, employeeIn.getKey());
-			int rowCount = psTransferEmployee.executeUpdate();
-			if (rowCount != 1) {
-				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
-			}
-
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new DatabaseException(e.getMessage(), e);
-		}
-
-	}
-
-	protected void flatLog(String TypeOfUpdate, Employee employeeIn) {
-		Handler consoleHandler = null;
-		Handler fileHandler = null;
-		try {
-			// Creating consoleHandler and fileHandler
-			consoleHandler = new ConsoleHandler();
-			fileHandler = new FileHandler("/logs/employee.log", 0, 1, true);
-
-			// Assigning handlers to LOGGER object
-			LOGGER.addHandler(consoleHandler);
-			LOGGER.addHandler(fileHandler);
-
-			// Setting levels to handlers and LOGGER
-			consoleHandler.setLevel(Level.ALL);
-			fileHandler.setLevel(Level.ALL);
-			LOGGER.setLevel(Level.ALL);
-
-			LOGGER.log(Level.INFO, TypeOfUpdate, gson.toJson(employeeIn));
-			fileHandler.close();
-		} catch (IOException exception) {
-			LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
-		}
-	}
+//	protected void flatLog(String TypeOfUpdate, Employee employeeIn) {
+//		Handler consoleHandler = null;
+//		Handler fileHandler = null;
+//		try {
+//			// Creating consoleHandler and fileHandler
+//			consoleHandler = new ConsoleHandler();
+//			fileHandler = new FileHandler("/logs/employee.log", 0, 1, true);
+//
+//			// Assigning handlers to LOGGER object
+//			LOGGER.addHandler(consoleHandler);
+//			LOGGER.addHandler(fileHandler);
+//
+//			// Setting levels to handlers and LOGGER
+//			consoleHandler.setLevel(Level.ALL);
+//			fileHandler.setLevel(Level.ALL);
+//			LOGGER.setLevel(Level.ALL);
+//
+//			LOGGER.log(Level.INFO, TypeOfUpdate, gson.toJson(employeeIn));
+//			fileHandler.close();
+//		} catch (IOException exception) {
+//			LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
+//		}
+//	}
 }

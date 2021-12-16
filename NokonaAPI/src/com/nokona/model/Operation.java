@@ -8,15 +8,15 @@ import lombok.ToString;
 @ToString(includeFieldNames=true)
 @Data
 public class Operation {
+	private long key;
 	private String opCode;
 	private String description;
-	private double hourlyRateSAH;
 	private int laborCode;
-	private long key;
+	private double hourlyRateSAH;
 	private int lastStudyYear;
 	
 	public Operation() {
-		this("", "", 0, 0, -1, 0);
+		this(-1, "", "", 0, 0, 0);
 	}
 	
 }

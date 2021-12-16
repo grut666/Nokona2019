@@ -1,15 +1,10 @@
 package com.nokona.db;
 
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.nokona.data.NokonaDatabaseOperation;
@@ -19,7 +14,6 @@ import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.InvalidInsertException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.OperationFormatter;
-import com.nokona.model.Employee;
 import com.nokona.model.Operation;
 import com.nokona.validator.OperationValidator;
 
@@ -38,10 +32,10 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 	private PreparedStatement psMoveDeletedOperationByOpCode;
 	
 
-	private PreparedStatement psTransferOperation;
+//	private PreparedStatement psTransferOperation;
 
 	// private Connection accessConn;
-	private static final Logger LOGGER = Logger.getLogger("OperationLogger");
+//	private static final Logger LOGGER = Logger.getLogger("OperationLogger");
 	
 	public NokonaDAOOperation() throws DatabaseException {
 		super();
@@ -159,7 +153,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
 			}
-			loggit("UPDATE", operationIn);
+//			loggit("UPDATE", operationIn);
 			return getOperationByKey(formattedOperation.getKey());
 			
 		} catch (SQLException e) {
@@ -202,7 +196,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			try (ResultSet generatedKeys = psAddOperation.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
 					newOp.setKey(generatedKeys.getLong(1));
-					loggit("ADD", newOp);
+//					loggit("ADD", newOp);
 					return getOperationByKey(generatedKeys.getLong(1));
 				} else {
 					throw new SQLException("Creating operation failed, no ID obtained.");
@@ -237,7 +231,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			if (rowCount == 0) {
 				throw new DataNotFoundException("Error.  Delete Operation Key " + key + " failed");
 			}
-			loggit("DELETE_BY_KEY", new Operation(null, null,  0, 0, key, 0));
+//			loggit("DELETE_BY_KEY", new Operation(key, null, null,  0, 0, 0));
 
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage(), e);
@@ -271,7 +265,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			if (rowCount == 0) {
 				throw new DataNotFoundException("Error.  Delete Operation ID " + opCode + " failed");
 			}
-			loggit("DELETE_BY_ID", new Operation(opCode,  null, 0, 0, 0, 0));
+//			loggit("DELETE_BY_ID", new Operation(0, opCode,  null, 0, 0, 0));
 
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage(), e);
@@ -286,65 +280,65 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 		int laborCode = rs.getInt("LaborCode");
 		int lastStudyYear = rs.getInt("LastStudyYear");
 
-		return new Operation(opCode, description, hourlyRateSAH, laborCode, key, lastStudyYear);
+		return new Operation(key, opCode, description, laborCode, hourlyRateSAH, lastStudyYear);
 	}
 	// Remove below when finished with Beta testing
 
-		protected void loggit(String TypeOfUpdate, Operation operationIn) throws DatabaseException {
-			flatLog(TypeOfUpdate, operationIn);
-			// This is for moving updates to the Access DB until the application has been
-			// completely ported over
-			if (psTransferOperation == null) {
-				try {
-					psTransferOperation = conn.prepareStatement(
-							"Insert into Transfer_Operation (OpCode, Description, HourlyRateSAH, LaborCode, LastStudyYear, UDorI, Transfer_Operation.Key) values (?,?,?,?,?,?,?)");
-
-				} catch (SQLException e) {
-					System.err.println(e.getMessage());
-					throw new DatabaseException(e.getMessage());
-				}
-			}
-			try {
-				psTransferOperation.setString(1, operationIn.getOpCode());
-				psTransferOperation.setString(2, operationIn.getDescription());
-				psTransferOperation.setDouble(3, operationIn.getHourlyRateSAH());
-				psTransferOperation.setInt(4, operationIn.getLaborCode());
-				psTransferOperation.setInt(5, operationIn.getLastStudyYear());
-				psTransferOperation.setString(6, TypeOfUpdate);
-				psTransferOperation.setLong(7, operationIn.getKey());
-				int rowCount = psTransferOperation.executeUpdate();
-				if (rowCount != 1) {
-					throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
-				}
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage(), e);
-			}
-
-		}
-
-		protected void flatLog(String TypeOfUpdate, Operation operationIn) {
-			Handler consoleHandler = null;
-			Handler fileHandler = null;
-			try {
-				// Creating consoleHandler and fileHandler
-				consoleHandler = new ConsoleHandler();
-				fileHandler = new FileHandler("/logs/operation.log", 0, 1, true);
-
-				// Assigning handlers to LOGGER object
-				LOGGER.addHandler(consoleHandler);
-				LOGGER.addHandler(fileHandler);
-
-				// Setting levels to handlers and LOGGER
-				consoleHandler.setLevel(Level.ALL);
-				fileHandler.setLevel(Level.ALL);
-				LOGGER.setLevel(Level.ALL);
-
-				LOGGER.log(Level.INFO, TypeOfUpdate, gson.toJson(operationIn));
-				fileHandler.close();
-			} catch (IOException exception) {
-				LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
-			}
-		}
+//		protected void loggit(string typeofupdate, operation operationin) throws databaseexception {
+//			flatlog(typeofupdate, operationin);
+//			// this is for moving updates to the access db until the application has been
+//			// completely ported over
+//			if (pstransferoperation == null) {
+//				try {
+//					pstransferoperation = conn.preparestatement(
+//							"insert into transfer_operation (opcode, description, hourlyratesah, laborcode, laststudyyear, udori, transfer_operation.key) values (?,?,?,?,?,?,?)");
+//
+//				} catch (sqlexception e) {
+//					system.err.println(e.getmessage());
+//					throw new databaseexception(e.getmessage());
+//				}
+//			}
+//			try {
+//				pstransferoperation.setstring(1, operationin.getopcode());
+//				pstransferoperation.setstring(2, operationin.getdescription());
+//				pstransferoperation.setdouble(3, operationin.gethourlyratesah());
+//				pstransferoperation.setint(4, operationin.getlaborcode());
+//				pstransferoperation.setint(5, operationin.getlaststudyyear());
+//				pstransferoperation.setstring(6, typeofupdate);
+//				pstransferoperation.setlong(7, operationin.getkey());
+//				int rowcount = pstransferoperation.executeupdate();
+//				if (rowcount != 1) {
+//					throw new databaseexception("error.  inserted " + rowcount + " rows");
+//				}
+//
+//			} catch (sqlexception e) {
+//				system.err.println(e.getmessage());
+//				throw new databaseexception(e.getmessage(), e);
+//			}
+//
+//		}
+//
+//		protected void flatlog(string typeofupdate, operation operationin) {
+//			handler consolehandler = null;
+//			handler filehandler = null;
+//			try {
+//				// creating consolehandler and filehandler
+//				consolehandler = new consolehandler();
+//				filehandler = new filehandler("/logs/operation.log", 0, 1, true);
+//
+//				// assigning handlers to logger object
+//				logger.addhandler(consolehandler);
+//				logger.addhandler(filehandler);
+//
+//				// setting levels to handlers and logger
+//				consolehandler.setlevel(level.all);
+//				filehandler.setlevel(level.all);
+//				logger.setlevel(level.all);
+//
+//				logger.log(level.info, typeofupdate, gson.tojson(operationin));
+//				filehandler.close();
+//			} catch (ioexception exception) {
+//				logger.log(level.severe, "error occur in filehandler.", exception);
+//			}
+//		}
 }

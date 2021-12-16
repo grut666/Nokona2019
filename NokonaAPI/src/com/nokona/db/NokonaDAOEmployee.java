@@ -1,15 +1,10 @@
 package com.nokona.db;
 
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.nokona.data.NokonaDatabaseEmp;
@@ -36,10 +31,10 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 	private PreparedStatement psDelEmployeeByKey;
 	private PreparedStatement psDelEmployeeByEmpId;
 
-	private PreparedStatement psTransferEmployee;
+//	private PreparedStatement psTransferEmployee;
 
 	// private Connection accessConn;
-	private static final Logger LOGGER = Logger.getLogger("EmployeeLogger");
+//	private static final Logger LOGGER = Logger.getLogger("EmployeeLogger");
 
 	// private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 

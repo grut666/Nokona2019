@@ -2,14 +2,14 @@
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
 <record>
-  <date>2021-12-13T13:23:06</date>
-  <millis>1639423386247</millis>
+  <date>2021-12-14T15:11:07</date>
+  <millis>1639516267056</millis>
   <sequence>0</sequence>
   <logger>com.nokona.utilities.MySqlToAccess</logger>
   <level>SEVERE</level>
   <class>com.nokona.utilities.MySqlToAccess</class>
   <method>doEmployeeDelete</method>
   <thread>1</thread>
-  <message>Access Error: DELETE FROM EMPLOYEE WHERE [Bar Code ID] = ?: Rows Affected = 0</message>
+  <message>MySQL Error: Update Employee_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'D': Rows Affected = 0</message>
 </record>
 </log>

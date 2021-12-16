@@ -35,7 +35,7 @@ class TestOperationResource {
 	@Test
 	public void testOperationGoodGet() throws DatabaseException {
 		Mockito.when(db.getOperation(Mockito.anyString()))
-				.thenReturn(new Operation("A55", "INSTALL RUBBER IN POCKET",.0225,3,9693,0));
+				.thenReturn(new Operation(9693,"A55", "INSTALL RUBBER IN POCKET",3, .0225,0));
 		assertEquals("A55", ((Operation) (opResource.getOperation("MOL20").getEntity())).getOpCode());
 	}
 
@@ -60,7 +60,7 @@ class TestOperationResource {
 	@Test
 	public void testOperationByKeyGoodGet() throws DatabaseException {
 		Mockito.when(db.getOperationByKey(Mockito.anyInt()))
-				.thenReturn(new Operation("A55", "INSTALL RUBBER IN POCKET",.0225,3,9693,0));
+				.thenReturn(new Operation(9693, "A55", "INSTALL RUBBER IN POCKET",3, .0225,0));
 		assertEquals("A55", ((Operation) (opResource.getOperationByKey(9693).getEntity())).getOpCode());
 		assertEquals(200, opResource.getOperationByKey(9693).getStatus());
 	}
@@ -104,22 +104,22 @@ class TestOperationResource {
 	@Test
 	public void testOperationsGoodPut() throws DatabaseException {
 		Mockito.when(db.updateOperation(Mockito.any(Operation.class)))
-				.thenReturn(new Operation("A55", "INSTALL RUBBER IN POCKET",.0225,3,9693,0));
+				.thenReturn(new Operation(9693, "A55", "INSTALL RUBBER IN POCKET",3,.0225,0));
 		assertEquals(200, opResource
-				.updateOperation("A55", new Operation("A55", "INSTALL RUBBER IN POCKET",.0225,3,9693,0)).getStatus());
+				.updateOperation("A55", new Operation(9693, "A55", "INSTALL RUBBER IN POCKET",3,.0225,0)).getStatus());
 	}
 
 	@Test
 	public void testOperationsPut400() throws DatabaseException {
 		assertEquals(400, opResource
-				.updateOperation("AZZ", new Operation("A55", "INSTALL RUBBER IN POCKET",.0225,3,9693,0)).getStatus());
+				.updateOperation("AZZ", new Operation(9693, "A55", "INSTALL RUBBER IN POCKET",3,.0225,0)).getStatus());
 	}
 
 	@Test
 	public void testOperationsPut422() throws DatabaseException {
 		Mockito.when(db.updateOperation(Mockito.any(Operation.class))).thenThrow(new DuplicateDataException("Broken"));
 		assertEquals(422, opResource
-				.updateOperation("A55", new Operation("A55", "INSTALL RUBBER IN POCKET",.0225,3,9693,0)).getStatus());
+				.updateOperation("A55", new Operation(9693, "A55", "INSTALL RUBBER IN POCKET",3, .0225,0)).getStatus());
 	}
 
 	@Test
@@ -127,42 +127,42 @@ class TestOperationResource {
 		Mockito.when(db.updateOperation(Mockito.any(Operation.class)))
 				.thenThrow(new DatabaseConnectionException("Broken"));
 		assertEquals(500, opResource
-				.updateOperation("A55", new Operation("A55", "INSTALL RUBBER IN POCKET",.0225,3,9693,0)).getStatus());
+				.updateOperation("A55", new Operation(9693,"A55", "INSTALL RUBBER IN POCKET",3,.0225,0)).getStatus());
 	}
 //
 	@Test
 	public void testOperationsPut503() throws DatabaseException {
 		Mockito.when(db.updateOperation(Mockito.any(Operation.class))).thenThrow(new DatabaseException("Broken"));
 		assertEquals(503, opResource
-				.updateOperation("A55", new Operation("A55", "INSTALL RUBBER IN POCKET",.0225,3,9693,0)).getStatus());
+				.updateOperation("A55", new Operation(9693, "A55", "INSTALL RUBBER IN POCKET",3,.0225,0)).getStatus());
 	}
 
 	//
 	@Test
 	public void testOperationsAdd201() throws DatabaseException {
 		assertEquals(201,
-				opResource.addOperation(new Operation("A55", "INSTALL RUBBER IN POCKET",.0225,3,9693,0)).getStatus());
+				opResource.addOperation(new Operation(9693,"A55", "INSTALL RUBBER IN POCKET",3, .0225,0)).getStatus());
 	}
 
 	@Test
 	public void testOperationsAdd422() throws DatabaseException {
 		Mockito.when(db.addOperation(Mockito.any(Operation.class))).thenThrow(new DuplicateDataException("Broken"));
 		assertEquals(422,
-				opResource.addOperation(new Operation("A55", "INSTALL RUBBER IN POCKET",.0225,3,9693,0)).getStatus());
+				opResource.addOperation(new Operation(9693,"A55", "INSTALL RUBBER IN POCKET",3,.0225,0)).getStatus());
 	}
 
 	@Test
 	public void testOperationsAdd500() throws DatabaseException {
 		Mockito.when(db.addOperation(Mockito.any(Operation.class))).thenThrow(new DatabaseConnectionException("Broken"));
 		assertEquals(500,
-				opResource.addOperation(new Operation("A55", "INSTALL RUBBER IN POCKET",.0225,3,9693,0)).getStatus());
+				opResource.addOperation(new Operation(9693, "A55", "INSTALL RUBBER IN POCKET",3,.0225,0)).getStatus());
 	}
 
 	@Test
 	public void testOperationsAdd503() throws DatabaseException {
 		Mockito.when(db.addOperation(Mockito.any(Operation.class))).thenThrow(new DatabaseException("Broken"));
 		assertEquals(503,
-				opResource.addOperation(new Operation("A55", "INSTALL RUBBER IN POCKET",.0225,3,9693,0)).getStatus());
+				opResource.addOperation(new Operation(9693,"A55", "INSTALL RUBBER IN POCKET",3,.0225,0)).getStatus());
 	}
 //	//
 //

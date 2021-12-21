@@ -318,7 +318,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 				throw new DataNotFoundException("Error.  Delete JobHeader JobID " + jobId + " failed");
 			}
 			deleteJobDetailsByJobId(jobId, jobHeaderKey);
-			loggitHeader("DELETE_BY_ID", new JobHeader(jobId, null, 0, null, 0));
+			loggitHeader("DELETE_BY_ID", new JobHeader(0, jobId, null, 0, null));
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -504,7 +504,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			jobType = JobType.valueOf(jobTypeString);
 		}
 
-		return new JobHeader(jobId, description, standardQuantity, jobType, key);
+		return new JobHeader(key, jobId, description, standardQuantity, jobType);
 	}
 
 	private List<JobDetail> convertJobDetailsFromResultSet(ResultSet rs) throws SQLException {

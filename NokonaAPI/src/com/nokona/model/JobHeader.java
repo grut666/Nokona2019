@@ -11,9 +11,10 @@ import lombok.ToString;
 @ToString(includeFieldNames=true)
 @Data
 public class JobHeader {
+	private long key;
 	private String jobId;
 	private String description;
 	private int standardQuantity;
 	private JobType jobType;
-	private long key;
+
 }

@@ -19,6 +19,7 @@ import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
 
 import com.nokona.model.LaborCode;
+import com.nokona.utilities.TransferToAccess;
 
 @Path("/laborcodes")
 public class NokonaLaborCodeResource {
@@ -105,7 +106,9 @@ public NokonaLaborCodeResource()   {
 			return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
 		}
 		try {
-			return Response.status(200).entity(db.updateLaborCode(laborCodeIn)).build();
+			LaborCode fetchedLaborCode = db.updateLaborCode(laborCodeIn);
+			TransferToAccess.transfer("LABOR_U");
+			return Response.status(200).entity(fetchedLaborCode).build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -123,6 +126,7 @@ public NokonaLaborCodeResource()   {
 		LaborCode laborCode;
 		try {
 			laborCode = db.addLaborCode(laborCodeIn);
+			TransferToAccess.transfer("LABOR_C");
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -141,7 +145,7 @@ public NokonaLaborCodeResource()   {
 		try {
 //			getDB();
 				db.deleteLaborCode(laborCode);
-	
+				TransferToAccess.transfer("LABOR_D");
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + laborCode + " not found\"}").build();
 		} catch (DatabaseException ex ) {
@@ -162,6 +166,7 @@ public NokonaLaborCodeResource()   {
 		try {
 //			getDB();
 				db.deleteLaborCodeByKey(key);
+				TransferToAccess.transfer("LABOR_D");
 	
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();

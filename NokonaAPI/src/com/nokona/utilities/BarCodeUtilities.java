@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.model.Employee;
 import com.nokona.model.Ticket;
@@ -132,13 +134,12 @@ public class BarCodeUtilities {
 
 		TicketHeader th = ticketIn.getTicketHeader();
 		String star44 = "********************************************";
-		String strJobId = th.getJobId();
+		String star15 = "***************     ";
+		String strJobId = StringUtils.stripEnd("_", String.format("%20s", th.getJobId()).replace(" ", "_"));
 		boolean isRH = strJobId.contains("-RH") ? true : false;
-		String strJobDesc = th.getDescription();
-		String strTkt1 = String.format("%06d", th.getKey());
+		String strJobDesc = StringUtils.stripEnd("_", th.getDescription().replace(" ", "_"));
+		String strTkt1 = StringUtils.stripEnd("_", String.format("%06d", th.getKey()).replace(" ", "_"));
 		String strQtyFormatted = replaceLeadingWithUnderScores(String.format("%03d", th.getQuantity()));
-		// String strJobDesc = th.gexxxxxxxxxxxxxxxxxxxxxxxxxxxxxx; // Change Ticket to
-		// have all info about Ticket including operation and Job info
 		StringBuilder sb = new StringBuilder("");
 		String dateCreated = simpleDateFormat.format(th.getDateCreated());
 		sb.append(ESC).append("&l0E"); // Top of Page is 0 lines down
@@ -151,24 +152,22 @@ public class BarCodeUtilities {
 		sb.append(ESC).append("&a0.3C").append("OFFICE_CONTROL").append(ESC).append("&a1.3C").append(strJobId)
 				.append(ESC).append("&a2.3C").append("OFFICE_CONTROL");
 		sb.append(ESC).append("&a").append(intRowCount + 0.3).append("R"); // Set Vertical Coordinate
-
 		sb.append(ESC).append("&a0.1C").append("TICKET:").append(strTkt1).append(ESC).append("&a0.5C")
 				.append(dateCreated).append(ESC).append("&a1.1C").append(strJobDesc).append(ESC).append("&a2.1C")
 				.append("TICKET:").append(strTkt1).append(ESC).append("&a2.5C").append(dateCreated);
-
 		sb.append(ESC).append("&a").append(intRowCount + 0.48).append("R"); // Set Vertical Coordinate
 		sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append("TICKET:").append("strTkt1")
 				.append(ESC).append("&a1.4C").append("QTY:").append(strQtyFormatted).append(ESC).append("&a1.6C")
 				.append(dateCreated).append(ESC).append("&a2.1C").append(star44);
 		sb.append(ESC).append("&a").append(intRowCount + 0.65).append("R"); // Set Vertical Coordinate
+
 		sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
-				.append("&a2.1C").append(star44);
-		sb.append(ESC).append("&a2.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
 				.append("&a2.1C").append(star44);
 		sb.append(ESC).append("&a").append(intRowCount + .81).append("R"); // Set Vertical Coordinate
 
 		int intKounter = 1;
 		int theKount;
+		// ------------------
 		int detailIndex = 0;
 		int detailCount = ticketIn.getTicketDetails().size();
 
@@ -183,234 +182,188 @@ public class BarCodeUtilities {
 		TicketDetail td2 = null;
 		theKount = (int) (Math.ceil(detailCount / 3.0)); // How many rows of labels
 		for (int intLoop = 0; intLoop < theKount; intLoop++) {
+			String[] strDesc0 = { star15, star15, star15 };
+			String[] strDesc1 = { star15, star15, star15 };
+			String[] strDesc2 = { star15, star15, star15 };
+			String[] strRate = { "0", "0", "0" };
+			String[] strSequence = { "00", "00", "00" };
+			String[] strRateFormatted = { "", "", "" };
+			String[] strExt = { "", "", "" };
 			td0 = detailIndex < detailCount ? ticketIn.getTicketDetails().get(detailIndex) : null;
-			td1 = (detailIndex + 1) < detailCount ? ticketIn.getTicketDetails().get(detailIndex) : null;
-			td1 = (detailIndex + 2) < detailCount ? ticketIn.getTicketDetails().get(detailIndex) : null;
+			td1 = (detailIndex + 1) < detailCount ? ticketIn.getTicketDetails().get(detailIndex + 1) : null;
+			td1 = (detailIndex + 2) < detailCount ? ticketIn.getTicketDetails().get(detailIndex + 2) : null;
 
+			StringBuilder line1 = new StringBuilder();
+			StringBuilder line2 = new StringBuilder();
+			StringBuilder line3 = new StringBuilder();
+			StringBuilder line4 = new StringBuilder();
+			StringBuilder line5 = new StringBuilder();
+
+			String strCvtBarCode0;
+			String strCvtBarCode1;
+			String strCvtBarCode2;
 			if (td0 != null) {
+				String strDescAll = td0.getOperationDescription();
+				double rate = isRH ? td0.getHourlyRateSAH() * 1.1 : td0.getHourlyRateSAH();
+				int quantity = td0.getQuantity();
+				strSequence[0] = String.format("%02d", td0.getSequenceOriginal());
+				strRate[0] = String.format("%7.4f", rate);
+				strRateFormatted[0] = strRate[0].replace(" ", "_");
+				strExt[0] = String.format("%7.4f", rate * quantity).replace(" ", "_");
+				strDesc0[0] = StringUtils.left(strDescAll, 17);
+				strDescAll = StringUtils.mid(strDescAll, 17, 17);
+				strDesc0[1] = StringUtils.left(strDescAll, 17);
+				strDescAll = StringUtils.mid(strDescAll, 17, 17);
+				strDesc0[2] = StringUtils.left(strDescAll, 17);
 
 			}
 			if (td1 != null) {
-
+				String strDescAll = td1.getOperationDescription();
+				double rate = isRH ? td1.getHourlyRateSAH() * 1.1 : td1.getHourlyRateSAH();
+				int quantity = td1.getQuantity();
+				strSequence[1] = String.format("%02d", td1.getSequenceOriginal());
+				strRate[1] = String.format("%7.4f", rate);
+				strRateFormatted[1] = strRate[1].replace(" ", "_");
+				strExt[1] = String.format("%7.4f", rate * quantity).replace(" ", "_");
+				strDesc1[0] = StringUtils.left(strDescAll, 17);
+				strDescAll = StringUtils.mid(strDescAll, 17, 17);
+				strDesc1[1] = StringUtils.left(strDescAll, 17);
+				strDescAll = StringUtils.mid(strDescAll, 17, 17);
+				strDesc1[2] = StringUtils.left(strDescAll, 17);
 			}
 			if (td2 != null) {
+				String strDescAll = td2.getOperationDescription();
+				double rate = isRH ? td2.getHourlyRateSAH() * 1.1 : td2.getHourlyRateSAH();
+				int quantity = td1.getQuantity();
+				strSequence[2] = String.format("%02d", td2.getSequenceOriginal());
+				strRate[2] = String.format("%7.4f", rate);
+				strRateFormatted[2] = strRate[2].replace(" ", "_");
+				strExt[2] = String.format("%7.4f", rate * quantity).replace(" ", "_");
+				strDesc2[0] = StringUtils.left(strDescAll, 17);
+				strDescAll = StringUtils.mid(strDescAll, 17, 17);
+				strDesc2[1] = StringUtils.left(strDescAll, 17);
+				strDescAll = StringUtils.mid(strDescAll, 17, 17);
+				strDesc2[2] = StringUtils.left(strDescAll, 17);
+			}
+			if (intKounter < 3) {
+				intKounter++;
+			} else {
+				intKounter = 1;
+				line1.append(ESC).append("&a0.1C").append(strJobId).append(ESC).append("&a0.5C").append("TKT:")
+						.append(strTkt1).append("__").append(strSequence[0]).append(ESC).append("&a1.1C")
+						.append(strJobId).append(ESC).append("&a1.5C").append("TKT:").append(strTkt1).append("__")
+						.append(strSequence[1]).append(ESC).append("&a2.1C").append(strJobId).append(ESC)
+						.append("&a2.5C").append("TKT:").append(strTkt1).append("__").append(strSequence[2]);
+
+				line2.append(ESC).append("&a0.1C").append("QTY:").append(strQtyFormatted).append(ESC).append("&a0.4C")
+						.append("RATE:_").append(strRateFormatted[0]).append(ESC).append("&a0.7C").append("EXT:")
+						.append(ESC).append("&a1.1C").append("QTY:").append(strQtyFormatted).append(ESC)
+						.append("&a1.4C").append("RATE:_").append(strRateFormatted[1]).append(ESC).append("&a01.7C")
+						.append("EXT:").append(ESC).append("&a2.1C").append("QTY:").append(strQtyFormatted).append(ESC)
+						.append("&a2.4C").append("RATE:_").append(strRateFormatted[2]).append(ESC).append("&a2.7C")
+						.append("EXT:");
+				strDesc0[0] = strDesc0[0] == null ? "" : strDesc0[0].replace(" ", "_");
+				StringUtils.stripEnd("_", strDesc0[0]);
+				strDesc0[1] = strDesc0[1] == null ? "" : strDesc0[1].replace(" ", "_");
+				StringUtils.stripEnd("_", strDesc0[1]);
+				strDesc0[2] = strDesc0[2] == null ? "" : strDesc0[2].replace(" ", "_");
+				StringUtils.stripEnd("_", strDesc0[2]);
+
+				strDesc1[0] = strDesc1[0] == null ? "" : strDesc1[0].replace(" ", "_");
+				StringUtils.stripEnd("_", strDesc0[0]);
+				strDesc1[1] = strDesc1[1] == null ? "" : strDesc1[1].replace(" ", "_");
+				StringUtils.stripEnd("_", strDesc0[1]);
+				strDesc1[2] = strDesc1[2] == null ? "" : strDesc1[2].replace(" ", "_");
+				StringUtils.stripEnd("_", strDesc0[2]);
+
+				strDesc2[0] = strDesc2[0] == null ? "" : strDesc2[0].replace(" ", "_");
+				StringUtils.stripEnd("_", strDesc0[0]);
+				strDesc2[1] = strDesc2[1] == null ? "" : strDesc2[1].replace(" ", "_");
+				StringUtils.stripEnd("_", strDesc0[1]);
+				strDesc2[2] = strDesc2[2] == null ? "" : strDesc2[2].replace(" ", "_");
+				StringUtils.stripEnd("_", strDesc0[2]);
+
+				String fBarCode0 = strTkt1 + strSequence[0];
+				String fBarCode1 = strTkt1 + strSequence[1];
+				String fBarCode2 = strTkt1 + strSequence[2];
+
+				strCvtBarCode0 = convertBarCode2of5(fBarCode0);
+				strCvtBarCode1 = convertBarCode2of5(fBarCode1);
+				strCvtBarCode2 = convertBarCode2of5(fBarCode2);
+
+				line3.append(ESC).append("&a0.1C").append(strDesc0[0]).append(ESC).append("&a1.1C").append(strDesc0[1])
+						.append(ESC).append("&a2.1C").append(strDesc0[2]);
+				line4.append(ESC).append("&a0.1C").append(strDesc1[0]).append(ESC).append("&a1.1C").append(strDesc1[1])
+						.append(ESC).append("&a2.1C").append(strDesc1[2]);
+				line5.append(ESC).append("&a0.16C").append(fBarCode0).append(ESC).append("&a1.6C").append(fBarCode1)
+						.append(ESC).append("&a2.6C").append(fBarCode2);
+
+				sb.append(ESC).append("(0U").append(ESC).append("s1p6v0s0b16602T");
+				sb.append(ESC).append("&k330H").append(ESC).append("&l48C");
+				sb.append(ESC).append("&a").append(intRowCount).append("R");
+				sb.append(line1);
+				sb.append(ESC).append("&a").append(intRowCount + 0.14).append("R");
+				sb.append(line2);
+				sb.append(ESC).append("&a").append(intRowCount + 0.3).append("R");
+				sb.append(line3);
+				sb.append(ESC).append("&a").append(intRowCount + 0.48).append("R");
+				sb.append(line4);
+				sb.append(ESC).append("&a").append(intRowCount + 0.705).append("R");
+				sb.append(ESC).append("(0U").append(ESC).append("(s1p10v0s0b16602T");
+				sb.append(ESC).append("&k330H").append(ESC).append("&l48C");
+				sb.append(line5);
+
+				// Set Bar Code Font
+				sb.append(ESC).append("(3Y").append(ESC).append("(s1p").append(POINT_SIZE).append("v0s0b28673T");
+				sb.append(ESC).append("&k330H").append(ESC).append("&l48C");
+
+				sb.append(ESC).append("&a0.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
+						.append(strCvtBarCode0);
+				sb.append(ESC).append("&a1.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
+						.append(strCvtBarCode1);
+				sb.append(ESC).append("&a2.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
+						.append(strCvtBarCode2);
+				intRowCount++;
+				if (intRowCount >= 10) {
+					sb.append(PAGE_EJECT);
+					intRowCount = 0;
+				}
+
+				sb.append(ESC).append("&l0E"); // Top of Page is 0 lines down
+				sb.append(ESC).append("(0U").append(ESC).append("(s1p8v0s0b16602T"); // ' 8 pitch arial
+				sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
+
+				sb.append(ESC).append("&a").append(intRowCount).append("R"); // ' Set Vertical Coordinate")
+				sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
+						.append("&a2.1C").append(star44);
+
+				sb.append(ESC).append("&a").append(intRowCount + 0.14).append("R"); // ' Set Vertical Coordinate)
+				sb.append(ESC).append("&a0.3C").append("FACTORY_CONTROL").append(ESC).append("&a1.3C").append(strJobId)
+						.append(ESC).append("&a2.3C").append("FACTORY_CONTROL");
+
+				sb.append(ESC).append("&a").append(intRowCount + 0.3).append("R"); // ' Set Vertical Coordinate)
+				sb.append(ESC).append("&a0.1C").append("TICKET:").append(strTkt1).append(ESC).append("&a0.5C")
+						.append(dateCreated);
+
+				sb.append(ESC).append("&a").append(intRowCount + 0.48).append("R"); // ' Set Vertical Coordinate)
+				sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append("TICKET:");
+				sb.append(strTkt1).append(ESC).append("&a1.4C").append("QTY:").append(strQtyFormatted);
+				sb.append(ESC).append("&a1.6C").append(dateCreated).append(ESC).append("&a2.1C").append(star44);
+
+				sb.append(ESC).append("&a").append(intRowCount + 0.65).append("R"); // ' Set Vertical Coordinate)
+				sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
+						.append("&a2.1C").append(star44);
+
+				intRowCount++;
+				if (intRowCount >= 10) {
+					intRowCount = 0;
+				}
+				sb.append(PAGE_EJECT);
+				//
 
 			}
-
-			// If adoOp.EOF Then
-			// strRate(intKounter) = 0
-			// If InStr(1, strMissing, Left(lstExisting.List(intLoop), 4)) = 0 Then
-			// If theOp <> "BLANK" Then
-			// strMissing = strMissing & Left(lstExisting.List(intLoop), 4) & " "
-			// End If
-			// End If
-			// strDesc1(intKounter) = "***************"
-			// strDesc2(intKounter) = "***************"
-			//
-			// Else
-			// If isRH Then
-			// strRate(intKounter) = Format(Str(adoOp("HourlyRateSAH") * 1.1), "@@@@@@@")
-			// Else
-			// strRate(intKounter) = Format(Str(adoOp("HourlyRateSAH")), "@@@@@@@")
-			// End If
-			// strRateFormatted(intKounter) = Replace(strRate(intKounter), " ", "_")
-			// strDesc = adoOp("Description")
-			// strDesc1(intKounter) = Left(strDesc, 17)
-			// strDesc = Mid(strDesc, 18)
-			// strDesc2(intKounter) = Left(LTrim(strDesc), 17)
-			// End If
-			// adoOp.Close
-			// Set adoOp = Nothing
-			// If intLoop < lstExisting.ListCount Then
-			// strSeq(intKounter) = lstExisting.ItemData(intLoop)
-			// Else
-			// strSeq(intKounter) = 0
-			// strRate(intKounter) = 0
-			// strRateFormatted(intKounter) = 0
-			// End If
-			// If intKounter = 1 Then
-			// intKounter = 2
-			// ElseIf intKounter = 2 Then
-			// intKounter = 3
-			// Else
-			// intKounter = 1
-			// strExt(1) = Format(Val(strQty) * Val(strRate(1)), "@@@@@@@")
-			// strExt(2) = Format(Val(strQty) * Val(strRate(2)), "@@@@@@@")
-			// strExt(3) = Format(Val(strQty) * Val(strRate(3)), "@@@@@@@")
-			// strExt(1) = Replace(strExt(1), " ", "_")
-			// strExt(2) = Replace(strExt(2), " ", "_")
-			// strExt(3) = Replace(strExt(3), " ", "_")
-			// Line1 = ESC & _
-			// "&a0.1C" & strJob & ESC & "&a0.5C" & "TKT:" & strTkt1 & "__" &
-			// Format(strSeq(1), "00") & _
-			// ESC & _
-			// "&a1.1C" & strJob & ESC & "&a1.5C" & "TKT:" & strTkt1 & "__" &
-			// Format(strSeq(2), "00") & _
-			// ESC & _
-			// "&a2.1C" & strJob & ESC & "&a2.5C" & "TKT:" & strTkt1 & "__" &
-			// Format(strSeq(3), "00")
-			//
-			// Line2 = ESC & _
-			// "&a0.1C" & "QTY:" & strQtyFormatted & ESC & "&a0.4C" & "RATE:_" &
-			// strRateFormatted(1) & _
-			// ESC & "&a0.7C" & "EXT:" & strExt(1) & ESC & _
-			// "&a1.1C" & "QTY:" & strQtyFormatted & ESC & "&a1.4C" & "RATE:_" &
-			// strRateFormatted(2) & _
-			// ESC & "&a1.7C" & "EXT:" & strExt(2) & ESC & _
-			// "&a2.1C" & "QTY:" & strQtyFormatted & ESC & "&a2.4C" & "RATE:_" &
-			// strRateFormatted(3) & _
-			// ESC & "&a2.7C" & "EXT:" & strExt(3)
-			// strDesc1(1) = Replace(strDesc1(1), " ", "_")
-			// strDesc1(2) = Replace(strDesc1(2), " ", "_")
-			// strDesc1(3) = Replace(strDesc1(3), " ", "_")
-			// strDesc2(1) = Replace(strDesc2(1), " ", "_")
-			// strDesc2(2) = Replace(strDesc2(2), " ", "_")
-			// strDesc2(3) = Replace(strDesc2(3), " ", "_")
-			// strDesc1(1) = RightUnderScoreTrim(strDesc1(1))
-			// strDesc1(2) = RightUnderScoreTrim(strDesc1(2))
-			// strDesc1(3) = RightUnderScoreTrim(strDesc1(3))
-			// strDesc2(1) = RightUnderScoreTrim(strDesc2(1))
-			// strDesc2(2) = RightUnderScoreTrim(strDesc2(2))
-			// strDesc2(3) = RightUnderScoreTrim(strDesc2(3))
-			//
-			// FBarCode1 = strTkt1 & Format(strSeq(1), "00")
-			// FBarCode2 = strTkt1 & Format(strSeq(2), "00")
-			// FBarCode3 = strTkt1 & Format(strSeq(3), "00")
-			// strCvtBarCode1 = ConvertBarCode2of5(FBarCode1)
-			// strCvtBarCode2 = ConvertBarCode2of5(FBarCode2)
-			// strCvtBarCode3 = ConvertBarCode2of5(FBarCode3)
-			//
-			// Line3 = ESC & "&a0.1C" & strDesc1(1) & _
-			// ESC & "&a1.1C" & strDesc1(2) & _
-			// ESC & "&a2.1C" & strDesc1(3)
-			// Line4 = ESC & "&a0.1C" & strDesc2(1) & _
-			// ESC & "&a1.1C" & strDesc2(2) & _
-			// ESC & "&a2.1C" & strDesc2(3)
-			// Line5 = ESC & "&a0.6C" & FBarCode1 & _
-			// ESC & "&a1.6C" & FBarCode2 & _
-			// ESC & "&a2.6C" & FBarCode3 // Back to 8 point
-			//
-			//
-			// Put #1, , ESC & "(0U" & ESC & "(s1p6v0s0b16602T" ' 6 pitch arial
-			// Put #1, , ESC & "&k330H" & ESC & "&l48C" ' Column width and vertical height
-			// for 1 inch per increment
-			// Put #1, , ESC & "&a" & intRowCount & "R" ' Set Vertical Coordinate
-			// Put #1, , Line1
-			// Put #1, , ESC & "&a" & intRowCount + 0.14 & "R" ' Set Vertical Coordinate
-			// Put #1, , Line2
-			//
-			// Put #1, , ESC & "&a" & intRowCount + 0.3 & "R" ' Set Vertical Coordinate
-			// Put #1, , Line3
-			// Put #1, , ESC & "&a" & intRowCount + 0.48 & "R" ' Set Vertical Coordinate
-			// Put #1, , Line4
-			// Put #1, , ESC & "&a" & intRowCount + 0.705 & "R" ' Set Vertical Coordinate
-			// Put #1, , ESC & "(0U" & ESC & "(s1p10v0s0b16602T"
-			// Put #1, , ESC & "&k330H" & ESC & "&l48C"
-			// Put #1, , Line5
-			// ' ******************************
-			//
-			// Put #1, , ESC & "(3Y" & ESC & "(s1p" & PointSize & "v0s0b28673T" ' Set Bar
-			// Code Font
-			// Put #1, , ESC & "&k330H" & ESC & "&l48C" ' Column width and vertical height
-			// for 1 inch per increment
-			//
-			// Put #1, , ESC & "&a0.5C" & ESC & "&a" & intRowCount + 0.6 & "R" &
-			// strCvtBarCode1 ' Row 0, Column 0
-			// Put #1, , ESC & "&a1.5C" & ESC & "&a" & intRowCount + 0.6 & "R" &
-			// strCvtBarCode2 ' Row 0, Column 0
-			// Put #1, , ESC & "&a2.5C" & ESC & "&a" & intRowCount + 0.6 & "R" &
-			// strCvtBarCode3 ' Row 0, Column 0
-			//
-			// ' ************************************************************
-			// intRowCount = intRowCount + 1
-			// If intRowCount >= 10 Then
-			// Put #1, , PageEject
-			// intRowCount = 0
-			// End If
-			// End If
-			//
-			// Next
-			//
-			// If Len(strMissing) > 0 Then
-			// MsgBox "Missing the following OP Code(s):" & vbCrLf & vbCrLf & strMissing
-			// End If
-
-			// Put Ticket printing code here
-			// sb.append("Ticket is : " + ticketIn);
-
+			detailIndex += 3;
 		}
-		// ' ************************* Print the Trailer
-		//
-		// '
-		// *******************************************************************************************
-		//
-
-		// Put #1, , ESC & "&l0E" ' - Top of Page is 0 lines down
-		// Put #1, , ESC & "(0U" & ESC & "(s1p8v0s0b16602T" ' 8 pitch arial
-		// Put #1, , ESC & "&k330H" & ESC & "&l48C" ' Column width and vertical height
-		// for 1 inch per increment
-		//
-		sb.append(ESC).append("&l0E"); // Top of Page is 0 lines down
-		sb.append(ESC).append("(0U").append(ESC).append("(s1p8v0s0b16602T"); // ' 8 pitch arial
-		sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
-
-		// Put #1, , ESC & "&a" & (intRowCount) & "R" ' Set Vertical Coordinate"
-		// Put #1, , ESC & "&a0.1C" & String(44, "*") & ESC & "&a1.1C" & String(44, "*")
-		// & ESC & "&a2.1C" & String(44, "*")
-		//
-		sb.append(ESC).append("&a").append(intRowCount).append("R"); // ' Set Vertical Coordinate")
-		sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
-				.append("&a2.1C").append(star44);
-
-		// Put #1, , ESC & "&a" & (intRowCount + 0.14) & "R" ' Set Vertical Coordinate
-		// Put #1, , ESC & "&a0.3C" & "FACTORY_CONTROL" & ESC & "&a1.3C" & strJob & ESC
-		// & "&a2.3C" & "FACTORY_CONTROL"
-		//
-		sb.append(ESC).append("&a").append(intRowCount + 0.14).append("R"); // ' Set Vertical Coordinate)
-		sb.append(ESC).append("&a0.3C").append("FACTORY_CONTROL").append(ESC).append("&a1.3C").append(strJobId)
-				.append(ESC).append("&a2.3C").append("FACTORY_CONTROL");
-
-		// Put #1, , ESC & "&a" & (intRowCount + 0.3) & "R" ' Set Vertical Coordinate
-		// Put #1, , ESC & "&a0.1C" & "TICKET:" & strTkt1 & ESC & "&a0.5C" &
-		// Format(DateCreated, "mm/dd/yyyy") _
-		// & ESC & "&a1.1C" & strJobDesc & ESC & "&a2.1C" _
-		// & "TICKET:" & strTkt1 & ESC & "&a2.5C" & Format(DateCreated, "mm/dd/yyyy")
-
-		sb.append(ESC).append("&a").append(intRowCount + 0.3).append("R"); // ' Set Vertical Coordinate)
-		sb.append(ESC).append("&a0.1C").append("TICKET:").append(strTkt1).append(ESC).append("&a0.5C")
-				.append(dateCreated);
-		//
-		// Put #1, , ESC & "&a" & (intRowCount + 0.48) & "R" ' Set Vertical Coordinate
-		// Put #1, , ESC & "&a0.1C" & String(44, "*") & ESC & "&a1.1C" & "TICKET:" &
-		// strTkt1 & ESC & "&a1.4C" & "QTY:" & strQtyFormatted & _
-		// ESC & "&a1.6C" & Format(DateCreated, "mm/dd/yyyy") & ESC & "&a2.1C" &
-		// String(44, "*")
-
-		sb.append(ESC).append("&a").append(intRowCount + 0.48).append("R"); // ' Set Vertical Coordinate)
-		sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append("TICKET:");
-		sb.append(strTkt1).append(ESC).append("&a1.4C").append("QTY:").append(strQtyFormatted);
-		sb.append(ESC).append("&a1.6C").append(dateCreated).append(ESC).append("&a2.1C").append(star44);
-		//
-		// Put #1, , ESC & "&a" & (intRowCount + 0.65) & "R" ' Set Vertical Coordinate
-		// Put #1, , ESC & "&a0.1C" & String(44, "*") & ESC & "&a1.1C" & String(44, "*")
-		// & ESC & "&a2.1C" & String(44, "*")
-
-		sb.append(ESC).append("&a").append(intRowCount + 0.65).append("R"); // ' Set Vertical Coordinate)
-		sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
-				.append("&a2.1C").append(star44);
-		// intRowCount = intRowCount + 1
-		// If intRowCount >= 10 Then
-		// intRowCount = 0
-		// End If
-		// Put #1, , PageEject ' Unconditional Page Eject after each set, per Paul
-		// intRowCount = 0 ' Reset back to top of next page
-
-		intRowCount++;
-		if (intRowCount >= 10) {
-			intRowCount = 0;
-		}
-		sb.append(PAGE_EJECT);
-		//
 		String output = sb.toString();
 		return output.replaceAll("\"", "\\\\\"");
 	}
@@ -432,4 +385,5 @@ public class BarCodeUtilities {
 		}
 		return out;
 	}
+
 }

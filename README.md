@@ -232,7 +232,6 @@ Body:
 {\
     "Success": "200"\
 }
-## Labels
 
 ## Operation
 

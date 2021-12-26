@@ -163,4 +163,5 @@ public class NokonaTicketResource {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 	}
+	
 }

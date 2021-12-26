@@ -200,8 +200,8 @@ public class NokonaEmployeeResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/labels/{user}/{quantity}")
-	public Response getEmployeeLabels(@PathParam("user") String user, @PathParam("quantity") int quantity) {
+	@Path("/labels/{empId}/{quantity}")
+	public Response getEmployeeLabels(@PathParam("empId") String user, @PathParam("quantity") int quantity) {
 
 		Labels labels;
 		try {

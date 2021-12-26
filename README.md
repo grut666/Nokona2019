@@ -929,3 +929,18 @@ Body:
     ]\
 }
 
+## Labels (Employee and Tickets
+
+### Post /labels # Print already generated employee labels or tickets
+
+#### In
+
+/labels
+
+Body:
+{\
+    "labels": "... Long Byte Stream of Multiple Sets of Labels ..."\
+    
+}
+
+

@@ -36,7 +36,7 @@
     }\
 ]
 
-### Get /employee/{employeeID} # Get 1 employee by their unique identifer, employeeID
+### Get /employees/{employeeID} # Get 1 employee by their unique identifer, employeeID
 #### In
 /employees/BAR10
 #### Out
@@ -50,7 +50,7 @@
     "key": 483\
 }
 
-### Get /employee/bykey/{employeeID} # Get 1 employee by their unique numeric DB key
+### Get /employees/bykey/{key} # Get 1 employee by their unique numeric DB key
 #### In
 /employees/bykey/483
 #### Out
@@ -62,6 +62,24 @@
     "laborCode": 11,\
     "active": false,\
     "key": 483\
+}
+
+### Get /employees/labels/{employeeID} # Generate 1 page of employee labels
+#### In
+/employees/labels/483
+#### Out
+
+{\
+    labels": "... Long Byte Stream of Labels ..."\
+}
+
+### Get /employees/labels/{employeeID}/{pages} # Generate multiple pages of employee labels
+#### In
+/employees/labels/483/2
+#### Out
+
+{\
+    labels": "... Long Byte Stream of Multiple Sets of Labels ..."\
 }
         
 ### Put /employees/{empID} # Update one employee
@@ -129,6 +147,8 @@ Body:
 {\
     "Success": "200"\
 }
+
+
 
 ## Labor Code - Describes one Labor Code Record
 
@@ -232,7 +252,6 @@ Body:
 {\
     "Success": "200"\
 }
-## Labels
 
 ## Operation
 
@@ -891,4 +910,19 @@ Body:
         }\
     ]\
 }
+
+## Labels (Employee and Tickets
+
+### Post /labels # Print already generated employee labels or tickets
+
+#### In
+
+/labels
+
+Body:
+{\
+    "labels": "... Long Byte Stream of Multiple Sets of Labels ..."\
+    
+}
+
 

@@ -75,7 +75,7 @@
 
 ### Get /employees/labels/{employeeID}/{pages} # Generate multiple pages of employee labels
 #### In
-/employees/labels/483
+/employees/labels/483/2
 #### Out
 
 {\
@@ -861,6 +861,24 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
     "description": "GRAY AMERKIP 12.75\", H-WEB - LEFT",\
     "key": 40965,\
     "dateStatus": "20200216180000-0600"\
+}
+
+### Get /tickets/labels/{key} # Generate 1 page of ticket labels
+#### In
+/tickets/labels/483
+#### Out
+
+{\
+    labels": "... Long Byte Stream of Labels ..."\
+}
+
+### Get /tickets/labels/{key}/{pages} # Generate multiple pages of ticket labels
+#### In
+/tickets/labels/483/2
+#### Out
+
+{\
+    labels": "... Long Byte Stream of Multiple Sets of Labels ..."\
 }
 
 ### Post /tickets # Add 1 ticket

@@ -15,14 +15,14 @@ public class PrintScratchPad {
 		String name = "Mark Waggoner From Texas";
 		System.out.println(name.replace(" ", "_"));
 		System.out.println(String.format("%02d", 4));
-		System.out.println(BarCodeUtilities.convertBarCode2Of5("1234"));
-		System.out.println(BarCodeUtilities.convertBarCode2Of5("12345"));
-		System.out.println(BarCodeUtilities.convertBarCode2Of5("123456"));
-		System.out.println(BarCodeUtilities.convertBarCode2Of5("1234567"));
-		System.out.println(BarCodeUtilities.convertBarCode2Of5("1234567"));
-		System.out.println(BarCodeUtilities.convertBarCode2Of5("12345678"));
+//		System.out.println(BarCodeUtilities.convertBarCode2of5("1234"));
+//		System.out.println(BarCodeUtilities.convertBarCode2of5("12345"));
+//		System.out.println(BarCodeUtilities.convertBarCode2of5("123456"));
+//		System.out.println(BarCodeUtilities.convertBarCode2of5("1234567"));
+//		System.out.println(BarCodeUtilities.convertBarCode2of5("1234567"));
+		System.out.println(BarCodeUtilities.convertBarCode2of5("12345678"));
 		
-		for (int x = 0 to )
+
 		
 	}
 

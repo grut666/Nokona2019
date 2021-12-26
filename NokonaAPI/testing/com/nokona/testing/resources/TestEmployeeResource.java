@@ -86,19 +86,19 @@ class TestEmployeeResource {
 	@Test
 	public void testEmployeesGoodGet() throws DatabaseException {
 		Mockito.when(db.getEmployees()).thenReturn(new ArrayList<Employee>());
-		assertEquals(200, empResource.getEmployees().getStatus());
+		assertEquals(200, empResource.getEmployees(null).getStatus());
 	}
 
 	@Test
 	public void testEmployeesGet500() throws DatabaseException {
 		Mockito.when(db.getEmployees()).thenThrow(new DatabaseConnectionException("Broken"));
-		assertEquals(500, empResource.getEmployees().getStatus());
+		assertEquals(500, empResource.getEmployees(null).getStatus());
 	}
 
 	@Test
 	public void testEmployeesGet503() throws DatabaseException {
 		Mockito.when(db.getEmployees()).thenThrow(new DatabaseException("Broken"));
-		assertEquals(503, empResource.getEmployees().getStatus());
+		assertEquals(503, empResource.getEmployees(null).getStatus());
 	}
 
 	@Test

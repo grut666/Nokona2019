@@ -12,10 +12,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.nokona.data.NokonaDatabaseJob;
 import com.nokona.data.NokonaDatabaseTicket;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
+import com.nokona.exceptions.NullInputDataException;
+import com.nokona.model.Employee;
+import com.nokona.model.Job;
 import com.nokona.model.Labels;
 import com.nokona.model.Ticket;
 import com.nokona.model.TicketHeader;
@@ -28,7 +32,8 @@ public class NokonaTicketResource {
 
 	@Inject
 	private NokonaDatabaseTicket db;
-
+	@Inject
+	private NokonaDatabaseJob jobDb;
 	public NokonaTicketResource() throws DatabaseException {
 
 	}
@@ -158,5 +163,4 @@ public class NokonaTicketResource {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 	}
-
 }

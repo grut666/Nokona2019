@@ -3,6 +3,7 @@ package com.nokona.resource;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.annotation.security.PermitAll;
 import javax.enterprise.context.ApplicationScoped;
@@ -15,6 +16,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -89,11 +91,25 @@ public class NokonaEmployeeResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response getEmployees() {
+	public Response getEmployees(@QueryParam ("active") String active) {
 
 		try {
 //			MySqlToAccess.main(null);
-			return Response.status(200).entity(db.getEmployees()).build();
+			List<Employee> allEmployees = db.getEmployees();
+			if (active != null) {
+				for (int x = allEmployees.size() - 1; x >= 0; x--) {
+					if (active.startsWith("f") || active.startsWith("F")) {
+						if (allEmployees.get(x).isActive()) {
+							allEmployees.remove(x);
+						}
+					} else {
+						if (! allEmployees.get(x).isActive()) {
+							allEmployees.remove(x);
+						}
+					}
+				}
+			}
+			return Response.status(200).entity(allEmployees).build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (DatabaseException ex) {

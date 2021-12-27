@@ -152,7 +152,7 @@ public class NokonaTicketResource {
 			ticket = db.addTicket(ticketHeader);
 			return Response.status(200).entity(ticket).build();
 		} catch (DataNotFoundException ex) {
-			return Response.status(404).entity("{\"error\":\"" + ticketHeader.getJobId() + " not found\"}").build();
+			return Response.status(404).entity(ex.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (DatabaseException ex) {

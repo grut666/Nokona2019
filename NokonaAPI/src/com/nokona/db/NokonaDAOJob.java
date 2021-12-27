@@ -27,27 +27,22 @@ import com.nokona.model.JobHeader;
 import com.nokona.validator.JobValidator;
 
 public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
-	private PreparedStatement psGetJobHeaderByKey;
-	private PreparedStatement psGetJobHeaderByJobId;
-	private PreparedStatement psGetJobHeaders;
-	private PreparedStatement psAddJobHeader;
-	private PreparedStatement psAddJobHeaderDupeCheck;
-	private PreparedStatement psUpdateJobHeader;
 
-	private PreparedStatement psGetJobDetailByJobId;
-	private PreparedStatement psAddJobDetail;
-	private PreparedStatement psDelJobByJobId;
-	private PreparedStatement psDelJobDetailByKey;
-	private PreparedStatement psDelJobDetailByJobId;
-	private PreparedStatement psMoveDeletedJobByJobId;
-	private PreparedStatement psMoveDeletedJobDetailByJobId;
-	
-	private PreparedStatement psTransferJobHeader;
-	private PreparedStatement psTransferJobDetail;
+	// private PreparedStatement psGetJobHeaders;
+	// private PreparedStatement psAddJobHeader;
+	// private PreparedStatement psAddJobHeaderDupeCheck;
+	// private PreparedStatement psUpdateJobHeader;
+	//
+	// private PreparedStatement psGetJobDetailByJobId;
+	// private PreparedStatement psAddJobDetail;
+	// private PreparedStatement psDelJobByJobId;
+	// private PreparedStatement psDelJobDetailByKey;
+	// private PreparedStatement psDelJobDetailByJobId;
+	// private PreparedStatement psMoveDeletedJobByJobId;
+	// private PreparedStatement psMoveDeletedJobDetailByJobId;
 
 	// private Connection accessConn;
-	private static final Logger LOGGER = Logger.getLogger("JobLogger");
-	
+	// private static final Logger LOGGER = Logger.getLogger("JobLogger");
 
 	public NokonaDAOJob() throws DatabaseException {
 		super();
@@ -60,22 +55,15 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	@Override
 	public JobHeader getJobHeaderByKey(long key) throws DataNotFoundException {
 		JobHeader jobHeader = null;
-		if (psGetJobHeaderByKey == null) {
-			try {
-
-				psGetJobHeaderByKey = conn.prepareStatement("Select * from JobHeader where JobHeader.Key = ?");
-
-			} catch (SQLException e) {
-				throw new DataNotFoundException(e.getMessage());
-			}
-		}
-		try {
+		try (PreparedStatement psGetJobHeaderByKey = conn
+				.prepareStatement("Select * from JobHeader where JobHeader.Key = ?")) {
 			psGetJobHeaderByKey.setLong(1, key);
-			ResultSet rs = psGetJobHeaderByKey.executeQuery();
-			if (rs.next()) {
-				jobHeader = convertJobHeaderFromResultSet(rs);
-			} else {
-				throw new DataNotFoundException("Job key " + key + " is not in DB");
+			try (ResultSet rs = psGetJobHeaderByKey.executeQuery()) {
+				if (rs.next()) {
+					jobHeader = convertJobHeaderFromResultSet(rs);
+				} else {
+					throw new DataNotFoundException("1. Job key " + key + " is not in DB");
+				}
 			}
 		} catch (SQLException e) {
 			throw new DataNotFoundException(e.getMessage(), e);
@@ -86,26 +74,19 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	@Override
 	public JobHeader getJobHeader(String jobId) throws DataNotFoundException {
 		JobHeader jobHeader = null;
-		if (psGetJobHeaderByJobId == null) {
-			try {
-				psGetJobHeaderByJobId = conn.prepareStatement("Select * from JobHeader where JobID = ?");
-
-			} catch (SQLException e) {
-
-				throw new DataNotFoundException(e.getMessage());
-			}
-		}
-		try {
+		try (PreparedStatement psGetJobHeaderByJobId = conn
+				.prepareStatement("Select * from JobHeader where JobID = ?")) {
 			System.err.println("-----------------JOB ID IS:" + jobId + ":-----------------");
 			psGetJobHeaderByJobId.setString(1, jobId);
-			ResultSet rs = psGetJobHeaderByJobId.executeQuery();
-			if (rs.next()) {
-				jobHeader = convertJobHeaderFromResultSet(rs);
-			} else {
-				System.err.println("-----------------JOB ID IS NOT FOUND:" + jobId + ":-----------------");
+			try (ResultSet rs = psGetJobHeaderByJobId.executeQuery();) {
 
-				throw new DataNotFoundException("Job: JobID " + jobId + " is not in DB");
+				if (rs.next()) {
+					jobHeader = convertJobHeaderFromResultSet(rs);
+				} else {
+					System.err.println("-----------------JOB ID IS NOT FOUND:" + jobId + ":-----------------");
+					throw new DataNotFoundException("3. Job: JobID " + jobId + " is not in DB");
 
+				}
 			}
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -117,18 +98,12 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	@Override
 	public List<JobHeader> getJobHeaders() {
 		List<JobHeader> jobHeaders = new ArrayList<JobHeader>();
-		if (psGetJobHeaders == null) {
-			try {
-				psGetJobHeaders = conn.prepareStatement("Select * from JobHeader order by jobId");
+		try (PreparedStatement psGetJobHeaders = conn.prepareStatement("Select * from JobHeader order by jobId")) {
+			try (ResultSet rs = psGetJobHeaders.executeQuery();) {
 
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-			}
-		}
-		try {
-			ResultSet rs = psGetJobHeaders.executeQuery();
-			while (rs.next()) {
-				jobHeaders.add(convertJobHeaderFromResultSet(rs));
+				while (rs.next()) {
+					jobHeaders.add(convertJobHeaderFromResultSet(rs));
+				}
 			}
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -138,24 +113,15 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
 	@Override
 	public JobHeader updateJobHeader(JobHeader jobHeaderIn) throws DatabaseException {
+		try (PreparedStatement psUpdateJobHeader = conn
+				.prepareStatement("Update JobHeader Set jobId = ?, Description = ?, StandardQuantity = ?, JobType = ? "
+						+ "WHERE JobHeader.KEY = ?")) {
 
-		if (psUpdateJobHeader == null) {
-			try {
-				psUpdateJobHeader = conn.prepareStatement(
-						"Update JobHeader Set jobId = ?, Description = ?, StandardQuantity = ?, JobType = ? "
-								+ "WHERE JobHeader.KEY = ?");
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage());
+			JobHeader formattedJobHeader = JobFormatter.format(jobHeaderIn);
+			String validateMessage = JobValidator.validateUpdate(formattedJobHeader, conn);
+			if (!"".equals(validateMessage)) {
+				throw new DatabaseException(validateMessage);
 			}
-		}
-		JobHeader formattedJobHeader = JobFormatter.format(jobHeaderIn);
-		String validateMessage = JobValidator.validateUpdate(formattedJobHeader, conn);
-		if (!"".equals(validateMessage)) {
-			throw new DatabaseException(validateMessage);
-		}
-		try {
 			psUpdateJobHeader.setString(1, formattedJobHeader.getJobId());
 			psUpdateJobHeader.setString(2, formattedJobHeader.getDescription());
 			psUpdateJobHeader.setInt(3, formattedJobHeader.getStandardQuantity());
@@ -166,13 +132,13 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Updated " + rowCount + " rows");
 			}
-			loggitHeader("UPDATE", jobHeaderIn);
+			// loggitHeader("UPDATE", jobHeaderIn);
 			return getJobHeaderByKey(formattedJobHeader.getKey());
-
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
-			throw new DuplicateDataException(e.getMessage(), e);
+			throw new DatabaseException(e.getMessage());
 		}
+
 	}
 
 	@Override
@@ -183,41 +149,27 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			throw new NullInputDataException("Job Header cannot be null");
 		}
 		JobHeader formattedJobHeader = JobFormatter.format(jobHeaderIn);
-		if (psAddJobHeaderDupeCheck == null) {
-			try {
-				psAddJobHeaderDupeCheck = conn.prepareStatement("Select * from JobHeader where JobID = ?");
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage());
-			}
-		}
-		try {
+		try (PreparedStatement psAddJobHeaderDupeCheck = conn
+				.prepareStatement("Select * from JobHeader where JobID = ?")) {
 			psAddJobHeaderDupeCheck.setString(1, formattedJobHeader.getJobId());
-			ResultSet rs = psAddJobHeaderDupeCheck.executeQuery();
-			if (rs.next()) {
-				throw new DuplicateDataException("Job ID is already in use");
+			try (ResultSet rs = psAddJobHeaderDupeCheck.executeQuery();) {
+
+				if (rs.next()) {
+					throw new DuplicateDataException("Job ID is already in use");
+				}
 			}
+
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DuplicateDataException(e.getMessage(), e);
 		}
-		if (psAddJobHeader == null) {
-			try {
-				psAddJobHeader = conn.prepareStatement(
-						"Insert into JobHeader (JobId, Description, StandardQuantity, JobType) values (?,?,?,?)",
-						PreparedStatement.RETURN_GENERATED_KEYS);
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage());
+		try (PreparedStatement psAddJobHeader = conn.prepareStatement(
+				"Insert into JobHeader (JobId, Description, StandardQuantity, JobType) values (?,?,?,?)",
+				PreparedStatement.RETURN_GENERATED_KEYS);) {
+			String validateMessage = JobValidator.validateAdd(formattedJobHeader, conn);
+			if (!"".equals(validateMessage)) {
+				throw new DatabaseException(validateMessage);
 			}
-		}
-		String validateMessage = JobValidator.validateAdd(formattedJobHeader, conn);
-		if (!"".equals(validateMessage)) {
-			throw new DatabaseException(validateMessage);
-		}
-		try {
 			psAddJobHeader.setString(1, formattedJobHeader.getJobId());
 			psAddJobHeader.setString(2, formattedJobHeader.getDescription());
 			psAddJobHeader.setInt(3, formattedJobHeader.getStandardQuantity());
@@ -232,7 +184,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			try (ResultSet generatedKeys = psAddJobHeader.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
 					newJobHeader.setKey(generatedKeys.getInt(1));
-					loggitHeader("ADD", newJobHeader);
+					// loggitHeader("ADD", newJobHeader);
 					return getJobHeaderByKey(generatedKeys.getLong(1));
 				} else {
 					throw new SQLException("Creating JobHeader failed, no ID obtained.");
@@ -240,8 +192,9 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			}
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
-			throw new DuplicateDataException(e.getMessage(), e);
+			throw new DatabaseException(e.getMessage());
 		}
+
 	}
 
 	// @Override
@@ -291,26 +244,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		if (jobId == null) {
 			throw new NullInputDataException("jobID cannot be null");
 		}
-		if (psDelJobByJobId == null) {
-			try {
-				psDelJobByJobId = conn.prepareStatement("Delete From JobHeader where JobID = ?");
-				psMoveDeletedJobByJobId = conn.prepareStatement(
-						"INSERT INTO Deleted_JobHeader (Deleted_JobHeader.key, JobId, Description, StandardQuantity, JobType) "
-								+ "  SELECT JobHeader.key, JobId, Description, StandardQuantity, JobType FROM JobHeader WHERE JobId = ?");
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage());
-			}
-		}
-		try {
-			psMoveDeletedJobByJobId.setString(1, jobId);
-			// int rowCount = psMoveDeletedJobByJobId.executeUpdate(); // put back in for
-			// move to deleted table
-			// if (rowCount == 0) {
-			// throw new InvalidInsertException("JobHeader JobId "+ jobId + " could not be
-			// inserted into delete table");
-			// }
+		try (PreparedStatement psDelJobByJobId = conn.prepareStatement("Delete From JobHeader where JobID = ?")) {
 			psDelJobByJobId.setString(1, jobId);
 			int rowCount = psDelJobByJobId.executeUpdate();
 
@@ -318,12 +252,12 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 				throw new DataNotFoundException("Error.  Delete JobHeader JobID " + jobId + " failed");
 			}
 			deleteJobDetailsByJobId(jobId, jobHeaderKey);
-			loggitHeader("DELETE_BY_ID", new JobHeader(0, jobId, null, 0, null));
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
-			throw new DatabaseException(e.getMessage(), e);
+			throw new DatabaseException(e.getMessage());
 		}
+
 	}
 
 	// private void deleteJobDetailsByKey(long key) throws DatabaseException {
@@ -364,68 +298,37 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
 	private void deleteJobDetailsByJobId(String jobId, long jobHeaderKey) throws DatabaseException {
 
-		if (psDelJobDetailByJobId == null) {
-			try {
-				psDelJobDetailByJobId = conn.prepareStatement("Delete From JobDetail where JobDetail.JobId = ?");
-				psMoveDeletedJobDetailByJobId = conn.prepareStatement("INSERT INTO Deleted_JobDetail "
-						+ "(Deleted_JobDetail.Key, JobId, OpCode, Sequence, JobHeaderKey) "
-						+ "  SELECT JobDetail.Key, JobId, OpCode, Sequence, ? FROM JobDetail WHERE JobId = ?");
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage());
-			}
-		}
-		try {
-			psMoveDeletedJobDetailByJobId.setLong(1, jobHeaderKey);
-			psMoveDeletedJobDetailByJobId.setString(2, jobId);
-			// int rowCount = psMoveDeletedJobDetailByJobId.executeUpdate(); // put back in
-			// for move to deleted table
-			// if (rowCount == 0) {
-			// throw new InvalidInsertException("JobDetail JobId "+ jobId + " could not be
-			// inserted into delete table");
-			// }
+		try (PreparedStatement psDelJobDetailByJobId = conn
+				.prepareStatement("Delete From JobDetail where JobDetail.JobId = ?");) {
 			psDelJobDetailByJobId.setString(1, jobId);
 			int rowCount = psDelJobDetailByJobId.executeUpdate();
 
 			if (rowCount == 0) {
 				throw new DataNotFoundException("Error.  JobDetail  " + jobId + " failed");
 			}
-			loggitDetail("DELETE_BY_ID", new JobDetail(jobId, null, 0));
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
-			throw new DatabaseException(e.getMessage(), e);
+			throw new DatabaseException(e.getMessage());
 		}
 	}
 
 	@Override
 	public List<JobDetail> getJobDetails(String jobId) throws DatabaseException {
 		List<JobDetail> details;
-		if (psGetJobDetailByJobId == null) {
-			try {
-				psGetJobDetailByJobId = conn
-						.prepareStatement("Select * from JobDetail where JobID = ? order by sequence");
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DataNotFoundException(e.getMessage());
-			}
-		}
-		try {
+		try (PreparedStatement psGetJobDetailByJobId = conn
+				.prepareStatement("Select * from JobDetail where JobID = ? order by sequence");) {
 			System.err.println("-----------------JOB ID IS:" + jobId + ":-----------------");
 			psGetJobDetailByJobId.setString(1, jobId);
 			ResultSet rs = psGetJobDetailByJobId.executeQuery();
 			details = convertJobDetailsFromResultSet(rs);
 			if (details.isEmpty()) {
-
-				throw new DataNotFoundException("Job: JobID " + jobId + " is not in DB");
-
+				throw new DataNotFoundException("2. Job: JobID " + jobId + " is not in DB");
 			}
+			return details;
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
-			throw new DataNotFoundException(e.getMessage(), e);
+			throw new DataNotFoundException(e.getMessage());
 		}
-		return details;
 	}
 
 	@Override
@@ -435,29 +338,21 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
 	@Override
 	public void addJobDetail(JobDetail jobDetail) throws DatabaseException {
-		if (psAddJobDetail == null) {
-			try {
-				psAddJobDetail = conn
-						.prepareStatement("INSERT INTO JobDetail " + "(JobId, OpCode, Sequence) " + " values (?,?,?)");
-
+			try(PreparedStatement psAddJobDetail = conn
+					.prepareStatement("INSERT INTO JobDetail " + "(JobId, OpCode, Sequence) " + " values (?,?,?)");
+ ) {
+				psAddJobDetail.setString(1, jobDetail.getJobId());
+				psAddJobDetail.setString(2, jobDetail.getOpCode());
+				psAddJobDetail.setInt(3, jobDetail.getSequence());
+				int rowsAffected = psAddJobDetail.executeUpdate();
+				if (rowsAffected != 1) {
+					throw new DatabaseException("Detail row not added");
+				}
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage());
 			}
-		}
-		try {
-			psAddJobDetail.setString(1, jobDetail.getJobId());
-			psAddJobDetail.setString(2, jobDetail.getOpCode());
-			psAddJobDetail.setInt(3, jobDetail.getSequence());
-			int rowsAffected = psAddJobDetail.executeUpdate();
-			if (rowsAffected != 1) {
-				throw new DatabaseException("Detail row not added");
-			}
-			loggitDetail("ADD", jobDetail);
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new DatabaseException(e.getMessage());
-		}
+		
 	}
 
 	@Override
@@ -519,118 +414,122 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		}
 		return details;
 	}
-	
+
 	// Remove below when finished with Beta testing
 
-		protected void loggitHeader(String TypeOfUpdate, JobHeader jobHeaderIn) throws DatabaseException {
-			flatLogHeader(TypeOfUpdate, jobHeaderIn);
-			// This is for moving updates to the Access DB until the application has been
-			// completely ported over
-			if (psTransferJobHeader == null) {
-				try {
-					psTransferJobHeader = conn.prepareStatement(
-							"Insert into Transfer_JobHeader (JobId, Description, StandardQuantity, JobType, UDorI, Transfer_JobHeader.Key) values (?,?,?,?,?,?)");
-
-				} catch (SQLException e) {
-					System.err.println(e.getMessage());
-					throw new DatabaseException(e.getMessage());
-				}
-			}
-
-			try {
-				psTransferJobHeader.setString(1, jobHeaderIn.getJobId());
-				psTransferJobHeader.setString(2, jobHeaderIn.getDescription());
-				psTransferJobHeader.setInt(3, jobHeaderIn.getStandardQuantity());
-				psTransferJobHeader.setString(4, jobHeaderIn.getJobType().getJobType());
-				psTransferJobHeader.setString(5, TypeOfUpdate);
-				psTransferJobHeader.setLong(6, jobHeaderIn.getKey());
-				int rowCount = psTransferJobHeader.executeUpdate();
-				if (rowCount != 1) {
-					throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
-				}
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage(), e);
-			}
-
-		}
-		protected void loggitDetail(String TypeOfUpdate, JobDetail jobDetailIn) throws DatabaseException {
-			flatLogDetail(TypeOfUpdate, jobDetailIn);
-			// This is for moving updates to the Access DB until the application has been
-			// completely ported over
-			if (psTransferJobDetail == null) {
-				try {
-					psTransferJobDetail = conn.prepareStatement(
-							"Insert into Transfer_JobDetail (JobID, OpCode, Sequence, UDorI) values (?,?,?,?)");
-
-				} catch (SQLException e) {
-					System.err.println(e.getMessage());
-					throw new DatabaseException(e.getMessage());
-				}
-			}
-			try {
-				psTransferJobDetail.setString(1, jobDetailIn.getJobId());
-				psTransferJobDetail.setString(2, jobDetailIn.getOpCode());
-				psTransferJobDetail.setInt(3, jobDetailIn.getSequence());
-				psTransferJobDetail.setString(7, TypeOfUpdate);
-
-				int rowCount = psTransferJobDetail.executeUpdate();
-				if (rowCount != 1) {
-					throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
-				}
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage(), e);
-			}
-
-		}
-
-		protected void flatLogHeader(String TypeOfUpdate, JobHeader jobHeaderIn) {
-			Handler consoleHandler = null;
-			Handler fileHandler = null;
-			try {
-				// Creating consoleHandler and fileHandler
-				consoleHandler = new ConsoleHandler();
-				fileHandler = new FileHandler("/logs/jobheader.log", 0, 1, true);
-
-				// Assigning handlers to LOGGER object
-				LOGGER.addHandler(consoleHandler);
-				LOGGER.addHandler(fileHandler);
-
-				// Setting levels to handlers and LOGGER
-				consoleHandler.setLevel(Level.ALL);
-				fileHandler.setLevel(Level.ALL);
-				LOGGER.setLevel(Level.ALL);
-
-				LOGGER.log(Level.INFO, TypeOfUpdate, gson.toJson(jobHeaderIn));
-				fileHandler.close();
-			} catch (IOException exception) {
-				LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
-			}
-		}
-		protected void flatLogDetail(String TypeOfUpdate, JobDetail jobDetailIn) {
-			Handler consoleHandler = null;
-			Handler fileHandler = null;
-			try {
-				// Creating consoleHandler and fileHandler
-				consoleHandler = new ConsoleHandler();
-				fileHandler = new FileHandler("/logs/jobdetail.log", 0, 1, true);
-
-				// Assigning handlers to LOGGER object
-				LOGGER.addHandler(consoleHandler);
-				LOGGER.addHandler(fileHandler);
-
-				// Setting levels to handlers and LOGGER
-				consoleHandler.setLevel(Level.ALL);
-				fileHandler.setLevel(Level.ALL);
-				LOGGER.setLevel(Level.ALL);
-
-				LOGGER.log(Level.INFO, TypeOfUpdate, gson.toJson(jobDetailIn));
-				fileHandler.close();
-			} catch (IOException exception) {
-				LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
-			}
-		}
+	// protected void loggitHeader(String TypeOfUpdate, JobHeader jobHeaderIn)
+	// throws DatabaseException {
+	// flatLogHeader(TypeOfUpdate, jobHeaderIn);
+	// // This is for moving updates to the Access DB until the application has been
+	// // completely ported over
+	// if (psTransferJobHeader == null) {
+	// try {
+	// psTransferJobHeader = conn.prepareStatement(
+	// "Insert into Transfer_JobHeader (JobId, Description, StandardQuantity,
+	// JobType, UDorI, Transfer_JobHeader.Key) values (?,?,?,?,?,?)");
+	//
+	// } catch (SQLException e) {
+	// System.err.println(e.getMessage());
+	// throw new DatabaseException(e.getMessage());
+	// }
+	// }
+	//
+	// try {
+	// psTransferJobHeader.setString(1, jobHeaderIn.getJobId());
+	// psTransferJobHeader.setString(2, jobHeaderIn.getDescription());
+	// psTransferJobHeader.setInt(3, jobHeaderIn.getStandardQuantity());
+	// psTransferJobHeader.setString(4, jobHeaderIn.getJobType().getJobType());
+	// psTransferJobHeader.setString(5, TypeOfUpdate);
+	// psTransferJobHeader.setLong(6, jobHeaderIn.getKey());
+	// int rowCount = psTransferJobHeader.executeUpdate();
+	// if (rowCount != 1) {
+	// throw new DatabaseException("Error. Inserted " + rowCount + " rows");
+	// }
+	//
+	// } catch (SQLException e) {
+	// System.err.println(e.getMessage());
+	// throw new DatabaseException(e.getMessage(), e);
+	// }
+	//
+	// }
+	// protected void loggitDetail(String TypeOfUpdate, JobDetail jobDetailIn)
+	// throws DatabaseException {
+	// flatLogDetail(TypeOfUpdate, jobDetailIn);
+	// // This is for moving updates to the Access DB until the application has been
+	// // completely ported over
+	// if (psTransferJobDetail == null) {
+	// try {
+	// psTransferJobDetail = conn.prepareStatement(
+	// "Insert into Transfer_JobDetail (JobID, OpCode, Sequence, UDorI) values
+	// (?,?,?,?)");
+	//
+	// } catch (SQLException e) {
+	// System.err.println(e.getMessage());
+	// throw new DatabaseException(e.getMessage());
+	// }
+	// }
+	// try {
+	// psTransferJobDetail.setString(1, jobDetailIn.getJobId());
+	// psTransferJobDetail.setString(2, jobDetailIn.getOpCode());
+	// psTransferJobDetail.setInt(3, jobDetailIn.getSequence());
+	// psTransferJobDetail.setString(7, TypeOfUpdate);
+	//
+	// int rowCount = psTransferJobDetail.executeUpdate();
+	// if (rowCount != 1) {
+	// throw new DatabaseException("Error. Inserted " + rowCount + " rows");
+	// }
+	//
+	// } catch (SQLException e) {
+	// System.err.println(e.getMessage());
+	// throw new DatabaseException(e.getMessage(), e);
+	// }
+	//
+	// }
+	//
+	// protected void flatLogHeader(String TypeOfUpdate, JobHeader jobHeaderIn) {
+	// Handler consoleHandler = null;
+	// Handler fileHandler = null;
+	// try {
+	// // Creating consoleHandler and fileHandler
+	// consoleHandler = new ConsoleHandler();
+	// fileHandler = new FileHandler("/logs/jobheader.log", 0, 1, true);
+	//
+	// // Assigning handlers to LOGGER object
+	// LOGGER.addHandler(consoleHandler);
+	// LOGGER.addHandler(fileHandler);
+	//
+	// // Setting levels to handlers and LOGGER
+	// consoleHandler.setLevel(Level.ALL);
+	// fileHandler.setLevel(Level.ALL);
+	// LOGGER.setLevel(Level.ALL);
+	//
+	// LOGGER.log(Level.INFO, TypeOfUpdate, gson.toJson(jobHeaderIn));
+	// fileHandler.close();
+	// } catch (IOException exception) {
+	// LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
+	// }
+	// }
+	// protected void flatLogDetail(String TypeOfUpdate, JobDetail jobDetailIn) {
+	// Handler consoleHandler = null;
+	// Handler fileHandler = null;
+	// try {
+	// // Creating consoleHandler and fileHandler
+	// consoleHandler = new ConsoleHandler();
+	// fileHandler = new FileHandler("/logs/jobdetail.log", 0, 1, true);
+	//
+	// // Assigning handlers to LOGGER object
+	// LOGGER.addHandler(consoleHandler);
+	// LOGGER.addHandler(fileHandler);
+	//
+	// // Setting levels to handlers and LOGGER
+	// consoleHandler.setLevel(Level.ALL);
+	// fileHandler.setLevel(Level.ALL);
+	// LOGGER.setLevel(Level.ALL);
+	//
+	// LOGGER.log(Level.INFO, TypeOfUpdate, gson.toJson(jobDetailIn));
+	// fileHandler.close();
+	// } catch (IOException exception) {
+	// LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
+	// }
+	// }
 }

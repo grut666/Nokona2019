@@ -16,8 +16,6 @@ import com.nokona.enums.OperationStatus;
 import com.nokona.enums.TicketStatus;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
-import com.nokona.exceptions.DuplicateDataException;
-import com.nokona.exceptions.InvalidInsertException;
 import com.nokona.exceptions.InvalidQuantityException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.TicketFormatter;
@@ -34,23 +32,6 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	NokonaDatabaseJob jobDAO;
 	@Inject
 	NokonaDatabaseOperation operationDAO;
-	private PreparedStatement psGetTicketByKey;
-	private PreparedStatement psGetTicketHeaderByKey;
-	private PreparedStatement psGetTicketHeaders;
-
-	private PreparedStatement psGetTickets;
-	private PreparedStatement psGetTicketsByJob;
-
-	private PreparedStatement psGetTicketDetails;
-
-	private PreparedStatement psAddTicketHeader;
-	private PreparedStatement psAddTicketDetail;
-
-
-	PreparedStatement psDelTicketByKey;
-	PreparedStatement psDelTicketDetailByKey;
-	PreparedStatement psMoveDeletedTicketByKey;
-	PreparedStatement psMoveDeletedTicketDetailByKey;
 
 	public NokonaDAOTicket() throws DatabaseException {
 		super();
@@ -65,86 +46,64 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	@Override
 	public List<Ticket> getTickets() throws DatabaseException {
 		List<Ticket> tickets = new ArrayList<Ticket>();
-		if (psGetTickets == null) {
-			try {
-				psGetTickets = getConn().prepareStatement(
-						"Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid " +
-				                "join ticketdetail on ticketheader.key = ticketdetail.key " +
-								"join operation on ticketdetail.opcode = operation.opcode " + 
-				                "where ticketheader.jobid like 'A-1275%' " + // Limiting for testing, otherwise too large
-							    "order by ticketheader.key, sequence");
-
-			} catch (SQLException e) {
-				throw new DatabaseException(e.getMessage(), e);
-			}
-		}
-		try {
-			ResultSet rs = psGetTickets.executeQuery();
-			while (rs.next()) {
-				tickets.add(convertTicketFromResultSet(rs));
+		try (PreparedStatement psGetTickets = getConn()
+				.prepareStatement("Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid "
+						+ "join ticketdetail on ticketheader.key = ticketdetail.key "
+						+ "join operation on ticketdetail.opcode = operation.opcode "
+						+ "where ticketheader.jobid like 'A-1275%' " + // Limiting for testing, otherwise too large
+						"order by ticketheader.key, sequence")) {
+			try (ResultSet rs = psGetTickets.executeQuery()) {
+				while (rs.next()) {
+					tickets.add(convertTicketFromResultSet(rs));
+				}
+				return tickets;
 			}
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage(), e);
 		}
-		return tickets;
+
 	}
 
 	@Override
 	public Ticket getTicketByKey(long key) throws DatabaseException {
 		Ticket ticket = null;
-		if (psGetTicketByKey == null) {
-			try {
-				psGetTicketByKey = conn.prepareStatement(
-						"Select * from ticketheader join ticketdetail on ticketheader.key = ticketdetail.key  "
-								+ "join operation on ticketdetail.opcode = operation.opcode "
-								+ "join jobheader on ticketheader.jobid = jobheader.jobid "
-								+ "where ticketheader.key = ? order by sequence");
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage(), e);
-			}
-		}
-		try {
+		try (PreparedStatement psGetTicketByKey = conn.prepareStatement(
+				"Select * from ticketheader join ticketdetail on ticketheader.key = ticketdetail.key  "
+						+ "join operation on ticketdetail.opcode = operation.opcode "
+						+ "join jobheader on ticketheader.jobid = jobheader.jobid "
+						+ "where ticketheader.key = ? order by sequence");) {
 			psGetTicketByKey.setLong(1, key);
-			ResultSet rs = psGetTicketByKey.executeQuery();
-			if (rs.next()) {
-				ticket = convertTicketFromResultSet(rs);
-			} else {
-				throw new DataNotFoundException("Ticket key " + key + " is not in DB");
+			try (ResultSet rs = psGetTicketByKey.executeQuery();) {
+				if (rs.next()) {
+					ticket = convertTicketFromResultSet(rs);
+				} else {
+					throw new DataNotFoundException("Ticket key " + key + " is not in DB");
+				}
+				return TicketFormatter.format(ticket);
 			}
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
 		}
-		return TicketFormatter.format(ticket);
-
 	}
 
 	@Override
 	public List<Ticket> getTicketsByJob(String job) throws DatabaseException {
 		List<Ticket> tickets = new ArrayList<Ticket>();
-		if (psGetTicketsByJob == null) {
-			try {
-				psGetTicketsByJob = getConn().prepareStatement(
-						"Select * from ticketheader join ticketdetail on ticketheader.key = ticketdetail.key "
-								+ "where jobID = ? order by ticketheader.key, sequence");
-
-			} catch (SQLException e) {
-				throw new DatabaseException(e.getMessage(), e);
-			}
-		}
-
-		try {
+		try (PreparedStatement psGetTicketsByJob = getConn()
+				.prepareStatement("Select * from ticketheader join ticketdetail on ticketheader.key = ticketdetail.key "
+						+ "where jobID = ? order by ticketheader.key, sequence")) {
 			psGetTicketsByJob.setString(1, job);
-			ResultSet rs = psGetTicketsByJob.executeQuery();
-			while (rs.next()) {
-				tickets.add(convertTicketFromResultSet(rs));
+			try (ResultSet rs = psGetTicketsByJob.executeQuery();) {
+
+				while (rs.next()) {
+					tickets.add(convertTicketFromResultSet(rs));
+				}
+				return tickets;
 			}
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage(), e);
 		}
-		return tickets;
 	}
 
 	@Override
@@ -156,7 +115,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			throw new InvalidQuantityException("Quantity of value " + ticketHeader.getQuantity() + " is invalid");
 		}
 		TicketHeader formattedTicketHeader = new TicketHeader();
-		String jobId = ticketHeader.getJobId(); 
+		String jobId = ticketHeader.getJobId();
 		formattedTicketHeader.setDescription(jobDAO.getJobHeader(jobId).getDescription());
 		formattedTicketHeader.setJobId(jobId);
 		formattedTicketHeader.setDateStatus(new Date());
@@ -164,26 +123,13 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		formattedTicketHeader.setQuantity(ticketHeader.getQuantity());
 		formattedTicketHeader.setTicketStatus(TicketStatus.NEW);
 		formattedTicketHeader = TicketHeaderFormatter.format(formattedTicketHeader);
-		try {
-			if (psAddTicketHeader == null) {
-				psAddTicketHeader = conn.prepareStatement(
-						"Insert into TicketHeader (JobID, CreatedDate, Status, StatusDate, Quantity) values (?,?,?,?,?)",
-						PreparedStatement.RETURN_GENERATED_KEYS);
-			}
-
-			if (psAddTicketDetail == null) {
-				psAddTicketDetail = conn.prepareStatement(
+		try (PreparedStatement psAddTicketHeader = conn.prepareStatement(
+				"Insert into TicketHeader (JobID, CreatedDate, Status, StatusDate, Quantity) values (?,?,?,?,?)",
+				PreparedStatement.RETURN_GENERATED_KEYS);
+				PreparedStatement psAddTicketDetail = conn.prepareStatement(
 						"Insert into TicketDetail (TicketDetail.Key, OpCode, Sequence, StatusDate, Status, "
 								+ "Quantity, HourlyRateSAH, BarCodeID, LaborRate, UpdatedSequence)  "
-								+ "values (?,?,?,?,?,?,?,?,?,?)");
-			}
-
-		} catch (SQLException ex) {
-			throw new DatabaseException("Prepare Statements failed");
-		}
-
-		// Should not need any validation so not validating
-		try {
+								+ "values (?,?,?,?,?,?,?,?,?,?)");) {
 			psAddTicketHeader.setString(1, formattedTicketHeader.getJobId());
 			psAddTicketHeader.setDate(2,
 					DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateCreated()));
@@ -203,47 +149,42 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 				} else {
 					throw new SQLException("Creating user failed, no ID obtained.");
 				}
+				List<JobDetail> jobDetails = jobDAO.getJobDetails(formattedTicketHeader.getJobId());
+				List<TicketDetail> newTicketDetails = new ArrayList<TicketDetail>();
+				Operation op;
+				long key = formattedTicketHeader.getKey();
+				for (JobDetail jobDetail : jobDetails) {
+					op = operationDAO.getOperation(jobDetail.getOpCode());
+					String opCode = jobDetail.getOpCode();
+					String desc = op.getDescription();
+					OperationStatus status = OperationStatus.INCOMPLETE;
+					int sequence = jobDetail.getSequence();
+					int quantity = formattedTicketHeader.getQuantity();
+					double sah = op.getHourlyRateSAH();
+					TicketDetail td = new TicketDetail(key, opCode, desc, status, sequence, sequence, null, quantity,
+							sah, 0);
+					newTicketDetails.add(td);
+					psAddTicketDetail.setLong(1, key);
+					psAddTicketDetail.setString(2, opCode);
+					psAddTicketDetail.setLong(3, sequence);
+					psAddTicketDetail.setDate(4, null);
+					psAddTicketDetail.setString(5, status.getOperationStatus());
+					psAddTicketDetail.setLong(6, quantity);
+					psAddTicketDetail.setDouble(7, sah);
+					psAddTicketDetail.setLong(8, 0);
+					psAddTicketDetail.setLong(9, 0);
+					psAddTicketDetail.setLong(10, sequence);
+					psAddTicketDetail.addBatch();
+				}
+				psAddTicketDetail.executeBatch();
+				return new Ticket(formattedTicketHeader, newTicketDetails);
 			}
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new DuplicateDataException(e.getMessage(), e);
+		} catch (SQLException ex) {
+			throw new DatabaseException(ex.getMessage(), ex);
 		}
-		List<JobDetail> jobDetails = jobDAO.getJobDetails(formattedTicketHeader.getJobId());
-		List<TicketDetail> newTicketDetails = new ArrayList<TicketDetail>();
-		Operation op;
-		long key = formattedTicketHeader.getKey();
-		try {
-			for (JobDetail jobDetail : jobDetails) {
-				op = operationDAO.getOperation(jobDetail.getOpCode());
-				String opCode = jobDetail.getOpCode();
-				String desc = op.getDescription();
-				OperationStatus status = OperationStatus.INCOMPLETE;
-				int sequence = jobDetail.getSequence();
-				int quantity = formattedTicketHeader.getQuantity();
-				double sah = op.getHourlyRateSAH();
-				TicketDetail td = new TicketDetail(key, opCode, desc, status, sequence, sequence, null, quantity, sah,
-						0);
-				newTicketDetails.add(td);
-				psAddTicketDetail.setLong(1, key);
-				psAddTicketDetail.setString(2, opCode);
-				psAddTicketDetail.setLong(3, sequence);
-				psAddTicketDetail.setDate(4, null);
-				psAddTicketDetail.setString(5, status.getOperationStatus());
-				psAddTicketDetail.setLong(6, quantity);
-				psAddTicketDetail.setDouble(7, sah);
-				psAddTicketDetail.setLong(8, 0);
-				psAddTicketDetail.setLong(9, 0);
-				psAddTicketDetail.setLong(10, sequence);
-				psAddTicketDetail.addBatch();
-			}
-			psAddTicketDetail.executeBatch();
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-
-		return new Ticket(formattedTicketHeader, newTicketDetails);
-
 	}
+
+	// Should not need any validation so not validating
 
 	@Override
 	public Ticket updateTicket(Ticket ticket) throws DatabaseException {
@@ -253,148 +194,95 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 
 	@Override
 	public void deleteTicketByKey(long key) throws DatabaseException {
-		if (psDelTicketByKey == null) {
-			try {
-				psDelTicketByKey = conn.prepareStatement("Delete From TicketHeader where Job.Key = ?");
-				psMoveDeletedTicketByKey = conn.prepareStatement("INSERT INTO Deleted_TicketHeader (Deleted_TicketHeader.key, JobId, CreatedDate, status, statusDate, quantity) " + 
-						"  SELECT TicketHeader.key, JobId, CreatedDate, status, statusDate, quantity FROM TicketHeader WHERE TicketHeader.Key = ?");
+			try (PreparedStatement psDelTicketByKey = conn.prepareStatement("Delete From TicketHeader where Job.Key = ?")){
+				psDelTicketByKey.setLong(1, key);
+				int rowCount = psDelTicketByKey.executeUpdate();
 
+				if (rowCount == 0) {
+					throw new DataNotFoundException("Error.  Delete JobHeader key " + key + " failed");
+				}
+				deleteTicketDetailsByKey(key);
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
 				throw new DatabaseException(e.getMessage());
 			}
-		}
-		try {
-			psMoveDeletedTicketByKey.setLong(1, key);
-			int rowCount = psMoveDeletedTicketByKey.executeUpdate();
-			if (rowCount == 0) {
-				throw new InvalidInsertException("TicketHeader key "+ key + " could not be inserted into delete table");
-			}
-			psDelTicketByKey.setLong(1, key);
-			rowCount = psDelTicketByKey.executeUpdate();
-
-			if (rowCount == 0) {
-				throw new DataNotFoundException("Error.  Delete JobHeader key " + key + " failed");
-			}
-			deleteTicketDetailsByKey(key);
-
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new DatabaseException(e.getMessage(), e);
-		}
 
 	}
 
 	private void deleteTicketDetailsByKey(long key) throws DatabaseException {
-		if (psDelTicketDetailByKey == null) {
-			try {
-				psDelTicketDetailByKey = conn.prepareStatement("Delete From TicketDetail where key = ?");
-				psMoveDeletedTicketDetailByKey = conn.prepareStatement("INSERT INTO Deleted_TicketDetail (Deleted_TicketDetail.key, opCode, sequence, statusDate, status, quantity, hourlyrateSAH, BarCodeID, LaborRate, UpdatedSequence) " + 
-						"  SELECT TicketDetail.key, opCode, sequence, statusDate, status, quantity, hourlyrateSAH, BarCodeID, LaborRate, UpdatedSequence FROM TicketDetail WHERE TicketDetail.Key = ?");
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage());
-			}
-		}
-		try {
-			psMoveDeletedTicketDetailByKey.setLong(1, key);
-			int rowCount = psMoveDeletedTicketDetailByKey.executeUpdate();
-			if (rowCount == 0) {
-				throw new InvalidInsertException("JobDetail Key "+ key + " could not be inserted into delete table");
-			}
+		try (PreparedStatement psDelTicketDetailByKey = conn
+				.prepareStatement("Delete From TicketDetail where key = ?")) {
 			psDelTicketDetailByKey.setLong(1, key);
-			rowCount = psDelTicketDetailByKey.executeUpdate();
-
+			int rowCount = psDelTicketDetailByKey.executeUpdate();
 			if (rowCount == 0) {
 				throw new DataNotFoundException("Error.  Delete TicketDetail Key " + key + " failed");
 			}
-
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
-			throw new DatabaseException(e.getMessage(), e);
+			throw new DatabaseException(e.getMessage());
 		}
-		
 	}
 
 	@Override
 	public List<TicketHeader> getTicketHeaders() throws DatabaseException {
 		List<TicketHeader> ticketHeaders = new ArrayList<TicketHeader>();
-		if (psGetTicketHeaders == null) {
-			try {
-				psGetTicketHeaders = conn
-						.prepareStatement("Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid " + "order by CreatedDate desc, jobheader.jobID, Status");
+		try (PreparedStatement psGetTicketHeaders = conn
+				.prepareStatement("Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid "
+						+ "order by CreatedDate desc, jobheader.jobID, Status")) {
+			try (ResultSet rs = psGetTicketHeaders.executeQuery();) {
 
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage(), e);
-			}
-		}
-		try {
-			ResultSet rs = psGetTicketHeaders.executeQuery();
-			while (rs.next()) {
-				ticketHeaders.add(convertTicketHeaderFromResultSet(rs));
+				while (rs.next()) {
+					ticketHeaders.add(convertTicketHeaderFromResultSet(rs));
+				}
+				return ticketHeaders;
 			}
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
 		}
-		return ticketHeaders;
 	}
 
 	@Override
 	public TicketHeader getTicketHeaderByKey(long headerKey) throws DatabaseException {
 		TicketHeader ticketHeader = null;
-		if (psGetTicketHeaderByKey == null) {
-			try {
-				psGetTicketHeaderByKey = conn.prepareStatement("Select * from ticketheader join jobHeader on "
-						+ "ticketheader.jobid = jobHeader.jobid where ticketheader.key = ?");
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage(), e);
-			}
-		}
-		try {
+		try (PreparedStatement psGetTicketHeaderByKey = conn
+				.prepareStatement("Select * from ticketheader join jobHeader on "
+						+ "ticketheader.jobid = jobHeader.jobid where ticketheader.key = ?")) {
 			psGetTicketHeaderByKey.setLong(1, headerKey);
-			ResultSet rs = psGetTicketHeaderByKey.executeQuery();
-			if (rs.next()) {
-				ticketHeader = convertTicketHeaderFromResultSet(rs);
-			} else {
-				throw new DataNotFoundException("Ticket key " + headerKey + " is not in DB");
+			try (ResultSet rs = psGetTicketHeaderByKey.executeQuery();) {
+
+				if (rs.next()) {
+					ticketHeader = convertTicketHeaderFromResultSet(rs);
+				} else {
+					throw new DataNotFoundException("Ticket key " + headerKey + " is not in DB");
+				}
+				return TicketHeaderFormatter.format(ticketHeader);
 			}
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
 		}
-		return TicketHeaderFormatter.format(ticketHeader);
 	}
 
 	@Override
 	public List<TicketDetail> getTicketDetailsByKey(long headerKey) throws DatabaseException {
 		List<TicketDetail> ticketDetails = new ArrayList<TicketDetail>();
-		if (psGetTicketDetails == null) {
-			try {
-				psGetTicketDetails = conn
-						.prepareStatement("Select * from ticketdetail join operation on operation.opcode = ticketdetail.opcode "
-								+ "where ticketdetail.key = ? order by sequence");
-
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage(), e);
-			}
-		}
-		try {
+		try (PreparedStatement psGetTicketDetails = conn
+				.prepareStatement("Select * from ticketdetail join operation on operation.opcode = ticketdetail.opcode "
+						+ "where ticketdetail.key = ? order by sequence")) {
 			psGetTicketDetails.setLong(1, headerKey);
-			ResultSet rs = psGetTicketDetails.executeQuery();
-			while (rs.next()) {
-				ticketDetails.add(convertTicketDetailFromResultSet(rs));
+			try (ResultSet rs = psGetTicketDetails.executeQuery();) {
+				while (rs.next()) {
+					ticketDetails.add(convertTicketDetailFromResultSet(rs));
+
+				}
+				return ticketDetails;
 			}
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage(), e);
 		}
-		return ticketDetails;
+
 	}
 
 	private Ticket convertTicketFromResultSet(ResultSet rs) throws SQLException {
@@ -405,8 +293,10 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		while (rs.next()) {
 			details.add(convertTicketDetailFromResultSet(rs));
 		}
-		return TicketFormatter.format(new Ticket(th, details)); // TODO Need to pass values in for Ticket - maybe already done
+		return TicketFormatter.format(new Ticket(th, details)); // TODO Need to pass values in for Ticket - maybe
+																// already done
 	}
+
 	private TicketHeader convertTicketHeaderFromResultSet(ResultSet rs) throws SQLException {
 
 		int key = rs.getInt("Key");

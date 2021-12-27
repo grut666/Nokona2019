@@ -1,26 +1,20 @@
 package com.nokona.db;
 
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.nokona.data.NokonaDatabaseJob;
 import com.nokona.enums.JobType;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
-import com.nokona.exceptions.InvalidInsertException;
+
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.JobFormatter;
-import com.nokona.model.Employee;
+
 import com.nokona.model.Job;
 import com.nokona.model.JobDetail;
 import com.nokona.model.JobHeader;
@@ -28,21 +22,7 @@ import com.nokona.validator.JobValidator;
 
 public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
-	// private PreparedStatement psGetJobHeaders;
-	// private PreparedStatement psAddJobHeader;
-	// private PreparedStatement psAddJobHeaderDupeCheck;
-	// private PreparedStatement psUpdateJobHeader;
-	//
-	// private PreparedStatement psGetJobDetailByJobId;
-	// private PreparedStatement psAddJobDetail;
-	// private PreparedStatement psDelJobByJobId;
-	// private PreparedStatement psDelJobDetailByKey;
-	// private PreparedStatement psDelJobDetailByJobId;
-	// private PreparedStatement psMoveDeletedJobByJobId;
-	// private PreparedStatement psMoveDeletedJobDetailByJobId;
 
-	// private Connection accessConn;
-	// private static final Logger LOGGER = Logger.getLogger("JobLogger");
 
 	public NokonaDAOJob() throws DatabaseException {
 		super();

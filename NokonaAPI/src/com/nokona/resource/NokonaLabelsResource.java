@@ -1,5 +1,6 @@
 package com.nokona.resource;
 
+import javax.inject.Inject;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -17,19 +18,38 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.nokona.data.NokonaDatabaseTicket;
+import com.nokona.enums.TicketStatus;
+import com.nokona.exceptions.DatabaseException;
 import com.nokona.model.Labels;
+import com.nokona.model.Ticket;
+import com.nokona.model.TicketHeader;
 import com.nokona.utilities.BarCodeUtilities;
 
 @Path("/labels")
 public class NokonaLabelsResource {
+	@Inject
+		private NokonaDatabaseTicket db;
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/")
 	public Response printLabels(Labels labels) {
-
+		
 		try {
 			printIt(labels);
+			long dbKey = fetchKey(labels);
+			if (dbKey > 0) {
+				Ticket ticket;
+				try {
+					ticket = db.getTicketByKey(dbKey);
+				
+				ticket.getTicketHeader().setTicketStatus(TicketStatus.PRINTED);
+				db.updateTicket(ticket);
+				} catch (DatabaseException e) {
+					return Response.status(500).entity(e.getMessage()).build();
+				}
+			}
 			return Response.status(200).entity("{\"Success\":\"" + "Success" + "\"}").build();
 		} catch (PrintException e) {
 			return Response.status(404).entity("{\"error\":\"" + "Could Not Find Barcode Printer" + "\"}").build();
@@ -48,6 +68,10 @@ public class NokonaLabelsResource {
 		PrintJobWatcher pjw = new PrintJobWatcher(job);
 		job.print(doc, pras);
 		pjw.waitForDone();
+	}
+	private long fetchKey(Labels labels) {
+		
+		return 0;
 	}
 }
 

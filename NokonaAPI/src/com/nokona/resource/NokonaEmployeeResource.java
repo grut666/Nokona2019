@@ -42,7 +42,7 @@ public class NokonaEmployeeResource {
 	private NokonaDatabaseEmp db;
 
 	public NokonaEmployeeResource() {
-
+		super();
 	}
 
 	@GET

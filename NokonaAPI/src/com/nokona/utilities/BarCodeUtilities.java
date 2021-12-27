@@ -133,12 +133,20 @@ public class BarCodeUtilities {
 		}
 
 		TicketHeader th = ticketIn.getTicketHeader();
+		System.out.println("****************Header Key is " + th.getKey());
+		
 		String star44 = "********************************************";
 		String star15 = "***************     ";
-		String strJobId = StringUtils.stripEnd("_", String.format("%20s", th.getJobId()).replace(" ", "_"));
+//		String strJobId = StringUtils.stripEnd("_", String.format("%20s", th.getJobId()).replace(" ", "_"));
+		String strJobId = String.format("%-20s", th.getJobId());
+		System.out.println("-" + strJobId + "-");
 		boolean isRH = strJobId.contains("-RH") ? true : false;
 		String strJobDesc = StringUtils.stripEnd("_", th.getDescription().replace(" ", "_"));
-		String strTkt1 = StringUtils.stripEnd("_", String.format("%06d", th.getKey()).replace(" ", "_"));
+//		String strTkt1 = StringUtils.stripEnd("_", String.format("%06d", th.getKey()));
+		String strTkt1 = String.format("%06d", th.getKey());
+		System.out.println("StrTkt1 is " + strTkt1);
+		strTkt1.replace(" ", "_");
+		System.out.println("StrTkt1 is " + strTkt1);
 		String strQtyFormatted = replaceLeadingWithUnderScores(String.format("%03d", th.getQuantity()));
 		StringBuilder sb = new StringBuilder("");
 		String dateCreated = simpleDateFormat.format(th.getDateCreated());
@@ -156,7 +164,7 @@ public class BarCodeUtilities {
 				.append(dateCreated).append(ESC).append("&a1.1C").append(strJobDesc).append(ESC).append("&a2.1C")
 				.append("TICKET:").append(strTkt1).append(ESC).append("&a2.5C").append(dateCreated);
 		sb.append(ESC).append("&a").append(intRowCount + 0.48).append("R"); // Set Vertical Coordinate
-		sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append("TICKET:").append("strTkt1")
+		sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append("TICKET:").append(strTkt1)
 				.append(ESC).append("&a1.4C").append("QTY:").append(strQtyFormatted).append(ESC).append("&a1.6C")
 				.append(dateCreated).append(ESC).append("&a2.1C").append(star44);
 		sb.append(ESC).append("&a").append(intRowCount + 0.65).append("R"); // Set Vertical Coordinate
@@ -181,6 +189,7 @@ public class BarCodeUtilities {
 		TicketDetail td1 = null;
 		TicketDetail td2 = null;
 		theKount = (int) (Math.ceil(detailCount / 3.0)); // How many rows of labels
+		System.out.println("***************The rows = " + theKount);
 		for (int intLoop = 0; intLoop < theKount; intLoop++) {
 			String[] strDesc0 = { star15, star15, star15 };
 			String[] strDesc1 = { star15, star15, star15 };
@@ -191,7 +200,7 @@ public class BarCodeUtilities {
 			String[] strExt = { "", "", "" };
 			td0 = detailIndex < detailCount ? ticketIn.getTicketDetails().get(detailIndex) : null;
 			td1 = (detailIndex + 1) < detailCount ? ticketIn.getTicketDetails().get(detailIndex + 1) : null;
-			td1 = (detailIndex + 2) < detailCount ? ticketIn.getTicketDetails().get(detailIndex + 2) : null;
+			td2 = (detailIndex + 2) < detailCount ? ticketIn.getTicketDetails().get(detailIndex + 2) : null;
 
 			StringBuilder line1 = new StringBuilder();
 			StringBuilder line2 = new StringBuilder();
@@ -234,7 +243,7 @@ public class BarCodeUtilities {
 			if (td2 != null) {
 				String strDescAll = td2.getOperationDescription();
 				double rate = isRH ? td2.getHourlyRateSAH() * 1.1 : td2.getHourlyRateSAH();
-				int quantity = td1.getQuantity();
+				int quantity = td2.getQuantity();
 				strSequence[2] = String.format("%02d", td2.getSequenceOriginal());
 				strRate[2] = String.format("%7.4f", rate);
 				strRateFormatted[2] = strRate[2].replace(" ", "_");
@@ -245,10 +254,12 @@ public class BarCodeUtilities {
 				strDescAll = StringUtils.mid(strDescAll, 17, 17);
 				strDesc2[2] = StringUtils.left(strDescAll, 17);
 			}
+			
 			if (intKounter < 3) {
 				intKounter++;
 			} else {
 				intKounter = 1;
+				
 				line1.append(ESC).append("&a0.1C").append(strJobId).append(ESC).append("&a0.5C").append("TKT:")
 						.append(strTkt1).append("__").append(strSequence[0]).append(ESC).append("&a1.1C")
 						.append(strJobId).append(ESC).append("&a1.5C").append("TKT:").append(strTkt1).append("__")
@@ -275,6 +286,7 @@ public class BarCodeUtilities {
 				StringUtils.stripEnd("_", strDesc0[1]);
 				strDesc1[2] = strDesc1[2] == null ? "" : strDesc1[2].replace(" ", "_");
 				StringUtils.stripEnd("_", strDesc0[2]);
+				// **************** good to here
 
 				strDesc2[0] = strDesc2[0] == null ? "" : strDesc2[0].replace(" ", "_");
 				StringUtils.stripEnd("_", strDesc0[0]);
@@ -286,7 +298,11 @@ public class BarCodeUtilities {
 				String fBarCode0 = strTkt1 + strSequence[0];
 				String fBarCode1 = strTkt1 + strSequence[1];
 				String fBarCode2 = strTkt1 + strSequence[2];
-
+				System.out.println("**************************************");
+				System.out.println("*****Length of fBarCode0 is " + fBarCode0.length() + ": Value is " + fBarCode0);
+				System.out.println("*****Length of fBarCode1 is " + fBarCode1.length() + ": Value is " + fBarCode1);
+				System.out.println("*****Length of fBarCode2 is " + fBarCode2.length() + ": Value is " + fBarCode2);
+				
 				strCvtBarCode0 = convertBarCode2of5(fBarCode0);
 				strCvtBarCode1 = convertBarCode2of5(fBarCode1);
 				strCvtBarCode2 = convertBarCode2of5(fBarCode2);
@@ -362,7 +378,7 @@ public class BarCodeUtilities {
 				//
 
 			}
-			detailIndex += 3;
+			detailIndex += 1;
 		}
 		String output = sb.toString();
 		return output.replaceAll("\"", "\\\\\"");

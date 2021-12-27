@@ -17,9 +17,6 @@ import com.nokona.data.NokonaDatabaseTicket;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
-import com.nokona.exceptions.NullInputDataException;
-import com.nokona.model.Employee;
-import com.nokona.model.Job;
 import com.nokona.model.Labels;
 import com.nokona.model.Ticket;
 import com.nokona.model.TicketHeader;
@@ -32,8 +29,6 @@ public class NokonaTicketResource {
 
 	@Inject
 	private NokonaDatabaseTicket db;
-	@Inject
-	private NokonaDatabaseJob jobDb;
 	public NokonaTicketResource() throws DatabaseException {
 
 	}
@@ -112,15 +107,16 @@ public class NokonaTicketResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/labels/{ticket}")
-	public Response getTicketLabels(@PathParam("ticket") Ticket ticketIn) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/labels")
+	public Response getTicketLabels( Ticket ticketIn) {
 
 		Labels labels;
 		try {
 			labels = new Labels();
 			labels.setLabels(BarCodeUtilities.generateTicketLabels(ticketIn));
 		} catch (Exception ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
 		}
 
 		return Response.status(200).entity(labels).build();

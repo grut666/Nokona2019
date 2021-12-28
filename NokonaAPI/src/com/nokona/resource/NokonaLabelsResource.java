@@ -39,26 +39,26 @@ public class NokonaLabelsResource {
 	@Path("/")
 	public Response printLabels(Labels labels) {
 		
-//		try {
-//			printIt(labels);
-			long dbKey = fetchKey(labels);
-			if (dbKey > 0) {
-				Ticket ticket;
-				try {
-					ticket = db.getTicketByKey(dbKey);
-				
-				ticket.getTicketHeader().setTicketStatus(TicketStatus.PRINTED);
-				db.updateTicket(ticket);
-				} catch (DatabaseException e) {
-					return Response.status(500).entity(e.getMessage()).build();
-				}
-			}
+		try {
+			printIt(labels);
+//			long dbKey = fetchKey(labels);
+//			if (dbKey > 0) {
+//				Ticket ticket;
+//				try {
+//					ticket = db.getTicketByKey(dbKey);
+//				
+//				ticket.getTicketHeader().setTicketStatus(TicketStatus.PRINTED);
+//				db.updateTicket(ticket);
+//				} catch (DatabaseException e) {
+//					return Response.status(500).entity(e.getMessage()).build();
+//				}
+//			}
 			return Response.status(200).entity("{\"Success\":\"" + "Success" + "\"}").build();
 		} 
-//		catch (PrintException e) {
-//			return Response.status(404).entity("{\"error\":\"" + "Could Not Find Barcode Printer" + "\"}").build();
-//		}
-//	}
+		catch (PrintException e) {
+			return Response.status(404).entity("{\"error\":\"" + "Could Not Find Barcode Printer" + "\"}").build();
+		}
+	}
 
 	public void printIt(Labels labels) throws PrintException {
 
@@ -73,18 +73,18 @@ public class NokonaLabelsResource {
 		job.print(doc, pras);
 		pjw.waitForDone();
 	}
-	private long fetchKey(Labels labels) {
-		Pattern pattern = Pattern.compile("TICKET:([0-9]{6})");
-		Matcher matcher = pattern.matcher(labels.getLabels());
-		if (matcher.find())
-		{
-			System.out.println("FOUND *********************" + matcher.group(1));
-//		    return(Long.parseLong(matcher.group(1)));
-			return 0;
-		}
-		System.out.println("Did not find match");
-		return 0;
-	}
+//	private long fetchKey(Labels labels) {
+//		Pattern pattern = Pattern.compile("TICKET:([0-9]{6})");
+//		Matcher matcher = pattern.matcher(labels.getLabels());
+//		if (matcher.find())
+//		{
+//			System.out.println("FOUND *********************" + matcher.group(1));
+////		    return(Long.parseLong(matcher.group(1)));
+//			return 0;
+//		}
+//		System.out.println("Did not find match");
+//		return 0;
+//	}
 }
 
 class PrintJobWatcher {

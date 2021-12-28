@@ -997,7 +997,7 @@ Body:
 
 
 
-## Labels (Employee by Explicit call and Tickets via @POST /tickets with action=P or via @GET /tickets/labels
+## Labels (Called with @GET /employees/labels/{empID} and Tickets via @POST /tickets with action=P or via @GET /tickets/labels
 
 ### Post /labels # Print already generated employee labels or tickets
 

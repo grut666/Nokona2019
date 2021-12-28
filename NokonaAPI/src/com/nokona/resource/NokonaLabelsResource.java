@@ -1,5 +1,8 @@
 package com.nokona.resource;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.inject.Inject;
 import javax.print.Doc;
 import javax.print.DocFlavor;
@@ -36,8 +39,8 @@ public class NokonaLabelsResource {
 	@Path("/")
 	public Response printLabels(Labels labels) {
 		
-		try {
-			printIt(labels);
+//		try {
+//			printIt(labels);
 			long dbKey = fetchKey(labels);
 			if (dbKey > 0) {
 				Ticket ticket;
@@ -51,10 +54,11 @@ public class NokonaLabelsResource {
 				}
 			}
 			return Response.status(200).entity("{\"Success\":\"" + "Success" + "\"}").build();
-		} catch (PrintException e) {
-			return Response.status(404).entity("{\"error\":\"" + "Could Not Find Barcode Printer" + "\"}").build();
-		}
-	}
+		} 
+//		catch (PrintException e) {
+//			return Response.status(404).entity("{\"error\":\"" + "Could Not Find Barcode Printer" + "\"}").build();
+//		}
+//	}
 
 	public void printIt(Labels labels) throws PrintException {
 
@@ -70,7 +74,15 @@ public class NokonaLabelsResource {
 		pjw.waitForDone();
 	}
 	private long fetchKey(Labels labels) {
-		
+		Pattern pattern = Pattern.compile("TICKET:([0-9]{6})");
+		Matcher matcher = pattern.matcher(labels.getLabels());
+		if (matcher.find())
+		{
+			System.out.println("FOUND *********************" + matcher.group(1));
+//		    return(Long.parseLong(matcher.group(1)));
+			return 0;
+		}
+		System.out.println("Did not find match");
 		return 0;
 	}
 }

@@ -9,11 +9,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.nokona.data.NokonaDatabaseJob;
 import com.nokona.data.NokonaDatabaseTicket;
+import com.nokona.enums.TicketStatus;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
@@ -109,12 +111,15 @@ public class NokonaTicketResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/labels")
-	public Response getTicketLabels( Ticket ticketIn) {
-
+	public Response getTicketLabels(Ticket ticketIn) {
+		// This will always send the labels to the printer
 		Labels labels;
 		try {
 			labels = new Labels();
 			labels.setLabels(BarCodeUtilities.generateTicketLabels(ticketIn));
+			new NokonaLabelsResource().printLabels(labels);
+			ticketIn.getTicketHeader().setTicketStatus(TicketStatus.PRINTED);
+			
 		} catch (Exception ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
 		}
@@ -144,12 +149,18 @@ public class NokonaTicketResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response generateTicket(TicketHeader ticketHeader) {
-
+	public Response addTicket(@QueryParam("action") String action, TicketHeader ticketHeader) {
+		boolean yesPrint = false;
+		if ("P".equalsIgnoreCase(action)) {
+			yesPrint = true;
+			ticketHeader.setTicketStatus(TicketStatus.PRINTED);
+		}
 		Ticket ticket;
 		try {
-			System.err.println(ticketHeader);
 			ticket = db.addTicket(ticketHeader);
+			if (yesPrint) {
+				getTicketLabels(ticket);
+			}
 			return Response.status(200).entity(ticket).build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity(ex.getMessage()).build();

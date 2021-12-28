@@ -864,6 +864,7 @@ Either a .pdf or .csv file, stream, or html.  Not sure yet.
 }
 
 ### Post /tickets # Add 1 ticket
+### Post /tickets?action=P # Add 1 ticket and print it
 
 #### In
 
@@ -911,7 +912,92 @@ Body:
     ]\
 }
 
-## Labels (Employee and Tickets
+### Get /tickets/labels # Generate and Print labels (Will be invoked from POST with QueryParam action=P)
+
+#### In
+"ticketHeader": {\
+        "jobId": "A-1150C-GR-LH",\
+        "dateCreated": "20210314132634-0500",\
+        "quantity": 10,\
+        "ticketStatus": "NEW",\
+        "description": "GRAY AMERICANKIP 11.5\" CLSD WEB - LEFT",\
+        "key": 40978,\
+        "dateStatus": "20210314132634-0500"\
+    },\
+    "ticketDetails": [\
+        {\
+            "employeeBarCodeID": 0,\
+            "operationStatus": "INCOMPLETE",\
+            "operationDescription": "SEGMENT A",\
+            "quantity": 10,\
+            "hourlyRateSAH": 0.0,\
+            "sequenceUpdated": 0,\
+            "opCode": "111",\
+            "sequenceOriginal": 0,\
+            "key": 40978\
+        },\
+        {\
+            "employeeBarCodeID": 0,\
+
+
+#### Out
+{\
+    "labels": "... Long Byte Stream of Multiple Sets of Labels ..."\
+    
+}
+
+### Post /tickets # Add 1 ticket
+### Post /tickets?action=P # Add 1 ticket and print it
+
+#### In
+
+Body:
+
+{\
+    "jobId": "A-1150C-GR-LH",\
+    "quantity": 10\
+}
+
+#### Out
+
+ "ticketHeader": {\
+        "jobId": "A-1150C-GR-LH",\
+        "dateCreated": "20210314132634-0500",\
+        "quantity": 10,\
+        "ticketStatus": "NEW",\
+        "description": "GRAY AMERICANKIP 11.5\" CLSD WEB - LEFT",\
+        "key": 40978,\
+        "dateStatus": "20210314132634-0500"\
+    },\
+    "ticketDetails": [\
+        {\
+            "employeeBarCodeID": 0,\
+            "operationStatus": "INCOMPLETE",\
+            "operationDescription": "SEGMENT A",\
+            "quantity": 10,\
+            "hourlyRateSAH": 0.0,\
+            "sequenceUpdated": 0,\
+            "opCode": "111",\
+            "sequenceOriginal": 0,\
+            "key": 40978\
+        },\
+        {\
+            "employeeBarCodeID": 0,\
+            "operationStatus": "INCOMPLETE",\
+            "operationDescription": "CLICK HEEL FELT               WORTH",\
+            "quantity": 10,\
+            "hourlyRateSAH": 0.0123,\
+            "sequenceUpdated": 1,\
+            "opCode": "W103",\
+            "sequenceOriginal": 1,\
+            "key": 40978\
+        }\
+    ]\
+}
+
+
+
+## Labels (Employee by Explicit call and Tickets via @POST /tickets with action=P or via @GET /tickets/labels
 
 ### Post /labels # Print already generated employee labels or tickets
 

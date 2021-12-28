@@ -64,7 +64,7 @@
     "key": 483\
 }
 
-### Get /employees/labels/{employeeID} # Generate 1 page of employee labels
+### Get /employees/labels/{employeeID} # Generate and print 1 page of employee labels
 #### In
 /employees/labels/483
 #### Out
@@ -73,7 +73,7 @@
     labels": "... Long Byte Stream of Labels ..."\
 }
 
-### Get /employees/labels/{employeeID}/{pages} # Generate multiple pages of employee labels
+### Get /employees/labels/{employeeID}/{pages} # Generate and print multiple pages of employee labels
 #### In
 /employees/labels/483/2
 #### Out

@@ -60,7 +60,7 @@ public class NokonaLabelsResource {
 		}
 	}
 
-	public void printIt(Labels labels) throws PrintException {
+	protected void printIt(Labels labels) throws PrintException {
 
 		PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 		pras.add(new Copies(1));

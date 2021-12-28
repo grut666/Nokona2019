@@ -202,12 +202,13 @@ public class NokonaEmployeeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/labels/{empId}/{quantity}")
 	public Response getEmployeeLabels(@PathParam("empId") String user, @PathParam("quantity") int quantity) {
-
+		// Will now always print
 		Labels labels;
 		try {
 			Employee emp = db.getEmployee(user);
 			labels = new Labels();
 			labels.setLabels(BarCodeUtilities.generateEmployeeLabels(emp, quantity));
+			new NokonaLabelsResource().printLabels(labels);
 
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + user + " not found\"}").build();

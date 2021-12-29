@@ -4,6 +4,7 @@ import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
 import javax.print.PrintException;
+import javax.print.PrintService;
 import javax.print.SimpleDoc;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
@@ -58,7 +59,11 @@ public class NokonaLabelsResource {
 
 		DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
 		Doc doc = new SimpleDoc(labels.getLabels().getBytes(), flavor, null);
-		DocPrintJob job = BarCodeUtilities.getBarCodePrinter().createPrintJob();
+		PrintService printService = BarCodeUtilities.getBarCodePrinter();
+		if (printService == null) {
+			return;
+		}
+		DocPrintJob job = printService.createPrintJob();
 
 		PrintJobWatcher pjw = new PrintJobWatcher(job);
 		job.print(doc, pras);

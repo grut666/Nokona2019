@@ -18,14 +18,17 @@ import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.InvalidQuantityException;
 import com.nokona.exceptions.NullInputDataException;
+import com.nokona.formatter.EmployeeFormatter;
 import com.nokona.formatter.TicketFormatter;
 import com.nokona.formatter.TicketHeaderFormatter;
+import com.nokona.model.Employee;
 import com.nokona.model.JobDetail;
 import com.nokona.model.Operation;
 import com.nokona.model.Ticket;
 import com.nokona.model.TicketDetail;
 import com.nokona.model.TicketHeader;
 import com.nokona.utilities.DateUtilities;
+import com.nokona.validator.EmployeeValidator;
 
 public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	@Inject
@@ -121,7 +124,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		formattedTicketHeader.setDateStatus(new Date());
 		formattedTicketHeader.setDateCreated(new Date());
 		formattedTicketHeader.setQuantity(ticketHeader.getQuantity());
-		formattedTicketHeader.setTicketStatus(TicketStatus.NEW);
+		formattedTicketHeader.setTicketStatus(ticketHeader.getTicketStatus());
 		formattedTicketHeader = TicketHeaderFormatter.format(formattedTicketHeader);
 		try (PreparedStatement psAddTicketHeader = conn.prepareStatement(
 				"Insert into TicketHeader (JobID, CreatedDate, Status, StatusDate, Quantity) values (?,?,?,?,?)",
@@ -134,6 +137,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			psAddTicketHeader.setDate(2,
 					DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateCreated()));
 			psAddTicketHeader.setString(3, formattedTicketHeader.getTicketStatus().getTicketStatus());
+			System.out.println("**********Status is " + formattedTicketHeader.getTicketStatus().getTicketStatus());
 			psAddTicketHeader.setDate(4, DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateStatus()));
 			psAddTicketHeader.setInt(5, formattedTicketHeader.getQuantity());
 
@@ -188,6 +192,31 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 
 	@Override
 	public Ticket updateTicket(Ticket ticket) throws DatabaseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public TicketHeader updateTicketHeader(TicketHeader ticketHeader) throws DatabaseException {
+		try (PreparedStatement psUpdateTicketHeader = conn.prepareStatement(
+				"Update TicketHeader Set Status = ?, StatusDate = ?, Quantity = ? "
+						+ "WHERE TicketHeader.KEY = ?")) {
+			psUpdateTicketHeader.setString(1, ticketHeader.getTicketStatus().getTicketStatus());
+			psUpdateTicketHeader.setDate(2, DateUtilities.convertUtilDateToSQLDate(new Date()));
+			psUpdateTicketHeader.setInt(3, ticketHeader.getQuantity());
+			psUpdateTicketHeader.setLong(4, ticketHeader.getKey());
+			System.out.println("In updateTicketHeader.  Key is " + ticketHeader.getKey());
+			int rowCount = psUpdateTicketHeader.executeUpdate();
+			if (rowCount != 1) {
+				throw new DatabaseException("TicketHeader Update Error.  Updated " + rowCount + " rows");
+			}
+			return getTicketHeaderByKey(ticketHeader.getKey());
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage());
+		}
+	}
+	@Override
+	public TicketDetail updateTicketDetail(TicketDetail ticketDetail) throws DatabaseException {
 		// TODO Auto-generated method stub
 		return null;
 	}

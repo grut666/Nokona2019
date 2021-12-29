@@ -174,7 +174,7 @@ public class BarCodeUtilities {
 		sb.append(ESC).append("&a").append(intRowCount + .81).append("R"); // Set Vertical Coordinate
 
 		int intKounter = 1;
-		int theKount;
+		int numberOfLabelRows;
 		// ------------------
 		int detailIndex = 0;
 		int detailCount = ticketIn.getTicketDetails().size();
@@ -188,9 +188,9 @@ public class BarCodeUtilities {
 		TicketDetail td0 = null;
 		TicketDetail td1 = null;
 		TicketDetail td2 = null;
-		theKount = (int) (Math.ceil(detailCount / 3.0)); // How many rows of labels
-		System.out.println("***************The rows = " + theKount);
-		for (int intLoop = 0; intLoop < theKount; intLoop++) {
+		numberOfLabelRows = (int) (Math.ceil(detailCount / 3.0)); // How many rows of labels
+		System.out.println("***************The rows = " + numberOfLabelRows);
+		for (int intLoop = 0; intLoop < numberOfLabelRows; intLoop++) {
 			String[] strDesc0 = { star15, star15, star15 };
 			String[] strDesc1 = { star15, star15, star15 };
 			String[] strDesc2 = { star15, star15, star15 };
@@ -255,11 +255,11 @@ public class BarCodeUtilities {
 				strDesc2[2] = StringUtils.left(strDescAll, 17);
 			}
 			
-			if (intKounter < 3) {
-				intKounter++;
-			} else {
-				intKounter = 1;
-				
+//			if (intKounter < 3) {
+//				intKounter++;
+//			} else {
+//				intKounter = 1;
+			{
 				line1.append(ESC).append("&a0.1C").append(strJobId).append(ESC).append("&a0.5C").append("TKT:")
 						.append(strTkt1).append("__").append(strSequence[0]).append(ESC).append("&a1.1C")
 						.append(strJobId).append(ESC).append("&a1.5C").append("TKT:").append(strTkt1).append("__")
@@ -373,12 +373,13 @@ public class BarCodeUtilities {
 				intRowCount++;
 				if (intRowCount >= 10) {
 					intRowCount = 0;
+					sb.append(PAGE_EJECT);
 				}
-				sb.append(PAGE_EJECT);
+				
 				//
 
 			}
-			detailIndex += 1;
+			detailIndex += 3;
 		}
 		String output = sb.toString();
 		return output.replaceAll("\"", "\\\\\"");

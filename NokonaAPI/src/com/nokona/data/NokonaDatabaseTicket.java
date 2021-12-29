@@ -14,7 +14,8 @@ public interface NokonaDatabaseTicket extends NokonaDatabase {
 	List<Ticket> getTicketsByJob(String jobId) throws DatabaseException;
 	Ticket addTicket(TicketHeader ticketHeader)  throws DatabaseException;
 	Ticket updateTicket (Ticket ticket) throws DatabaseException;
-
+	TicketHeader updateTicketHeader (TicketHeader ticketHeader) throws DatabaseException;
+	TicketDetail updateTicketDetail (TicketDetail ticketDetail) throws DatabaseException;
 	void deleteTicketByKey (long key) throws DatabaseException;
 	
 	List<TicketHeader> getTicketHeaders() throws DatabaseException;

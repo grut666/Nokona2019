@@ -112,15 +112,18 @@ public class NokonaTicketResource {
 	@Path("/labels")
 	public Response getTicketLabels(Ticket ticketIn) {
 		// This will always send the labels to the printer
+		System.out.println("In Ticket Resource getTicketLabels.  Key is " + ticketIn.getTicketHeader().getKey());
 		Labels labels;
 		try {
 			labels = new Labels();
 			labels.setLabels(BarCodeUtilities.generateTicketLabels(ticketIn));
+// Uncomment the next 1 line to get actual printing
 			new NokonaLabelsResource().printLabels(labels);
 			ticketIn.getTicketHeader().setTicketStatus(TicketStatus.PRINTED);
-			
+			System.out.println("In resource.  Status is " + ticketIn.getTicketHeader().getTicketStatus().getTicketStatus());
+			db.updateTicketHeader(ticketIn.getTicketHeader());
 		} catch (Exception ex) {
-			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + ":" + db + "\"}").build();
 		}
 
 		return Response.status(200).entity(labels).build();

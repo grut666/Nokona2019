@@ -1,9 +1,5 @@
 package com.nokona.resource;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.inject.Inject;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -21,18 +17,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.nokona.data.NokonaDatabaseTicket;
-import com.nokona.enums.TicketStatus;
-import com.nokona.exceptions.DatabaseException;
 import com.nokona.model.Labels;
-import com.nokona.model.Ticket;
-import com.nokona.model.TicketHeader;
 import com.nokona.utilities.BarCodeUtilities;
 
 @Path("/labels")
 public class NokonaLabelsResource {
-	@Inject
-		private NokonaDatabaseTicket db;
+//	@Inject
+//		private NokonaDatabaseTicket db;
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)

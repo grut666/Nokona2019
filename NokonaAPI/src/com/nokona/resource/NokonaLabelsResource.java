@@ -29,7 +29,7 @@ public class NokonaLabelsResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/")
 	public Response printLabels(Labels labels) {
-		
+		System.out.println("******** Entering printLabels ***********************");
 		try {
 			printIt(labels);
 //			long dbKey = fetchKey(labels);
@@ -52,7 +52,7 @@ public class NokonaLabelsResource {
 	}
 
 	protected void printIt(Labels labels) throws PrintException {
-
+		System.out.println("******** Entering printIt ***********************");
 		PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 		pras.add(new Copies(1));
 

@@ -62,6 +62,7 @@ public class BarCodeUtilities {
 	}
 
 	public static PrintService getBarCodePrinter() {
+		System.out.println("******** Entering getBarCodePrinter ***********************");
 		PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
 		PrintService barCodePrinter = null;
 		if (services != null) {
@@ -72,10 +73,12 @@ public class BarCodeUtilities {
 				}
 			}
 		}
+		System.out.println("******** Bar Code Printer is " + barCodePrinter + " ***********************");
 		return barCodePrinter;
 	}
 
 	public static String generateEmployeeLabels(Employee emp, int page_quantity) throws NullInputDataException {
+		System.out.println("******** Entering generateEmployeeLabels ***********************");
 		if (emp == null) {
 			throw new NullInputDataException("Employee cannot be null");
 		}

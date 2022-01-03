@@ -162,7 +162,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 					String opCode = jobDetail.getOpCode();
 					String desc = op.getDescription();
 					OperationStatus status = OperationStatus.INCOMPLETE;
-					int sequence = jobDetail.getSequence();
+					int sequence = jobDetail.getSequence() + 1;    // The plus 1 is to keep consistent with the old system ... for now anyway.
 					int quantity = formattedTicketHeader.getQuantity();
 					double sah = op.getHourlyRateSAH();
 					TicketDetail td = new TicketDetail(key, opCode, desc, status, sequence, sequence, null, quantity,

@@ -18,17 +18,14 @@ import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.InvalidQuantityException;
 import com.nokona.exceptions.NullInputDataException;
-import com.nokona.formatter.EmployeeFormatter;
 import com.nokona.formatter.TicketFormatter;
 import com.nokona.formatter.TicketHeaderFormatter;
-import com.nokona.model.Employee;
 import com.nokona.model.JobDetail;
 import com.nokona.model.Operation;
 import com.nokona.model.Ticket;
 import com.nokona.model.TicketDetail;
 import com.nokona.model.TicketHeader;
 import com.nokona.utilities.DateUtilities;
-import com.nokona.validator.EmployeeValidator;
 
 public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	@Inject
@@ -47,14 +44,38 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	}
 
 	@Override
-	public List<Ticket> getTickets() throws DatabaseException {
+	public List<Ticket> getTickets(int offset) throws DatabaseException {
 		List<Ticket> tickets = new ArrayList<Ticket>();
 		try (PreparedStatement psGetTickets = getConn()
 				.prepareStatement("Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid "
 						+ "join ticketdetail on ticketheader.key = ticketdetail.key "
 						+ "join operation on ticketdetail.opcode = operation.opcode "
-						+ "where ticketheader.jobid like 'A-1275%' " + // Limiting for testing, otherwise too large
-						"order by ticketheader.key, sequence")) {
+	//					+ "where ticketheader.jobid like 'A-1275%' " + // Limiting for testing, otherwise too large
+						+ "order by CreatedDate desc, ticketheader.key, ticketheader.status, sequence"
+						+ "limit ?, 1000 ")) {
+			psGetTickets.setInt(1, offset);
+			try (ResultSet rs = psGetTickets.executeQuery()) {
+				while (rs.next()) {
+					tickets.add(convertTicketFromResultSet(rs));
+				}
+				return tickets;
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage(), e);
+		}
+
+	}
+	@Override
+	public List<Ticket> getTicketsByStatus(String status, int offset) throws DatabaseException {
+		List<Ticket> tickets = new ArrayList<Ticket>();
+		try (PreparedStatement psGetTickets = getConn()
+				.prepareStatement("Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid "
+						+ "join ticketdetail on ticketheader.key = ticketdetail.key "
+						+ "join operation on ticketdetail.opcode = operation.opcode "
+						+ "where TicketHeader.status = ?" + // Limiting for testing, otherwise too large
+						"order by CreatedDate desc, ticketheader.key, sequence limit ?, 1000")) {
+			psGetTickets.setString(1, status);
+			psGetTickets.setInt(2,  offset);
 			try (ResultSet rs = psGetTickets.executeQuery()) {
 				while (rs.next()) {
 					tickets.add(convertTicketFromResultSet(rs));
@@ -253,11 +274,12 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	}
 
 	@Override
-	public List<TicketHeader> getTicketHeaders() throws DatabaseException {
+	public List<TicketHeader> getTicketHeaders(int offset) throws DatabaseException {
 		List<TicketHeader> ticketHeaders = new ArrayList<TicketHeader>();
 		try (PreparedStatement psGetTicketHeaders = conn
 				.prepareStatement("Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid "
-						+ "order by CreatedDate desc, jobheader.jobID, Status")) {
+						+ "order by CreatedDate desc, jobheader.jobID, Status limit ?, 1000")) {
+			psGetTicketHeaders.setInt(1, offset);
 			try (ResultSet rs = psGetTicketHeaders.executeQuery();) {
 
 				while (rs.next()) {

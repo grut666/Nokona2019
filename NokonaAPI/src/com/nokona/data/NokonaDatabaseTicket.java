@@ -9,16 +9,17 @@ import com.nokona.model.TicketHeader;
 
 public interface NokonaDatabaseTicket extends NokonaDatabase {
 	
-	List<Ticket> getTickets() throws DatabaseException;
+	List<Ticket> getTickets(int offset) throws DatabaseException;
 	Ticket getTicketByKey(long key) throws DatabaseException;
 	List<Ticket> getTicketsByJob(String jobId) throws DatabaseException;
+	List<Ticket> getTicketsByStatus(String status, int offset) throws DatabaseException;
 	Ticket addTicket(TicketHeader ticketHeader)  throws DatabaseException;
 	Ticket updateTicket (Ticket ticket) throws DatabaseException;
 	TicketHeader updateTicketHeader (TicketHeader ticketHeader) throws DatabaseException;
 	TicketDetail updateTicketDetail (TicketDetail ticketDetail) throws DatabaseException;
 	void deleteTicketByKey (long key) throws DatabaseException;
 	
-	List<TicketHeader> getTicketHeaders() throws DatabaseException;
+	List<TicketHeader> getTicketHeaders(int offset) throws DatabaseException;
 	TicketHeader getTicketHeaderByKey(long headerKey) throws DatabaseException;
 	List<TicketDetail> getTicketDetailsByKey(long headerKey) throws DatabaseException;
 

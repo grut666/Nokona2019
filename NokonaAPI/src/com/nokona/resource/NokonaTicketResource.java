@@ -4,6 +4,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -58,10 +59,17 @@ public class NokonaTicketResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/")
-	public Response getTickets() {
-
+	public Response getTickets(@DefaultValue("0") @QueryParam("offset") int offset,
+								@DefaultValue("A") @QueryParam("status") String status) {
 		try {
-			return Response.status(200).entity(db.getTickets()).build();
+			
+		if (! status.equals("A")) {
+			if ("N".equalsIgnoreCase(status)) {
+				status = " ";
+			}
+			return Response.status(200).entity(db.getTicketsByStatus(status, offset)).build();
+		}		
+			return Response.status(200).entity(db.getTickets(offset)).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (Exception ex) {
@@ -73,10 +81,10 @@ public class NokonaTicketResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/ticketheaders")
-	public Response getTicketHeaders() {
+	public Response getTicketHeaders(@DefaultValue("0") @QueryParam("offset") int offset) {
 
 		 try {
-			return Response.status(200).entity(db.getTicketHeaders()).build();
+			return Response.status(200).entity(db.getTicketHeaders(offset)).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (Exception ex) {

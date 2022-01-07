@@ -65,7 +65,7 @@ public class NokonaTicketResource {
 			
 		if (! status.equals("A")) {
 			if ("N".equalsIgnoreCase(status)) {
-				status = " ";
+				status = "";
 			}
 			return Response.status(200).entity(db.getTicketsByStatus(status, offset)).build();
 		}		
@@ -81,10 +81,17 @@ public class NokonaTicketResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/ticketheaders")
-	public Response getTicketHeaders(@DefaultValue("0") @QueryParam("offset") int offset) {
+	public Response getTicketHeaders(@DefaultValue("0") @QueryParam("offset") int offset,
+			@DefaultValue("A") @QueryParam("status") String status) {
 
 		 try {
-			return Response.status(200).entity(db.getTicketHeaders(offset)).build();
+			 if (! status.equals("A")) {
+					if ("N".equalsIgnoreCase(status)) {
+						status = "";
+					}
+					return Response.status(200).entity(db.getTicketHeadersByStatus(status, offset)).build();
+				}		
+					return Response.status(200).entity(db.getTicketHeaders(offset)).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (Exception ex) {

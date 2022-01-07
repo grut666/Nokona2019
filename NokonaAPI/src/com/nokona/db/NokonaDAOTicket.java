@@ -292,6 +292,26 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			throw new DatabaseException(e.getMessage(), e);
 		}
 	}
+	@Override
+	public List<TicketHeader> getTicketHeadersByStatus(String status, int offset) throws DatabaseException {
+		List<TicketHeader> ticketHeaders = new ArrayList<TicketHeader>();
+		try (PreparedStatement psGetTicketHeaders = conn
+				.prepareStatement("Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid "
+						+ " where ticketheader.status = ? order by CreatedDate desc, jobheader.jobID, Status limit ?, 1000")) {
+			psGetTicketHeaders.setString(1, status);
+			psGetTicketHeaders.setInt(2, offset);
+			try (ResultSet rs = psGetTicketHeaders.executeQuery();) {
+
+				while (rs.next()) {
+					ticketHeaders.add(convertTicketHeaderFromResultSet(rs));
+				}
+				return ticketHeaders;
+			}
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage(), e);
+		}
+	}
 
 	@Override
 	public TicketHeader getTicketHeaderByKey(long headerKey) throws DatabaseException {

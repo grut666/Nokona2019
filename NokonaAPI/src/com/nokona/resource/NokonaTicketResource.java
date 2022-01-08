@@ -23,6 +23,7 @@ import com.nokona.model.Labels;
 import com.nokona.model.Ticket;
 import com.nokona.model.TicketHeader;
 import com.nokona.utilities.BarCodeUtilities;
+import com.nokona.utilities.TransferToAccess;
 
 @Path("/tickets")
 
@@ -151,6 +152,8 @@ public class NokonaTicketResource {
 
 		try {
 			db.deleteTicketByKey(key);
+			TransferToAccess.transfer("TICKETHEADER_D");
+			TransferToAccess.transfer("TICKETDETAIL_D");
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
@@ -178,6 +181,8 @@ public class NokonaTicketResource {
 			if (yesPrint) {
 				getTicketLabels(ticket);
 			}
+			TransferToAccess.transfer("TICKETHEADER_C");
+			TransferToAccess.transfer("TICKETDETAIL_C");
 			return Response.status(200).entity(ticket).build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity(ex.getMessage()).build();

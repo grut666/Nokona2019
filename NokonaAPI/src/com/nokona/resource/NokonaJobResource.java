@@ -20,6 +20,7 @@ import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.model.Job;
 import com.nokona.model.JobDetail;
 import com.nokona.model.JobHeader;
+import com.nokona.utilities.TransferToAccess;
 
 @Path("/jobs")
 public class NokonaJobResource {
@@ -82,7 +83,9 @@ public class NokonaJobResource {
 			return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
 		}
 		try {
-			return Response.status(200).entity(db.updateJobHeader(jobHeaderIn)).build();
+			JobHeader jobHeader = db.updateJobHeader(jobHeaderIn);
+			TransferToAccess.transfer("JOBHEADER_U");
+			return Response.status(200).entity(jobHeader).build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -101,6 +104,7 @@ public class NokonaJobResource {
 		JobHeader jobHeader;
 		try {
 			jobHeader = db.addJobHeader(jobHeaderIn);
+			TransferToAccess.transfer("JOBHEADER_C");
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -140,6 +144,7 @@ public class NokonaJobResource {
 		}
 		try {
 			db.updateJobDetail(jobDetailIn);
+			TransferToAccess.transfer("JOBDETAIL_U");
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
@@ -159,6 +164,7 @@ public class NokonaJobResource {
 
 		try {
 		  db.addJobDetail(jobDetailIn);
+		  TransferToAccess.transfer("JOBDETAIL_C");
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -192,6 +198,8 @@ public class NokonaJobResource {
 
 		try {
 			db.deleteJob(jobId);
+			TransferToAccess.transfer("JOBHEADER_D");
+			TransferToAccess.transfer("JOBDETAIL_D");
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + jobId + " not found\"}").build();
@@ -218,13 +226,15 @@ public class NokonaJobResource {
 //			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 //		}
 //	}
-	@PUT
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addJob(Job jobIn) {
 		Job job;
 		try {
 			job = db.addJob(jobIn);
+			TransferToAccess.transfer("JOBHEADER_C");
+			TransferToAccess.transfer("JOBDETAIL_C");
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {

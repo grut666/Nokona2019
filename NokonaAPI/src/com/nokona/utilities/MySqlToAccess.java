@@ -32,8 +32,8 @@ public class MySqlToAccess {
 
 	// private static PreparedStatement psSelect;
 	// private static PreparedStatement psDelete;
-	//private static PreparedStatement psInsert;
-	//private static PreparedStatement psUpdate;
+	// private static PreparedStatement psInsert;
+	// private static PreparedStatement psUpdate;
 
 	public static void main(String[] args) throws SQLException {
 
@@ -66,7 +66,21 @@ public class MySqlToAccess {
 			case "OPERATION":
 				doOperations(fields[1]);
 				break;
+			case "JOBHEADER":
+				doJobHeaders(fields[1]);
+				break;
+			case "JOBDETAIL":
+				doJobDetails(fields[1]);
+				break;
+
+			case "TICKETHEADER":
+				doTicketHeaders(fields[1]);
+				break;
+			case "TICKETDETAIL":
+				doTicketDetails(fields[1]);
+				break;
 			}
+
 		}
 
 		try {
@@ -121,26 +135,196 @@ public class MySqlToAccess {
 		System.out.println("MySQL connection Success");
 	}
 
-//	private void clearMySQL() {
-//
-//	}
+	// private void clearMySQL() {
+	//
+	// }
 
-//	private void loadMySQL() {
-//
-//	}
-//
-//	private static void doTicketHeaders() {
-//
-//	}
-//
-//	private static void doJobHeaders() {
-//
-//	}
-//
-//	private static void doJobDetails() {
-//
-//	}
-// *************************************** EMPLOYEE **********************************************
+	// private void loadMySQL() {
+	//
+	// }
+	//
+
+	// *************************************** TICKETHEADER
+	// **********************************************
+	private static void doTicketHeaders(String duca) {
+		switch (duca) {
+		case "D":
+			doTicketHeaderDelete();
+			break;
+		case "U":
+			doTicketHeaderUpdate();
+			break;
+		case "C":
+			doTicketHeaderCreate();
+			break;
+
+		default:
+			doTicketHeaderDelete();
+			doTicketHeaderUpdate();
+			doTicketHeaderCreate();
+		}
+	}
+
+	protected static void doTicketHeaderDelete() {
+		// Key Last Name First Name Bar Code ID Labor Code Emp ID Active
+		List<Employee> recordsIn = new ArrayList<>();
+		String query = "Select * from Employee_Log where ProcessedToAccess = 'N'";
+		try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
+
+			ResultSet rs = psSelect.executeQuery();
+
+			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
+				Employee emp = new Employee(rs.getInt("TheKey"), rs.getString("LastName"), rs.getString("FirstName"),
+						rs.getInt("BarCodeID"), rs.getInt("LaborCode"), rs.getString("EmpID"),
+						"T".equals(rs.getString("Active")) ? true : false);
+				recordsIn.add(emp);
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+		query = "DELETE FROM EMPLOYEE WHERE EMPLOYEE.KEY = ?";
+		try (PreparedStatement psDelete = accessConn.prepareStatement(query)) {
+			for (Employee employee : recordsIn) {
+				psDelete.setLong(1, employee.getKey());
+				int rowsAffected = psDelete.executeUpdate();
+				if (rowsAffected == 0) {
+					logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
+				}
+			}
+
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
+		}
+		query = "Update Employee_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'D'";
+		try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
+			int rowsAffected = psUpdate.executeUpdate();
+			if (rowsAffected == 0) {
+				logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+	}
+
+	protected static void doTicketHeaderUpdate() {
+		// Key Last Name First Name Bar Code ID Labor Code Emp ID Active
+		List<Employee> recordsIn = new ArrayList<>();
+		String query = "Select * from Employee_Log where ProcessedToAccess = 'N' and TransactionType = 'U'";
+		try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
+
+			ResultSet rs = psSelect.executeQuery();
+
+			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
+				Employee emp = new Employee(rs.getInt("TheKey"), rs.getString("LastName"), rs.getString("FirstName"),
+						rs.getInt("BarCodeID"), rs.getInt("LaborCode"), rs.getString("EmpID"),
+						"T".equals(rs.getString("Active")) ? true : false);
+				recordsIn.add(emp);
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+
+		query = "Update EMPLOYEE Set  [Last Name] = ?, [First Name] = ?, [Bar Code ID] = ?, [Labor Code] = ?, "
+				+ "[EMP ID] = ?, Active = ? where EMPLOYEE.KEY = ?";
+		try (PreparedStatement psUpdate = accessConn.prepareStatement(query)) {
+			for (Employee employee : recordsIn) {
+				psUpdate.setString(1, employee.getLastName());
+				psUpdate.setString(2, employee.getFirstName());
+				psUpdate.setLong(3, employee.getBarCodeID());
+				psUpdate.setLong(4, employee.getLaborCode());
+				psUpdate.setString(5, employee.getEmpId());
+				psUpdate.setString(6, employee.isActive() ? "T" : "F");
+				psUpdate.setLong(7, employee.getKey());
+
+				int rowsAffected = psUpdate.executeUpdate();
+				if (rowsAffected == 0) {
+					logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
+				}
+			}
+
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
+		}
+		query = "Update Employee_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'U'";
+		try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
+			int rowsAffected = psUpdate.executeUpdate();
+			if (rowsAffected == 0) {
+				logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+	}
+
+	protected static void doTicketHeaderCreate() {
+		System.out.println("Entering Create ********");
+
+		List<Employee> recordsIn = new ArrayList<>();
+		String query = "Select * from Employee_Log where ProcessedToAccess = 'N' and TransactionType = 'C'";
+		try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
+
+			ResultSet rs = psSelect.executeQuery();
+
+			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
+				Employee emp = new Employee(rs.getInt("TheKey"), rs.getString("LastName"), rs.getString("FirstName"),
+						rs.getInt("BarCodeID"), rs.getInt("LaborCode"), rs.getString("EmpID"),
+						"T".equals(rs.getString("Active")) ? true : false);
+				recordsIn.add(emp);
+			}
+		} catch (SQLException ex) {
+			System.out.println("MySQL Error: " + query + ":" + ex.getMessage());
+
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+
+		query = "Insert INTO EMPLOYEE ([Last Name], [First Name], [Bar Code ID], [Labor Code], "
+				+ "[EMP ID], Active) values (?,?,?,?,?,?,?)";
+		try (PreparedStatement psInsert = accessConn.prepareStatement(query)) {
+			for (Employee employee : recordsIn) {
+				psInsert.setString(1, employee.getLastName());
+				psInsert.setString(2, employee.getFirstName());
+				psInsert.setLong(3, employee.getBarCodeID());
+				psInsert.setLong(4, employee.getLaborCode());
+				psInsert.setString(5, employee.getEmpId());
+				psInsert.setString(6, employee.isActive() ? "T" : "F");
+
+				int rowsAffected = psInsert.executeUpdate();
+				if (rowsAffected == 0) {
+					logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
+				}
+			}
+
+		} catch (SQLException ex) {
+			System.out.println("Access Error: " + query + ":" + ex.getMessage());
+			logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
+		}
+		query = "Update Employee_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'C'";
+		try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
+			int rowsAffected = psUpdate.executeUpdate();
+			if (rowsAffected == 0) {
+				System.out.println("MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+				logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+			}
+		} catch (SQLException ex) {
+			System.out.println("MySQL Error: " + query + ":" + ex.getMessage());
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+	}
+
+	private static void doTicketDetails(String duca) {
+
+	}
+
+	private static void doJobHeaders(String duca) {
+
+	}
+
+	private static void doJobDetails(String duca) {
+
+	}
+
+	// *************************************** EMPLOYEE
+	// **********************************************
 	public static void doEmployees(String duca) { // delete, update, create, all
 
 		switch (duca) {
@@ -153,6 +337,7 @@ public class MySqlToAccess {
 		case "C":
 			doEmployeeCreate();
 			break;
+
 		default:
 			doEmployeeDelete();
 			doEmployeeUpdate();
@@ -254,7 +439,7 @@ public class MySqlToAccess {
 
 	protected static void doEmployeeCreate() {
 		System.out.println("Entering Create ********");
-		
+
 		List<Employee> recordsIn = new ArrayList<>();
 		String query = "Select * from Employee_Log where ProcessedToAccess = 'N' and TransactionType = 'C'";
 		try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
@@ -307,329 +492,332 @@ public class MySqlToAccess {
 		}
 	}
 
-	// *************************************** LABOR CODES **********************************************
-		public static void doLaborCodes(String duca) { // delete, update, create, all
+	// *************************************** LABOR CODES
+	// **********************************************
+	public static void doLaborCodes(String duca) { // delete, update, create, all
 
-			switch (duca) {
-			case "D":
-				doLaborCodeDelete();
-				break;
-			case "U":
-				doLaborCodeUpdate();
-				break;
-			case "C":
-				doLaborCodeCreate();
-				break;
-			default:
-				doLaborCodeDelete();
-				doLaborCodeUpdate();
-				doLaborCodeCreate();
-			}
-
+		switch (duca) {
+		case "D":
+			doLaborCodeDelete();
+			break;
+		case "U":
+			doLaborCodeUpdate();
+			break;
+		case "C":
+			doLaborCodeCreate();
+			break;
+		default:
+			doLaborCodeDelete();
+			doLaborCodeUpdate();
+			doLaborCodeCreate();
 		}
-	//	LaborCode	Description	LaborRate	Key --- From Access
 
-		protected static void doLaborCodeDelete() {
-			// Key Last Name First Name Bar Code ID Labor Code Emp ID Active
-			List<LaborCode> recordsIn = new ArrayList<>();
-			String query = "Select * from LaborCode_Log where ProcessedToAccess = 'N'";
-			try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
+	}
+	// LaborCode Description LaborRate Key --- From Access
 
-				ResultSet rs = psSelect.executeQuery();
+	protected static void doLaborCodeDelete() {
+		// Key Last Name First Name Bar Code ID Labor Code Emp ID Active
+		List<LaborCode> recordsIn = new ArrayList<>();
+		String query = "Select * from LaborCode_Log where ProcessedToAccess = 'N'";
+		try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
 
-				while (rs.next()) { // Should be only 1, but not sure if that will always be the case
-					LaborCode laborCode = new LaborCode(rs.getInt("TheKey"), rs.getInt("LaborCode"), rs.getString("Description"),
-							rs.getDouble("LaborRate"));
-					recordsIn.add(laborCode);
-				}
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+			ResultSet rs = psSelect.executeQuery();
+
+			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
+				LaborCode laborCode = new LaborCode(rs.getInt("TheKey"), rs.getInt("LaborCode"),
+						rs.getString("Description"), rs.getDouble("LaborRate"));
+				recordsIn.add(laborCode);
 			}
-			query = "DELETE FROM LaborCode WHERE LaborCode.KEY = ?";
-			try (PreparedStatement psDelete = accessConn.prepareStatement(query)) {
-				for (LaborCode laborCode : recordsIn) {
-					psDelete.setLong(1, laborCode.getKey());
-					int rowsAffected = psDelete.executeUpdate();
-					if (rowsAffected == 0) {
-						logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
-					}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+		query = "DELETE FROM LaborCode WHERE LaborCode.KEY = ?";
+		try (PreparedStatement psDelete = accessConn.prepareStatement(query)) {
+			for (LaborCode laborCode : recordsIn) {
+				psDelete.setLong(1, laborCode.getKey());
+				int rowsAffected = psDelete.executeUpdate();
+				if (rowsAffected == 0) {
+					logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
 				}
-
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
 			}
-			query = "Update LaborCode_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'D'";
-			try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
+
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
+		}
+		query = "Update LaborCode_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'D'";
+		try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
+			int rowsAffected = psUpdate.executeUpdate();
+			if (rowsAffected == 0) {
+				logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+	}
+
+	protected static void doLaborCodeUpdate() {
+		// LaborCode Description LaborRate Key --- From Access
+		List<LaborCode> recordsIn = new ArrayList<>();
+		String query = "Select * from LaborCode_Log where ProcessedToAccess = 'N' and TransactionType = 'U'";
+		try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
+
+			ResultSet rs = psSelect.executeQuery();
+
+			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
+				LaborCode laborCode = new LaborCode(rs.getInt("TheKey"), rs.getInt("LaborCode"),
+						rs.getString("Description"), rs.getDouble("LaborRate"));
+				recordsIn.add(laborCode);
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+
+		query = "Update LaborCode Set  LaborCode = ?, Description = ?, LaborRate = ?  " + " where LaborKey.KEY = ?";
+		try (PreparedStatement psUpdate = accessConn.prepareStatement(query)) {
+			for (LaborCode laborCode : recordsIn) {
+				psUpdate.setLong(1, laborCode.getLaborCode());
+				psUpdate.setString(2, laborCode.getDescription());
+				psUpdate.setDouble(3, laborCode.getRate());
+				psUpdate.setLong(4, laborCode.getKey());
+
 				int rowsAffected = psUpdate.executeUpdate();
 				if (rowsAffected == 0) {
-					logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+					logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
 				}
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
 			}
+
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
+		}
+		query = "Update LaborCode_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'U'";
+		try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
+			int rowsAffected = psUpdate.executeUpdate();
+			if (rowsAffected == 0) {
+				logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+	}
+
+	protected static void doLaborCodeCreate() {
+		// LaborCode Description LaborRate Key --- From Access
+		System.out.println("Entering Create ********");
+
+		List<LaborCode> recordsIn = new ArrayList<>();
+		String query = "Select * from LaborCode_Log where ProcessedToAccess = 'N' and TransactionType = 'C'";
+		try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
+
+			ResultSet rs = psSelect.executeQuery();
+
+			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
+				LaborCode laborCode = new LaborCode(rs.getInt("TheKey"), rs.getInt("LaborCode"),
+						rs.getString("Description"), rs.getDouble("LaborRate"));
+				recordsIn.add(laborCode);
+			}
+		} catch (SQLException ex) {
+			System.out.println("MySQL Error: " + query + ":" + ex.getMessage());
+
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
 		}
 
-		protected static void doLaborCodeUpdate() {
-//			LaborCode	Description	LaborRate	Key --- From Access
-			List<LaborCode> recordsIn = new ArrayList<>();
-			String query = "Select * from LaborCode_Log where ProcessedToAccess = 'N' and TransactionType = 'U'";
-			try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
+		query = "Insert INTO LaborCode (LaborCode, Description LaborRate) " + " values (?,?,?)";
+		try (PreparedStatement psInsert = accessConn.prepareStatement(query)) {
+			for (LaborCode laborCode : recordsIn) {
+				psInsert.setLong(1, laborCode.getLaborCode());
+				psInsert.setString(2, laborCode.getDescription());
+				psInsert.setDouble(3, laborCode.getRate());
 
-				ResultSet rs = psSelect.executeQuery();
-
-				while (rs.next()) { // Should be only 1, but not sure if that will always be the case
-					LaborCode laborCode = new LaborCode(rs.getInt("TheKey"), rs.getInt("LaborCode"), rs.getString("Description"),
-							rs.getDouble("LaborRate"));
-					recordsIn.add(laborCode);
+				int rowsAffected = psInsert.executeUpdate();
+				if (rowsAffected == 0) {
+					logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
 				}
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
 			}
 
-			query = "Update LaborCode Set  LaborCode = ?, Description = ?, LaborRate = ?  "
-					+ " where LaborKey.KEY = ?";
-			try (PreparedStatement psUpdate = accessConn.prepareStatement(query)) {
-				for (LaborCode laborCode : recordsIn) {
-					psUpdate.setLong(1, laborCode.getLaborCode());
-					psUpdate.setString(2, laborCode.getDescription());
-					psUpdate.setDouble(3, laborCode.getRate());
-					psUpdate.setLong(4, laborCode.getKey());
-
-					int rowsAffected = psUpdate.executeUpdate();
-					if (rowsAffected == 0) {
-						logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
-					}
-				}
-
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
+		} catch (SQLException ex) {
+			System.out.println("Access Error: " + query + ":" + ex.getMessage());
+			logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
+		}
+		query = "Update LaborCode_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'C'";
+		try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
+			int rowsAffected = psUpdate.executeUpdate();
+			if (rowsAffected == 0) {
+				System.out.println("MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+				logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
 			}
-			query = "Update LaborCode_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'U'";
-			try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
+		} catch (SQLException ex) {
+			System.out.println("MySQL Error: " + query + ":" + ex.getMessage());
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+	}
+	// OpCode Description HourlyRateSAH LaborCode Key LastStudyYear
+
+	// *************************************** OPERATION
+	// **********************************************
+	public static void doOperations(String duca) { // delete, update, create, all
+
+		switch (duca) {
+		case "D":
+			doOperationDelete();
+			break;
+		case "U":
+			doOperationUpdate();
+			break;
+		case "C":
+			doOperationCreate();
+			break;
+		default:
+			doOperationDelete();
+			doOperationUpdate();
+			doOperationCreate();
+		}
+
+	}
+
+	protected static void doOperationDelete() {
+		// OpCode Description HourlyRateSAH LaborCode Key LastStudyYear
+		List<Operation> recordsIn = new ArrayList<>();
+		String query = "Select * from Operation_Log where ProcessedToAccess = 'N'";
+		try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
+
+			ResultSet rs = psSelect.executeQuery();
+
+			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
+				Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"),
+						rs.getString("Description"), rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),
+						rs.getInt("LastStudyYear"));
+				recordsIn.add(operation);
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+		query = "DELETE FROM OPERATION WHERE OPERATION.KEY = ?";
+		try (PreparedStatement psDelete = accessConn.prepareStatement(query)) {
+			for (Operation operation : recordsIn) {
+				psDelete.setLong(1, operation.getKey());
+				int rowsAffected = psDelete.executeUpdate();
+				if (rowsAffected == 0) {
+					logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
+				}
+			}
+
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
+		}
+		query = "Update Operation_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'D'";
+		try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
+			int rowsAffected = psUpdate.executeUpdate();
+			if (rowsAffected == 0) {
+				logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+	}
+
+	protected static void doOperationUpdate() {
+		// Key OpCode Description LaborCode HourlyRateSAH LastStudyYear
+		List<Operation> recordsIn = new ArrayList<>();
+		String query = "Select * from Operation_Log where ProcessedToAccess = 'N' and TransactionType = 'U'";
+		try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
+
+			ResultSet rs = psSelect.executeQuery();
+
+			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
+				Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"),
+						rs.getString("Description"), rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),
+						rs.getInt("LastStudyYear"));
+				recordsIn.add(operation);
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+
+		query = "Update OPERATION Set  OpCode = ?, Description = ?, LaborCode = ?, HourlyRateSAH = ?, "
+				+ "LastStudyYear = ? where EMPLOYEE.KEY = ?";
+		try (PreparedStatement psUpdate = accessConn.prepareStatement(query)) {
+			for (Operation operation : recordsIn) {
+				psUpdate.setString(1, operation.getOpCode());
+				psUpdate.setString(2, operation.getDescription());
+				psUpdate.setInt(3, operation.getLaborCode());
+				psUpdate.setDouble(4, operation.getHourlyRateSAH());
+				psUpdate.setInt(5, operation.getLastStudyYear());
+				psUpdate.setLong(6, operation.getKey());
+
 				int rowsAffected = psUpdate.executeUpdate();
 				if (rowsAffected == 0) {
-					logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+					logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
 				}
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
 			}
+
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
+		}
+		query = "Update Operation_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'U'";
+		try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
+			int rowsAffected = psUpdate.executeUpdate();
+			if (rowsAffected == 0) {
+				logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
+		}
+	}
+
+	protected static void doOperationCreate() {
+		// Key OpCode Description LaborCode HourlyRateSAH LastStudyYear
+		System.out.println("Entering Create ********");
+
+		List<Operation> recordsIn = new ArrayList<>();
+		String query = "Select * from Operation_Log where ProcessedToAccess = 'N' and TransactionType = 'C'";
+		try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
+
+			ResultSet rs = psSelect.executeQuery();
+
+			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
+				Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"),
+						rs.getString("Description"), rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),
+						rs.getInt("LastStudyYear"));
+				recordsIn.add(operation);
+			}
+		} catch (SQLException ex) {
+			System.out.println("MySQL Error: " + query + ":" + ex.getMessage());
+
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
 		}
 
-		protected static void doLaborCodeCreate() {
-//			LaborCode	Description	LaborRate	Key --- From Access
-			System.out.println("Entering Create ********");
-			
-			List<LaborCode> recordsIn = new ArrayList<>();
-			String query = "Select * from LaborCode_Log where ProcessedToAccess = 'N' and TransactionType = 'C'";
-			try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
+		query = "Insert INTO Operation (OpCode, Description, LaborCode, HourlyRateSAH, "
+				+ "LastStudyYear) values (?,?,?,?,?)";
+		try (PreparedStatement psInsert = accessConn.prepareStatement(query)) {
+			for (Operation operation : recordsIn) {
+				psInsert.setString(1, operation.getOpCode());
+				psInsert.setString(2, operation.getDescription());
+				psInsert.setInt(3, operation.getLaborCode());
+				psInsert.setDouble(4, operation.getHourlyRateSAH());
+				psInsert.setInt(5, operation.getLastStudyYear());
 
-				ResultSet rs = psSelect.executeQuery();
-
-				while (rs.next()) { // Should be only 1, but not sure if that will always be the case
-					LaborCode laborCode = new LaborCode(rs.getInt("TheKey"), rs.getInt("LaborCode"), rs.getString("Description"),
-							rs.getDouble("LaborRate"));
-					recordsIn.add(laborCode);
-				}
-			} catch (SQLException ex) {
-				System.out.println("MySQL Error: " + query + ":" + ex.getMessage());
-
-				logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
-			}
-
-			query = "Insert INTO LaborCode (LaborCode, Description LaborRate) "
-					+ " values (?,?,?)";
-			try (PreparedStatement psInsert = accessConn.prepareStatement(query)) {
-				for (LaborCode laborCode : recordsIn) {
-					psInsert.setLong(1, laborCode.getLaborCode());
-					psInsert.setString(2, laborCode.getDescription());
-					psInsert.setDouble(3, laborCode.getRate());
-
-					int rowsAffected = psInsert.executeUpdate();
-					if (rowsAffected == 0) {
-						logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
-					}
-				}
-
-			} catch (SQLException ex) {
-				System.out.println("Access Error: " + query + ":" + ex.getMessage());
-				logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
-			}
-			query = "Update LaborCode_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'C'";
-			try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
-				int rowsAffected = psUpdate.executeUpdate();
+				int rowsAffected = psInsert.executeUpdate();
 				if (rowsAffected == 0) {
-					System.out.println("MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
-					logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+					logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
 				}
-			} catch (SQLException ex) {
-				System.out.println("MySQL Error: " + query + ":" + ex.getMessage());
-				logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
 			}
+
+		} catch (SQLException ex) {
+			System.out.println("Access Error: " + query + ":" + ex.getMessage());
+			logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
 		}
-//		OpCode	Description	HourlyRateSAH	LaborCode	Key	LastStudyYear
-
-		// *************************************** OPERATION **********************************************
-		public static void doOperations(String duca) { // delete, update, create, all
-
-			switch (duca) {
-			case "D":
-				doOperationDelete();
-				break;
-			case "U":
-				doOperationUpdate();
-				break;
-			case "C":
-				doOperationCreate();
-				break;
-			default:
-				doOperationDelete();
-				doOperationUpdate();
-				doOperationCreate();
+		query = "Update Operation_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'C'";
+		try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
+			int rowsAffected = psUpdate.executeUpdate();
+			if (rowsAffected == 0) {
+				System.out.println("MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
+				logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
 			}
-
+		} catch (SQLException ex) {
+			System.out.println("MySQL Error: " + query + ":" + ex.getMessage());
+			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
 		}
-
-		protected static void doOperationDelete() {
-//			OpCode	Description	HourlyRateSAH	LaborCode	Key	LastStudyYear
-			List<Operation> recordsIn = new ArrayList<>();
-			String query = "Select * from Operation_Log where ProcessedToAccess = 'N'";
-			try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
-
-				ResultSet rs = psSelect.executeQuery();
-
-				while (rs.next()) { // Should be only 1, but not sure if that will always be the case
-					Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"), rs.getString("Description"),
-							rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),  rs.getInt("LastStudyYear"));
-					recordsIn.add(operation);
-				}
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
-			}
-			query = "DELETE FROM OPERATION WHERE OPERATION.KEY = ?";
-			try (PreparedStatement psDelete = accessConn.prepareStatement(query)) {
-				for (Operation operation : recordsIn) {
-					psDelete.setLong(1, operation.getKey());
-					int rowsAffected = psDelete.executeUpdate();
-					if (rowsAffected == 0) {
-						logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
-					}
-				}
-
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
-			}
-			query = "Update Operation_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'D'";
-			try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
-				int rowsAffected = psUpdate.executeUpdate();
-				if (rowsAffected == 0) {
-					logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
-				}
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
-			}
-		}
-		protected static void doOperationUpdate() {
-//			Key OpCode	Description	LaborCode HourlyRateSAH	LastStudyYear
-			List<Operation> recordsIn = new ArrayList<>();
-			String query = "Select * from Operation_Log where ProcessedToAccess = 'N' and TransactionType = 'U'";
-			try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
-
-				ResultSet rs = psSelect.executeQuery();
-
-				while (rs.next()) { // Should be only 1, but not sure if that will always be the case
-					Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"), rs.getString("Description"),
-							rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),  rs.getInt("LastStudyYear"));
-					recordsIn.add(operation);
-				}
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
-			}
-
-			query = "Update OPERATION Set  OpCode = ?, Description = ?, LaborCode = ?, HourlyRateSAH = ?, "
-					+ "LastStudyYear = ? where EMPLOYEE.KEY = ?";
-			try (PreparedStatement psUpdate = accessConn.prepareStatement(query)) {
-				for (Operation operation : recordsIn) {
-					psUpdate.setString(1, operation.getOpCode());
-					psUpdate.setString(2, operation.getDescription());
-					psUpdate.setInt(3, operation.getLaborCode());
-					psUpdate.setDouble(4, operation.getHourlyRateSAH());
-					psUpdate.setInt(5, operation.getLastStudyYear());
-					psUpdate.setLong(6, operation.getKey());
-
-					int rowsAffected = psUpdate.executeUpdate();
-					if (rowsAffected == 0) {
-						logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
-					}
-				}
-
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
-			}
-			query = "Update Operation_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'U'";
-			try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
-				int rowsAffected = psUpdate.executeUpdate();
-				if (rowsAffected == 0) {
-					logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
-				}
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
-			}
-		}
-
-		protected static void doOperationCreate() {
-//			Key OpCode	Description	LaborCode HourlyRateSAH	LastStudyYear
-			System.out.println("Entering Create ********");
-			
-			List<Operation> recordsIn = new ArrayList<>();
-			String query = "Select * from Operation_Log where ProcessedToAccess = 'N' and TransactionType = 'C'";
-			try (PreparedStatement psSelect = mySqlConn.prepareStatement(query)) {
-
-				ResultSet rs = psSelect.executeQuery();
-
-				while (rs.next()) { // Should be only 1, but not sure if that will always be the case
-					Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"), rs.getString("Description"),
-							rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),  rs.getInt("LastStudyYear"));
-					recordsIn.add(operation);
-				}
-			} catch (SQLException ex) {
-				System.out.println("MySQL Error: " + query + ":" + ex.getMessage());
-
-				logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
-			}
-
-			query = "Insert INTO Operation (OpCode, Description, LaborCode, HourlyRateSAH, "
-					+ "LastStudyYear) values (?,?,?,?,?)";
-			try (PreparedStatement psInsert = accessConn.prepareStatement(query)) {
-				for (Operation operation : recordsIn) {
-					psInsert.setString(1, operation.getOpCode());
-					psInsert.setString(2, operation.getDescription());
-					psInsert.setInt(3, operation.getLaborCode());
-					psInsert.setDouble(4, operation.getHourlyRateSAH());
-					psInsert.setInt(5, operation.getLastStudyYear());
-
-					int rowsAffected = psInsert.executeUpdate();
-					if (rowsAffected == 0) {
-						logger.log(Level.SEVERE, "Access Error: " + query + ": Rows Affected = " + rowsAffected);
-					}
-				}
-
-			} catch (SQLException ex) {
-				System.out.println("Access Error: " + query + ":" + ex.getMessage());
-				logger.log(Level.SEVERE, "Access Error: " + query + ":" + ex.getMessage());
-			}
-			query = "Update Operation_Log Set ProcessedToAccess = 'Y' where ProcessedToAccess = 'N' and TransactionType = 'C'";
-			try (PreparedStatement psUpdate = mySqlConn.prepareStatement(query)) {
-				int rowsAffected = psUpdate.executeUpdate();
-				if (rowsAffected == 0) {
-					System.out.println("MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
-					logger.log(Level.SEVERE, "MySQL Error: " + query + ": Rows Affected = " + rowsAffected);
-				}
-			} catch (SQLException ex) {
-				System.out.println("MySQL Error: " + query + ":" + ex.getMessage());
-				logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
-			}
-		}
-
+	}
 
 	protected static void setUpLogger() throws SecurityException, IOException {
 		Logger logger = Logger.getLogger(MySqlToAccess.class.getName());

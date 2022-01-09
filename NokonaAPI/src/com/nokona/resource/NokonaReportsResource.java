@@ -87,6 +87,22 @@ public class NokonaReportsResource {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
 	}
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@Path("/csv")
+	public Response getCsvReport(ReportProperties properties) {
+
+		File file = null;
+		try {
+			file = getJasperReport(properties);
+			return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
+					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()).build();
+
+		} catch (PDFException e) {
+			return Response.status(500).entity(e.getMessage()).build();
+		}
+	}
 
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)

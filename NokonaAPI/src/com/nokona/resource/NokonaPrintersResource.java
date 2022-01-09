@@ -17,7 +17,7 @@ public class NokonaPrintersResource {
 	@Path("/barcodeprinter")
 	public Response getBarCodePrinter() {
 
-		
+		System.out.println("Getting Bar Code Printer");
 		PrintService barCodePrinter = BarCodeUtilities.getBarCodePrinter();
 		if (barCodePrinter == null) {
 

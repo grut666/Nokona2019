@@ -51,8 +51,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 						+ "join ticketdetail on ticketheader.key = ticketdetail.key "
 						+ "join operation on ticketdetail.opcode = operation.opcode "
 	//					+ "where ticketheader.jobid like 'A-1275%' " + // Limiting for testing, otherwise too large
-						+ "order by CreatedDate desc, ticketheader.key, ticketheader.status, sequence"
-						+ "limit ?, 1000 ")) {
+						+ "order by CreatedDate desc, ticketheader.key, ticketheader.status, sequence "
+						+ "limit ?, 200 ")) {
 			psGetTickets.setInt(1, offset);
 			try (ResultSet rs = psGetTickets.executeQuery()) {
 				while (rs.next()) {
@@ -73,7 +73,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 						+ "join ticketdetail on ticketheader.key = ticketdetail.key "
 						+ "join operation on ticketdetail.opcode = operation.opcode "
 						+ "where TicketHeader.status = ?" + // Limiting for testing, otherwise too large
-						"order by CreatedDate desc, ticketheader.key, sequence limit ?, 1000")) {
+						"order by CreatedDate desc, ticketheader.key, sequence limit ?, 200")) {
 			psGetTickets.setString(1, status);
 			psGetTickets.setInt(2,  offset);
 			try (ResultSet rs = psGetTickets.executeQuery()) {
@@ -220,7 +220,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	public TicketHeader updateTicketHeader(TicketHeader ticketHeader) throws DatabaseException {
 		try (PreparedStatement psUpdateTicketHeader = conn.prepareStatement(
 				"Update TicketHeader Set Status = ?, StatusDate = ?, Quantity = ? "
-						+ "WHERE TicketHeader.KEY = ?")) {
+						+ "WHERE ticketheader.Key = ?")) {
 			psUpdateTicketHeader.setString(1, ticketHeader.getTicketStatus().getTicketStatus());
 			psUpdateTicketHeader.setDate(2, DateUtilities.convertUtilDateToSQLDate(new Date()));
 			psUpdateTicketHeader.setInt(3, ticketHeader.getQuantity());
@@ -228,8 +228,11 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			System.out.println("In updateTicketHeader.  Key is " + ticketHeader.getKey());
 			int rowCount = psUpdateTicketHeader.executeUpdate();
 			if (rowCount != 1) {
+				System.out.println("Throwing exception in UpdateHeader");
 				throw new DatabaseException("TicketHeader Update Error.  Updated " + rowCount + " rows");
 			}
+			System.out.println("After updateTicketHeader executeUpdate().  Key is " + ticketHeader.getKey());
+
 			return getTicketHeaderByKey(ticketHeader.getKey());
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -278,7 +281,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		List<TicketHeader> ticketHeaders = new ArrayList<TicketHeader>();
 		try (PreparedStatement psGetTicketHeaders = conn
 				.prepareStatement("Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid "
-						+ "order by CreatedDate desc, jobheader.jobID, Status limit ?, 1000")) {
+						+ "order by CreatedDate desc, jobheader.jobID, Status limit ?, 200")) {
 			psGetTicketHeaders.setInt(1, offset);
 			try (ResultSet rs = psGetTicketHeaders.executeQuery();) {
 
@@ -297,7 +300,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		List<TicketHeader> ticketHeaders = new ArrayList<TicketHeader>();
 		try (PreparedStatement psGetTicketHeaders = conn
 				.prepareStatement("Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid "
-						+ " where ticketheader.status = ? order by CreatedDate desc, jobheader.jobID, Status limit ?, 1000")) {
+						+ " where ticketheader.status = ? order by CreatedDate desc, jobheader.jobID, Status limit ?, 200")) {
 			psGetTicketHeaders.setString(1, status);
 			psGetTicketHeaders.setInt(2, offset);
 			try (ResultSet rs = psGetTicketHeaders.executeQuery();) {
@@ -315,6 +318,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 
 	@Override
 	public TicketHeader getTicketHeaderByKey(long headerKey) throws DatabaseException {
+		System.out.println("Entering getTicketHeaderByKey");
+		
 		TicketHeader ticketHeader = null;
 		try (PreparedStatement psGetTicketHeaderByKey = conn
 				.prepareStatement("Select * from ticketheader join jobHeader on "

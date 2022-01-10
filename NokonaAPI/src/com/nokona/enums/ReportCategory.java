@@ -2,7 +2,7 @@ package com.nokona.enums;
 
 public enum ReportCategory {
 		
-		EMPLOYEE("EMPLOYEE"), JOB("JOB"), LABEL("LABEL"), OPERATION("OPERATION"), TICKET("TICKET") ;
+		EMPLOYEE("EMPLOYEE"), JOB("JOB"), LABOR("LABOR"), OPERATION("OPERATION"), TICKET("TICKET") ;
 	    private String 	category;
 	    
 		ReportCategory(String category) {

@@ -66,7 +66,7 @@ public class NokonaReportsResource {
 		
 		return Response
 				.ok(new ReportProperties(ReportCategory.EMPLOYEE, 
-						parameters, "Dummy Report", new Date(), new Date(), ordersBy, "111", "222", true, true))
+						parameters, "Dummy Report", new Date(), new Date(), ordersBy, "111", "222", "333", true, true))
 				.build();
 
 	}

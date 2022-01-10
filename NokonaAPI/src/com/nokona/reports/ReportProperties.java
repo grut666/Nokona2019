@@ -18,8 +18,8 @@ public class ReportProperties {
 	private ReportCategory category;  // EMPLOYEE, JOB, LABEL, OPERATION, TICKET
 	private Map<String, String> parameters;
 	private String reportName;
-	private Date startDate;
-	private Date endDate;
+	private String startDate;
+	private String endDate;
 	private List<OrderBy> orderBys;	
 	private String operatorId;
 	private String jobId;

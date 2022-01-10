@@ -148,19 +148,20 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		formattedTicketHeader.setTicketStatus(ticketHeader.getTicketStatus());
 		formattedTicketHeader = TicketHeaderFormatter.format(formattedTicketHeader);
 		try (PreparedStatement psAddTicketHeader = conn.prepareStatement(
-				"Insert into TicketHeader (JobID, CreatedDate, Status, StatusDate, Quantity) values (?,?,?,?,?)",
+				"Insert into TicketHeader (JobID, Description, CreatedDate, Status, StatusDate, Quantity) values (?, ?,?,?,?,?)",
 				PreparedStatement.RETURN_GENERATED_KEYS);
 				PreparedStatement psAddTicketDetail = conn.prepareStatement(
 						"Insert into TicketDetail (TicketDetail.Key, OpCode, Sequence, StatusDate, Status, "
 								+ "Quantity, HourlyRateSAH, BarCodeID, LaborRate, UpdatedSequence)  "
 								+ "values (?,?,?,?,?,?,?,?,?,?)");) {
 			psAddTicketHeader.setString(1, formattedTicketHeader.getJobId());
-			psAddTicketHeader.setDate(2,
+			psAddTicketHeader.setString(2, formattedTicketHeader.getDescription());
+			psAddTicketHeader.setDate(3,
 					DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateCreated()));
-			psAddTicketHeader.setString(3, formattedTicketHeader.getTicketStatus().getTicketStatus());
+			psAddTicketHeader.setString(4, formattedTicketHeader.getTicketStatus().getTicketStatus());
 			System.out.println("**********Status is " + formattedTicketHeader.getTicketStatus().getTicketStatus());
-			psAddTicketHeader.setDate(4, DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateStatus()));
-			psAddTicketHeader.setInt(5, formattedTicketHeader.getQuantity());
+			psAddTicketHeader.setDate(5, DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateStatus()));
+			psAddTicketHeader.setInt(6, formattedTicketHeader.getQuantity());
 
 			int rowCount = psAddTicketHeader.executeUpdate();
 

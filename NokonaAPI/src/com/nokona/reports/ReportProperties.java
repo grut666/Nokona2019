@@ -23,6 +23,7 @@ public class ReportProperties {
 	private List<OrderBy> orderBys;	
 	private String operatorId;
 	private String jobId;
+	private String operationId;
 	private boolean pdfNotExcel;
 	private boolean summaryNotDetail;
 }

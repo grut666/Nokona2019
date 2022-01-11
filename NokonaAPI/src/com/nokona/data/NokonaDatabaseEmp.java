@@ -11,6 +11,8 @@ public interface NokonaDatabaseEmp extends NokonaDatabase {
 	List<Employee> getEmployees() throws DatabaseException;
 
 	Employee getEmployeeByKey(long key) throws DatabaseException;
+	
+	Employee getEmployeeByBarCodeId(int barCodeId) throws DatabaseException;
 
 	Employee getEmployee(String empID) throws DatabaseException;
 

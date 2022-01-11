@@ -83,6 +83,28 @@ public class NokonaEmployeeResource {
 
 		return Response.status(200).entity(emp).build();
 	}
+	
+	@GET
+
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/byBarCodeId/{barCodeId}")
+	public Response getEmployeeByBarCodeId(@PathParam("barCodeId") int barCodeId) {
+
+		Employee emp;
+
+		try {
+			emp = db.getEmployeeByBarCodeId(barCodeId);
+
+		} catch (DataNotFoundException ex) {
+			return Response.status(404).entity("{\"error\":\"" + barCodeId + " not found\"}").build();
+		} catch (DatabaseConnectionException ex) {
+			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (DatabaseException ex) {
+			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		}
+
+		return Response.status(200).entity(emp).build();
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

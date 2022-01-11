@@ -69,7 +69,29 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 		}
 
 	}
+	
+	@Override
+	public Employee getEmployeeByBarCodeId(int barCodeId) throws DatabaseException {
+		Employee emp = null;
+		try {
+			PreparedStatement psGetEmployeeByKey = conn
+					.prepareStatement("Select * from Employee where barCodeId = ?");
+			psGetEmployeeByKey.setInt(1, barCodeId);
+			try (ResultSet rs = psGetEmployeeByKey.executeQuery();) {
 
+				if (rs.next()) {
+					emp = convertEmployeeFromResultSet(rs);
+				} else {
+					throw new DataNotFoundException("Employee bar code ID " + barCodeId + " is not in DB");
+				}
+				return EmployeeFormatter.format(emp);
+			}
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage(), e);
+		}
+
+	}
 	@Override
 	public Employee getEmployee(String empID) throws DatabaseException, NullInputDataException {
 		if (empID == null) {

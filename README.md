@@ -64,6 +64,20 @@
     "key": 483\
 }
 
+### Get /employees/byBarCodeId/{barCodeId} # Get 1 employee by their unique numeric DB key
+#### In
+/employees/byBarCodeId/2435
+#### Out
+{\
+    "lastName": "PRITCHETT",\
+    "firstName": "MISTY",\
+    "barCodeID": 2435,\
+    "empId": "PRI10",\
+    "laborCode": 11,\
+    "active": true,\
+    "key": 490\
+}
+
 ### Get /employees/labels/{employeeID} # Generate and print 1 page of employee labels
 #### In
 /employees/labels/483
@@ -910,6 +924,29 @@ Body:
             "key": 40978\
         }\
     ]\
+}
+
+### Get /tickets/ticketdetails/{ticketDetailKey} # Get 1 ticket detail DTO record
+
+#### In
+/tickets/ticketdetails/4098807
+## Out
+
+ {\
+    "operationStatus": "INCOMPLETE",\
+    "operationDescription": "SEW HEEL FELT                 WORTH",\
+    "employeeBarCodeID": 0,\
+    "standardQuantity": 10,\
+    "jobId": "W-1275M-LH",\
+    "laborDescription": "SEW HEEL FELT                 WORTH",\
+    "actualQuantity": 0,\
+    "hourlyRateSAH": 0.0207,\
+    "sequenceUpdated": 7,\
+    "laborCode": 18,\
+    "jobDescription": "WALNUT 12.75 IN, MOD TRAP, LEFT",\
+    "opCode": "W118",\
+    "laborRate": 0.0,\
+    "sequenceOriginal": 7\
 }
 
 ### Get /tickets/labels # Generate and Print labels (Will be invoked from POST with QueryParam action=P)

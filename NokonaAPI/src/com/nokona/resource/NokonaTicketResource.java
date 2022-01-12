@@ -15,12 +15,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.nokona.data.NokonaDatabaseTicket;
+import com.nokona.dto.TicketDetailDtoOut;
 import com.nokona.enums.TicketStatus;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.model.Labels;
 import com.nokona.model.Ticket;
+import com.nokona.model.TicketDetail;
 import com.nokona.model.TicketHeader;
 import com.nokona.utilities.BarCodeUtilities;
 import com.nokona.utilities.TransferToAccess;
@@ -32,6 +34,7 @@ public class NokonaTicketResource {
 
 	@Inject
 	private NokonaDatabaseTicket db;
+
 	public NokonaTicketResource() throws DatabaseException {
 
 	}
@@ -61,15 +64,15 @@ public class NokonaTicketResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/")
 	public Response getTickets(@DefaultValue("0") @QueryParam("offset") int offset,
-								@DefaultValue("A") @QueryParam("status") String status) {
+			@DefaultValue("A") @QueryParam("status") String status) {
 		try {
-			
-		if (! status.equals("A")) {
-			if ("N".equalsIgnoreCase(status)) {
-				status = "";
+
+			if (!status.equals("A")) {
+				if ("N".equalsIgnoreCase(status)) {
+					status = "";
+				}
+				return Response.status(200).entity(db.getTicketsByStatus(status, offset)).build();
 			}
-			return Response.status(200).entity(db.getTicketsByStatus(status, offset)).build();
-		}		
 			return Response.status(200).entity(db.getTickets(offset)).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
@@ -85,14 +88,36 @@ public class NokonaTicketResource {
 	public Response getTicketHeaders(@DefaultValue("0") @QueryParam("offset") int offset,
 			@DefaultValue("A") @QueryParam("status") String status) {
 
-		 try {
-			 if (! status.equals("A")) {
-					if ("N".equalsIgnoreCase(status)) {
-						status = "";
-					}
-					return Response.status(200).entity(db.getTicketHeadersByStatus(status, offset)).build();
-				}		
-					return Response.status(200).entity(db.getTicketHeaders(offset)).build();
+		try {
+			if (!status.equals("A")) {
+				if ("N".equalsIgnoreCase(status)) {
+					status = "";
+				}
+				return Response.status(200).entity(db.getTicketHeadersByStatus(status, offset)).build();
+			}
+			return Response.status(200).entity(db.getTicketHeaders(offset)).build();
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		}
+
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/ticketdetails/{key}")
+	public Response getTicketDetailByKey(@PathParam("key") long detailKey) {
+		try {
+			String stringKey = "" + detailKey;
+			if (stringKey.length() < 3) {
+				throw new DatabaseException("Invalid detail key.  Size is less than 3");
+			}
+			int header = Integer.parseInt(stringKey.substring(0, stringKey.length() - 2));
+			TicketDetail ticketDetail = db.getTicketDetailByDetailKey(detailKey);
+			TicketHeader ticketHeader = db.getTicketHeaderByKey(header);
+			return Response.status(200).entity(new TicketDetailDtoOut(ticketHeader, ticketDetail)).build();
+
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (Exception ex) {
@@ -133,10 +158,11 @@ public class NokonaTicketResource {
 		try {
 			labels = new Labels();
 			labels.setLabels(BarCodeUtilities.generateTicketLabels(ticketIn));
-// Uncomment the next 1 line to get actual printing
+			// Uncomment the next 1 line to get actual printing
 			new NokonaLabelsResource().printLabels(labels);
 			ticketIn.getTicketHeader().setTicketStatus(TicketStatus.PRINTED);
-			System.out.println("In resource.  Status is " + ticketIn.getTicketHeader().getTicketStatus().getTicketStatus());
+			System.out.println(
+					"In resource.  Status is " + ticketIn.getTicketHeader().getTicketStatus().getTicketStatus());
 			db.updateTicketHeader(ticketIn.getTicketHeader());
 		} catch (Exception ex) {
 			return Response.status(500).entity("{\"error\":\"" + ex.getMessage() + ":" + db + "\"}").build();
@@ -192,5 +218,5 @@ public class NokonaTicketResource {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 	}
-	
+
 }

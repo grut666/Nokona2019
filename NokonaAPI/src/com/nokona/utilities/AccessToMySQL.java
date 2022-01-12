@@ -43,7 +43,7 @@ public class AccessToMySQL {
 		doEmployees(); 
 //		doLaborCodes();
 //		doOperations();
-//		doTickets();
+ 		doTickets();
 //		doJobs();
 		long endTime = System.currentTimeMillis();
 		try {

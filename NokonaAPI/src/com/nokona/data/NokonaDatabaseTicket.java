@@ -22,6 +22,7 @@ public interface NokonaDatabaseTicket extends NokonaDatabase {
 	List<TicketHeader> getTicketHeaders(int offset) throws DatabaseException;
 	List<TicketHeader> getTicketHeadersByStatus(String status, int offset) throws DatabaseException;
 	TicketHeader getTicketHeaderByKey(long headerKey) throws DatabaseException;
-	List<TicketDetail> getTicketDetailsByKey(long headerKey) throws DatabaseException;
+	List<TicketDetail> getTicketDetailsByHeaderKey(long headerKey) throws DatabaseException;
+	TicketDetail getTicketDetailByDetailKey(long detailKey) throws DatabaseException;
 
 }

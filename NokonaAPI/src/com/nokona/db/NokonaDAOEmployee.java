@@ -148,7 +148,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			int rowCount = psUpdateEmployee.executeUpdate();
 
 			if (rowCount != 1) {
-				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
+				throw new DatabaseException("Error.  Updated " + rowCount + " rows");
 			}
 			return getEmployeeByKey(formattedEmployee.getKey());
 		} catch (SQLException e) {

@@ -28,7 +28,7 @@ public class Constants {
 	public final static String MYSQL_JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 	public final static String ACCESS_JDBC_DRIVER = "net.ucanaccess.jdbc.UcanaccessDriver";
 //	public final static String USER_NAME="nokona";       // Local development
-	public final static String USER_NAME="root";       // Local development
+	public final static String USER_NAME="nokona";       // Local development
 	public final static String PASSWORD="xyz1234!";    // Local development
 	
 }

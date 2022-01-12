@@ -52,7 +52,7 @@ UNLOCK TABLES;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `after_jobheader_create` AFTER INSERT ON `jobheader` FOR EACH ROW INSERT INTO jobheader_log
      (TheKey,JobId, Description, StandardQuantity, JobType, TransactionType) values
-     (JobHeader.Key,
+     (NEW.Key,
       JobId,
       Description,
       StandardQuantity,
@@ -120,4 +120,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-12  9:07:38
+-- Dump completed on 2022-01-12 16:55:25

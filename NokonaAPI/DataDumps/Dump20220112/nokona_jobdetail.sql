@@ -51,7 +51,7 @@ UNLOCK TABLES;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `after_jobdetail_create` AFTER INSERT ON `jobdetail` FOR EACH ROW INSERT INTO jobdetail_log
 (TheKey,JobId, OpCode, Sequence, TransactionType) values
-     (JobDetail.Key,
+     (NEW.Key,
       JobId,
       OpCode,
       Sequence,
@@ -116,4 +116,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-12  9:07:39
+-- Dump completed on 2022-01-12 16:55:25

@@ -185,7 +185,7 @@ public class NokonaEmployeeResource {
 
 		try {
 			db.deleteEmployee(user);
-			TransferToAccess.transfer("EMP_D");
+//			TransferToAccess.transfer("EMP_D");
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + user + " not found\"}").build();

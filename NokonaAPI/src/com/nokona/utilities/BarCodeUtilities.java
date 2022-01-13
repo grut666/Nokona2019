@@ -325,15 +325,7 @@ public class BarCodeUtilities {
 				strCvtBarCode0 = convertBarCode2of5(BarCodeUtilities.formatBarCode(fBarCode0));
 				strCvtBarCode1 = convertBarCode2of5(BarCodeUtilities.formatBarCode(fBarCode1));
 				strCvtBarCode2 = convertBarCode2of5(BarCodeUtilities.formatBarCode(fBarCode2));
-//				System.out.println("Starting Bar Codes are: ");
-//				 for (int i = 0; i < 6; i++) {
-//					 System.out.print(strCvtBarCode0.charAt(i) + "-");
-//					 }
-//				 System.out.println();
-//				System.out.println("*****Length of strCvtBarCode0 is " + strCvtBarCode0.length());
-//				System.out.println("*****Length of strCvtBarCode1 is " + strCvtBarCode1.length());
-//				System.out.println("*****Length of strCvtBarCode2 is " + strCvtBarCode2.length());
-//				
+				
 				
 				line3.append(ESC).append("&a0.1C").append(strDesc0[0]).append(ESC).append("&a1.1C").append(strDesc1[0])
 						.append(ESC).append("&a2.1C").append(strDesc2[0]);
@@ -357,22 +349,16 @@ public class BarCodeUtilities {
 
 				sb.append(ESC).append("(3Y").append(ESC).append("(s1p").append(POINT_SIZE).append("v0s0b28673T");
 				sb.append(ESC).append("&k330H").append(ESC).append("&l48C");
-				// Set Bar Code Font
-//				System.out.println("Bar Codes are: ");
-//				 for (int i = 0; i < 6; i++) {
-//				 System.out.print(strCvtBarCode0.charAt(i) + "-");
-//				 }
-//				 System.out.println();
-				//// + strCvtBarCode0 + strCvtBarCode1 + strCvtBarCode2 );
+				
 				sb.append(ESC).append("&a0.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
 						.append(strCvtBarCode0);
 				sb.append(ESC).append("&a1.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
 						.append(strCvtBarCode1);
 				sb.append(ESC).append("&a2.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
 						.append(strCvtBarCode2);
-				sb.append(ESC).append("&l0E"); // Top of Page is 0 lines down
-				sb.append(ESC).append("(0U").append(ESC).append("(s1p8v0s0b16602T"); // ' 8 pitch arial
-				sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
+				sb.append(ESC).append("(0U").append(ESC).append("(s1p6v0s0b16602T"); // ' 6 pitch arial
+				
+				
 				intRowCount++;
 				if (intRowCount >= 10) {
 					sb.append(PAGE_EJECT);
@@ -389,8 +375,10 @@ public class BarCodeUtilities {
 			detailIndex += 3;
 		}
 
-
+		sb.append(ESC).append("(0U").append(ESC).append("(s1p8v0s0b16602T"); // ' 8 pitch arial
+		sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
 		sb.append(ESC).append("&a").append(intRowCount).append("R"); // ' Set Vertical Coordinate")
+		
 		sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
 				.append("&a2.1C").append(star44);
 

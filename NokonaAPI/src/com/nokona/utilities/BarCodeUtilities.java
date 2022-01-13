@@ -346,10 +346,10 @@ public class BarCodeUtilities {
 				sb.append(ESC).append("&k330H").append(ESC).append("&l48C");
 				// Set Bar Code Font
 				System.out.println("Bar Codes are: ");
-				for (int i = 0; i < 8; i++) { 
-					System.out.print(strCvtBarCode0.charAt(i) + "-");					
-				}
-//				+ strCvtBarCode0 + strCvtBarCode1 + strCvtBarCode2 );
+//				for (int i = 0; i < 8; i++) { 
+//					System.out.print(strCvtBarCode0.charAt(i) + "-");					
+//				}
+////				+ strCvtBarCode0 + strCvtBarCode1 + strCvtBarCode2 );
 				sb.append(ESC).append("&a0.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
 						.append(strCvtBarCode0);
 				sb.append(ESC).append("&a1.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")

@@ -157,8 +157,9 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 				PreparedStatement.RETURN_GENERATED_KEYS);
 				PreparedStatement psAddTicketDetail = conn.prepareStatement(
 						"Insert into TicketDetail (TicketDetail.Key, OpCode, Sequence, StatusDate, Status, "
-								+ "Quantity, HourlyRateSAH, BarCodeID, LaborRate, UpdatedSequence)  "
-								+ "values (?,?,?,?,?,?,?,?,?,?)");) {
+								+ "StandardQuantity, HourlyRateSAH, BarCodeID, LaborRate, UpdatedSequence, "
+								+ "ActualQuantity, OperationDescription, LaborDescription)  "
+								+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
 			psAddTicketHeader.setString(1, formattedTicketHeader.getJobId());
 			psAddTicketHeader.setString(2, formattedTicketHeader.getDescription());
 			psAddTicketHeader.setDate(3,
@@ -193,29 +194,13 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 					int sequence = jobDetail.getSequence() + 1;    // The plus 1 is to keep consistent with the old system ... for now anyway.
 					int quantity = formattedTicketHeader.getQuantity();
 					double sah = op.getHourlyRateSAH();
+					String opDescription = op.getDescription();
 					laborCode = laborCodeDAO.getLaborCode(op.getLaborCode());
+					String laborDescription = laborCode.getDescription();
 					
 					TicketDetail td = new TicketDetail(key, opCode, opDesc, status, sequence, sequence, null, quantity,
 							0, sah, laborCode.getLaborCode(), laborCode.getDescription(), laborCode.getRate(), 0);
 					
-					
-					
-					/*
-					 * private long key;  // this matches TicketHeader key
-	private String opCode;
-	private String operationDescription;
-	private OperationStatus operationStatus;
-	private int sequenceOriginal;
-	private int sequenceUpdated;
-	private Date statusDate;
-	private int standardQuantity;
-	private int actualQuantity;
-	private double hourlyRateSAH;
-	private int laborCode;
-	private String laborCodeDescription;
-	private double laborCodeRate;
-	private int employeeBarCodeID;
-					 */
 					newTicketDetails.add(td);
 					psAddTicketDetail.setLong(1, key);
 					psAddTicketDetail.setString(2, opCode);
@@ -227,6 +212,9 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 					psAddTicketDetail.setLong(8, 0);
 					psAddTicketDetail.setLong(9, 0);
 					psAddTicketDetail.setLong(10, sequence);
+					psAddTicketDetail.setLong(11, 0);
+					psAddTicketDetail.setString(12, opDescription);
+					psAddTicketDetail.setString(13, laborDescription);
 					psAddTicketDetail.addBatch();
 				}
 				psAddTicketDetail.executeBatch();

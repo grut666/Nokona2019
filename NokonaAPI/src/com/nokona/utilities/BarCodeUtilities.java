@@ -370,6 +370,9 @@ public class BarCodeUtilities {
 						.append(strCvtBarCode1);
 				sb.append(ESC).append("&a2.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
 						.append(strCvtBarCode2);
+				sb.append(ESC).append("&l0E"); // Top of Page is 0 lines down
+				sb.append(ESC).append("(0U").append(ESC).append("(s1p8v0s0b16602T"); // ' 8 pitch arial
+				sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
 				intRowCount++;
 				if (intRowCount >= 10) {
 					sb.append(PAGE_EJECT);
@@ -385,9 +388,7 @@ public class BarCodeUtilities {
 			}
 			detailIndex += 3;
 		}
-		sb.append(ESC).append("&l0E"); // Top of Page is 0 lines down
-		sb.append(ESC).append("(0U").append(ESC).append("(s1p8v0s0b16602T"); // ' 8 pitch arial
-		sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
+
 
 		sb.append(ESC).append("&a").append(intRowCount).append("R"); // ' Set Vertical Coordinate")
 		sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)

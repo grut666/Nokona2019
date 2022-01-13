@@ -321,10 +321,10 @@ public class BarCodeUtilities {
 				System.out.println("*****Length of strCvtBarCode0 is " + strCvtBarCode0.length());
 				System.out.println("*****Length of strCvtBarCode1 is " + strCvtBarCode1.length());
 				System.out.println("*****Length of strCvtBarCode2 is " + strCvtBarCode2.length());
-				line3.append(ESC).append("&a0.1C").append(strDesc0[0]).append(ESC).append("&a1.1C").append(strDesc0[1])
-						.append(ESC).append("&a2.1C").append(strDesc0[2]);
-				line4.append(ESC).append("&a0.1C").append(strDesc1[0]).append(ESC).append("&a1.1C").append(strDesc1[1])
-						.append(ESC).append("&a2.1C").append(strDesc1[2]);
+				line3.append(ESC).append("&a0.1C").append(strDesc0[0]).append(ESC).append("&a1.1C").append(strDesc1[0])
+						.append(ESC).append("&a2.1C").append(strDesc2[0]);
+				line4.append(ESC).append("&a0.1C").append(strDesc0[1]).append(ESC).append("&a1.1C").append(strDesc1[1])
+						.append(ESC).append("&a2.1C").append(strDesc2[1]);
 				line5.append(ESC).append("&a0.6C").append(fBarCode0).append(ESC).append("&a1.6C").append(fBarCode1)
 						.append(ESC).append("&a2.6C").append(fBarCode2);
 

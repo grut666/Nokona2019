@@ -357,6 +357,8 @@ public class BarCodeUtilities {
 				sb.append(ESC).append("&a2.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
 						.append(strCvtBarCode2);
 				sb.append(ESC).append("(0U").append(ESC).append("(s1p6v0s0b16602T"); // ' 6 pitch arial
+				sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
+				sb.append(ESC).append("&a").append(intRowCount).append("R"); 
 				
 				
 				intRowCount++;

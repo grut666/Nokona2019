@@ -22,7 +22,7 @@ public class PrintScratchPad {
 //		System.out.println(BarCodeUtilities.convertBarCode2of5("123456"));
 //		System.out.println(BarCodeUtilities.convertBarCode2of5("1234567"));
 //		System.out.println(BarCodeUtilities.convertBarCode2of5("1234567"));
-		System.out.println(BarCodeUtilities.convertBarCode2of5("12345678"));
+		System.out.println(BarCodeUtilities.convertBarCode2of5("01234567"));
 		BarCodeUtilities.loadStrCodeTable();
 		String code = BarCodeUtilities.convertBarCode2of5("04098852");
 		System.out.println("Bar Codes are: ");

@@ -2,6 +2,8 @@ package com.nokona.testing;
 
 import java.util.Arrays;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.nokona.utilities.BarCodeUtilities;
 
 public class PrintScratchPad {
@@ -27,6 +29,10 @@ public class PrintScratchPad {
 		for (int i = 0; i < code.length(); i++) { 
 			System.out.print(code.charAt(i) + "-");					
 		}
+		System.out.println();
+		String strDesc = "____abcdefg____";
+		strDesc = StringUtils.stripEnd(strDesc, "_");
+		System.out.println("strDesc is " + strDesc);
 		
 
 		

@@ -41,20 +41,20 @@ public class BarCodeUtilities {
 			String subStr = strIn.substring(i, i + 2);
 			int index = Integer.parseInt(subStr);
 			strBarCode.append(strCodeTable[index]);
-			}
+		}
 		strBarCode.insert(0, (char) 171).append((char) 172);
 		return strBarCode.toString();
 	}
 
 	public static void loadStrCodeTable() {
-		int index = 0;  // Not concerned about element 0
+		int index = 0; // Not concerned about element 0
 
-//		for (int i = 34; i <= 122; i++) {
-//			strCodeTable[index++] = (char) i;
-//		}
-//		for (int i = 161; i <= 170; i++) {
-//			strCodeTable[index++] = (char) i;
-//		}
+		// for (int i = 34; i <= 122; i++) {
+		// strCodeTable[index++] = (char) i;
+		// }
+		// for (int i = 161; i <= 170; i++) {
+		// strCodeTable[index++] = (char) i;
+		// }
 		for (int i = 33; i <= 122; i++) {
 			strCodeTable[index++] = (char) i;
 		}
@@ -133,7 +133,7 @@ public class BarCodeUtilities {
 		sb.append(ESC).append("E");
 		return sb.toString().replaceAll("\"", "\\\\\"");
 	}
-	//******************** TICKETS
+	// ******************** TICKETS
 
 	public static String generateTicketLabels(Ticket ticketIn) throws NullInputDataException {
 		int intRowCount = 0;
@@ -142,18 +142,18 @@ public class BarCodeUtilities {
 		}
 
 		TicketHeader th = ticketIn.getTicketHeader();
-//		System.out.println("****************Header Key is " + th.getKey());
-		
+
 		String star44 = "********************************************";
 		String star15 = "***************     ";
-//		String strJobId = StringUtils.stripEnd("_", String.format("%20s", th.getJobId()).replace(" ", "_"));
+
 		String strJobId = String.format("%-20s", th.getJobId());
 		System.out.println("-" + strJobId + "-");
 		boolean isRH = strJobId.contains("-RH") ? true : false;
 		String strJobDesc = th.getDescription();
-		StringUtils.stripEnd("_", strJobDesc.replace(" ", "_"));
+		// StringUtils.stripEnd("_", strJobDesc.replace(" ", "_"));
+		strJobDesc = strJobDesc.replace(" ", "_");
 		System.out.println("STR JOB DESC: " + strJobDesc);
-//		String strTkt1 = StringUtils.stripEnd("_", String.format("%06d", th.getKey()));
+
 		String strTkt1 = String.format("%06d", th.getKey());
 		System.out.println("StrTkt1 is " + strTkt1);
 		strTkt1.replace(" ", "_");
@@ -266,11 +266,11 @@ public class BarCodeUtilities {
 				strDescAll = StringUtils.mid(strDescAll, 17, 17);
 				strDesc2[2] = StringUtils.left(strDescAll, 17);
 			}
-			
-//			if (intKounter < 3) {
-//				intKounter++;
-//			} else {
-//				intKounter = 1;
+
+			// if (intKounter < 3) {
+			// intKounter++;
+			// } else {
+			// intKounter = 1;
 			{
 				line1.append(ESC).append("&a0.1C").append(strJobId).append(ESC).append("&a0.5C").append("TKT:")
 						.append(strTkt1).append("__").append(strSequence[0]).append(ESC).append("&a1.1C")
@@ -286,26 +286,26 @@ public class BarCodeUtilities {
 						.append("&a2.4C").append("RATE:_").append(strRateFormatted[2]).append(ESC).append("&a2.7C")
 						.append("EXT:");
 				strDesc0[0] = strDesc0[0] == null ? "" : strDesc0[0].replace(" ", "_");
-				StringUtils.stripEnd("_", strDesc0[0]);
+				strDesc0[0] = StringUtils.stripEnd(strDesc0[0], "_");
 				strDesc0[1] = strDesc0[1] == null ? "" : strDesc0[1].replace(" ", "_");
-				StringUtils.stripEnd("_", strDesc0[1]);
+				strDesc0[1] = StringUtils.stripEnd(strDesc0[1], "_");
 				strDesc0[2] = strDesc0[2] == null ? "" : strDesc0[2].replace(" ", "_");
-				StringUtils.stripEnd("_", strDesc0[2]);
+				strDesc0[2] = StringUtils.stripEnd(strDesc0[2], "_");
 
 				strDesc1[0] = strDesc1[0] == null ? "" : strDesc1[0].replace(" ", "_");
-				StringUtils.stripEnd("_", strDesc0[0]);
+				strDesc1[0] = StringUtils.stripEnd(strDesc1[0], "_");
 				strDesc1[1] = strDesc1[1] == null ? "" : strDesc1[1].replace(" ", "_");
-				StringUtils.stripEnd("_", strDesc0[1]);
+				strDesc1[1] = StringUtils.stripEnd(strDesc1[1], "_");
 				strDesc1[2] = strDesc1[2] == null ? "" : strDesc1[2].replace(" ", "_");
-				StringUtils.stripEnd("_", strDesc0[2]);
+				strDesc1[2] = StringUtils.stripEnd(strDesc1[2], "_");
 				// **************** good to here
 
 				strDesc2[0] = strDesc2[0] == null ? "" : strDesc2[0].replace(" ", "_");
-				StringUtils.stripEnd("_", strDesc0[0]);
+				strDesc2[0] = StringUtils.stripEnd(strDesc2[0], "_");
 				strDesc2[1] = strDesc2[1] == null ? "" : strDesc2[1].replace(" ", "_");
-				StringUtils.stripEnd("_", strDesc0[1]);
+				strDesc2[1] = StringUtils.stripEnd(strDesc2[1], "_");
 				strDesc2[2] = strDesc2[2] == null ? "" : strDesc2[2].replace(" ", "_");
-				StringUtils.stripEnd("_", strDesc0[2]);
+				strDesc2[2] = StringUtils.stripEnd(strDesc2[2], "_");
 
 				String fBarCode0 = strTkt1 + strSequence[0];
 				String fBarCode1 = strTkt1 + strSequence[1];
@@ -314,7 +314,7 @@ public class BarCodeUtilities {
 				System.out.println("*****Length of fBarCode0 is " + fBarCode0.length() + ": Value is " + fBarCode0);
 				System.out.println("*****Length of fBarCode1 is " + fBarCode1.length() + ": Value is " + fBarCode1);
 				System.out.println("*****Length of fBarCode2 is " + fBarCode2.length() + ": Value is " + fBarCode2);
-				
+
 				strCvtBarCode0 = convertBarCode2of5(fBarCode0);
 				strCvtBarCode1 = convertBarCode2of5(fBarCode1);
 				strCvtBarCode2 = convertBarCode2of5(fBarCode2);
@@ -325,10 +325,9 @@ public class BarCodeUtilities {
 						.append(ESC).append("&a2.1C").append(strDesc0[2]);
 				line4.append(ESC).append("&a0.1C").append(strDesc1[0]).append(ESC).append("&a1.1C").append(strDesc1[1])
 						.append(ESC).append("&a2.1C").append(strDesc1[2]);
-				line5.append(ESC).append("&a0.16C").append(fBarCode0).append(ESC).append("&a1.6C").append(fBarCode1)
+				line5.append(ESC).append("&a0.6C").append(fBarCode0).append(ESC).append("&a1.6C").append(fBarCode1)
 						.append(ESC).append("&a2.6C").append(fBarCode2);
 
-				
 				sb.append(ESC).append("&a").append(intRowCount).append("R");
 				sb.append(line1);
 				sb.append(ESC).append("&a").append(intRowCount + 0.14).append("R");
@@ -346,10 +345,10 @@ public class BarCodeUtilities {
 				sb.append(ESC).append("&k330H").append(ESC).append("&l48C");
 				// Set Bar Code Font
 				System.out.println("Bar Codes are: ");
-//				for (int i = 0; i < 8; i++) { 
-//					System.out.print(strCvtBarCode0.charAt(i) + "-");					
-//				}
-////				+ strCvtBarCode0 + strCvtBarCode1 + strCvtBarCode2 );
+				// for (int i = 0; i < 8; i++) {
+				// System.out.print(strCvtBarCode0.charAt(i) + "-");
+				// }
+				//// + strCvtBarCode0 + strCvtBarCode1 + strCvtBarCode2 );
 				sb.append(ESC).append("&a0.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
 						.append(strCvtBarCode0);
 				sb.append(ESC).append("&a1.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
@@ -361,39 +360,36 @@ public class BarCodeUtilities {
 					sb.append(PAGE_EJECT);
 					intRowCount = 0;
 				}
+			}
+			sb.append(ESC).append("&l0E"); // Top of Page is 0 lines down
+			sb.append(ESC).append("(0U").append(ESC).append("(s1p8v0s0b16602T"); // ' 8 pitch arial
+			sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
 
-				sb.append(ESC).append("&l0E"); // Top of Page is 0 lines down
-				sb.append(ESC).append("(0U").append(ESC).append("(s1p8v0s0b16602T"); // ' 8 pitch arial
-				sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
+			sb.append(ESC).append("&a").append(intRowCount).append("R"); // ' Set Vertical Coordinate")
+			sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
+					.append("&a2.1C").append(star44);
 
-				sb.append(ESC).append("&a").append(intRowCount).append("R"); // ' Set Vertical Coordinate")
-				sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
-						.append("&a2.1C").append(star44);
+			sb.append(ESC).append("&a").append(intRowCount + 0.14).append("R"); // ' Set Vertical Coordinate)
+			sb.append(ESC).append("&a0.3C").append("FACTORY_CONTROL").append(ESC).append("&a1.3C").append(strJobId)
+					.append(ESC).append("&a2.3C").append("FACTORY_CONTROL");
 
-				sb.append(ESC).append("&a").append(intRowCount + 0.14).append("R"); // ' Set Vertical Coordinate)
-				sb.append(ESC).append("&a0.3C").append("FACTORY_CONTROL").append(ESC).append("&a1.3C").append(strJobId)
-						.append(ESC).append("&a2.3C").append("FACTORY_CONTROL");
+			sb.append(ESC).append("&a").append(intRowCount + 0.3).append("R"); // ' Set Vertical Coordinate)
+			sb.append(ESC).append("&a0.1C").append("TICKET:").append(strTkt1).append(ESC).append("&a0.5C")
+					.append(dateCreated);
 
-				sb.append(ESC).append("&a").append(intRowCount + 0.3).append("R"); // ' Set Vertical Coordinate)
-				sb.append(ESC).append("&a0.1C").append("TICKET:").append(strTkt1).append(ESC).append("&a0.5C")
-						.append(dateCreated);
+			sb.append(ESC).append("&a").append(intRowCount + 0.48).append("R"); // ' Set Vertical Coordinate)
+			sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append("TICKET:");
+			sb.append(strTkt1).append(ESC).append("&a1.4C").append("QTY:").append(strQtyFormatted);
+			sb.append(ESC).append("&a1.6C").append(dateCreated).append(ESC).append("&a2.1C").append(star44);
 
-				sb.append(ESC).append("&a").append(intRowCount + 0.48).append("R"); // ' Set Vertical Coordinate)
-				sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append("TICKET:");
-				sb.append(strTkt1).append(ESC).append("&a1.4C").append("QTY:").append(strQtyFormatted);
-				sb.append(ESC).append("&a1.6C").append(dateCreated).append(ESC).append("&a2.1C").append(star44);
+			sb.append(ESC).append("&a").append(intRowCount + 0.65).append("R"); // ' Set Vertical Coordinate)
+			sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
+					.append("&a2.1C").append(star44);
 
-				sb.append(ESC).append("&a").append(intRowCount + 0.65).append("R"); // ' Set Vertical Coordinate)
-				sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
-						.append("&a2.1C").append(star44);
-
-				intRowCount++;
-				if (intRowCount >= 10) {
-					intRowCount = 0;
-					sb.append(PAGE_EJECT);
-				}
-				
-				//
+			intRowCount++;
+			if (intRowCount >= 10) {
+				intRowCount = 0;
+				sb.append(PAGE_EJECT);
 
 			}
 			detailIndex += 3;

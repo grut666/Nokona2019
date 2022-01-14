@@ -36,18 +36,18 @@ public class BarCodeUtilities {
 	}
 
 	public static String convertBarCode2of5(String strIn) {
-//		System.out.println("strIn is " + "X" + strIn + "X");
+		// System.out.println("strIn is " + "X" + strIn + "X");
 		StringBuilder strBarCode = new StringBuilder("");
 		for (int i = 0; i < strIn.length(); i += 2) {
 			String subStr = strIn.substring(i, i + 2);
-//			System.out.println("substr is " + subStr);
+			// System.out.println("substr is " + subStr);
 			int index = Integer.parseInt(subStr);
 			strBarCode.append(strCodeTable[index]);
 		}
-		
+
 		strBarCode.insert(0, (char) 171);
 		strBarCode.append((char) 172);
-//		System.out.println("Final is " + strBarCode.toString());
+		// System.out.println("Final is " + strBarCode.toString());
 		return strBarCode.toString();
 	}
 
@@ -66,13 +66,14 @@ public class BarCodeUtilities {
 		for (int i = 161; i <= 170; i++) {
 			strCodeTable[index++] = (char) i;
 		}
-//		for (char code : strCodeTable) {
-//			System.out.print(code + "-");
-//		}
+		// for (char code : strCodeTable) {
+		// System.out.print(code + "-");
+		// }
 	}
 
 	public static PrintService getBarCodePrinter() {
-//		System.out.println("******** Entering getBarCodePrinter ***********************");
+		// System.out.println("******** Entering getBarCodePrinter
+		// ***********************");
 		PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
 		PrintService barCodePrinter = null;
 		if (services != null) {
@@ -83,12 +84,14 @@ public class BarCodeUtilities {
 				}
 			}
 		}
-//		System.out.println("******** Bar Code Printer is " + barCodePrinter + " ***********************");
+		// System.out.println("******** Bar Code Printer is " + barCodePrinter + "
+		// ***********************");
 		return barCodePrinter;
 	}
 
 	public static String generateEmployeeLabels(Employee emp, int page_quantity) throws NullInputDataException {
-//		System.out.println("******** Entering generateEmployeeLabels ***********************");
+		// System.out.println("******** Entering generateEmployeeLabels
+		// ***********************");
 		if (emp == null) {
 			throw new NullInputDataException("Employee cannot be null");
 		}
@@ -99,7 +102,7 @@ public class BarCodeUtilities {
 		fBarCode = BarCodeUtilities.formatBarCode(fBarCode);
 		String employee = (emp.getFirstName() + " " + emp.getLastName() + " - " + emp.getEmpId()).replaceAll(" ", "_");
 		String cvtBarCode = BarCodeUtilities.convertBarCode2of5(fBarCode);
-//		System.out.println(cvtBarCode + " : " + cvtBarCode.length());
+		// System.out.println(cvtBarCode + " : " + cvtBarCode.length());
 		StringBuilder sb = new StringBuilder("");
 		sb.append(ESC).append("&l0E"); // Top of Page is 0 lines down
 		sb.append(ESC).append("(0U").append(ESC).append("(s1p10v0s0b16602T");
@@ -152,17 +155,17 @@ public class BarCodeUtilities {
 		String star15 = "***************     ";
 
 		String strJobId = String.format("%-20s", th.getJobId());
-//		System.out.println("-" + strJobId + "-");
+		// System.out.println("-" + strJobId + "-");
 		boolean isRH = strJobId.contains("-RH") ? true : false;
 		String strJobDesc = th.getDescription();
 		// StringUtils.stripEnd("_", strJobDesc.replace(" ", "_"));
 		strJobDesc = strJobDesc.replace(" ", "_");
-//		System.out.println("STR JOB DESC: " + strJobDesc);
+		// System.out.println("STR JOB DESC: " + strJobDesc);
 
 		String strTkt1 = String.format("%06d", th.getKey());
-//		System.out.println("StrTkt1 is " + strTkt1);
+		// System.out.println("StrTkt1 is " + strTkt1);
 		strTkt1.replace(" ", "_");
-//		System.out.println("StrTkt1 is " + strTkt1);
+		// System.out.println("StrTkt1 is " + strTkt1);
 		String strQtyFormatted = replaceLeadingWithUnderScores(String.format("%03d", th.getQuantity()));
 		StringBuilder sb = new StringBuilder("");
 		String dateCreated = simpleDateFormat.format(th.getDateCreated());
@@ -206,7 +209,7 @@ public class BarCodeUtilities {
 		TicketDetail td1 = null;
 		TicketDetail td2 = null;
 		numberOfLabelRows = (int) (Math.ceil(detailCount / 3.0)); // How many rows of labels
-//		System.out.println("***************The rows = " + numberOfLabelRows);
+		// System.out.println("***************The rows = " + numberOfLabelRows);
 		for (int intLoop = 0; intLoop < numberOfLabelRows; intLoop++) {
 			String[] strDesc0 = { star15, star15, star15 };
 			String[] strDesc1 = { star15, star15, star15 };
@@ -235,7 +238,7 @@ public class BarCodeUtilities {
 				int quantity = td0.getStandardQuantity();
 				strSequence[0] = String.format("%02d", td0.getSequenceOriginal());
 				strRate[0] = String.format("%7.4f", rate);
-				
+
 				strRateFormatted[0] = strRate[0].replaceAll(" ", "_");
 				strExt[0] = String.format("%7.4f", rate * quantity);
 				strExt[0].replace(" ", "_");
@@ -323,15 +326,17 @@ public class BarCodeUtilities {
 				String fBarCode0 = strTkt1 + strSequence[0];
 				String fBarCode1 = strTkt1 + strSequence[1];
 				String fBarCode2 = strTkt1 + strSequence[2];
-//				System.out.println("**************************************");
-//				System.out.println("*****Length of fBarCode0 is " + fBarCode0.length() + ": Value is " + fBarCode0);
-//				System.out.println("*****Length of fBarCode1 is " + fBarCode1.length() + ": Value is " + fBarCode1);
-//				System.out.println("*****Length of fBarCode2 is " + fBarCode2.length() + ": Value is " + fBarCode2);
+				// System.out.println("**************************************");
+				// System.out.println("*****Length of fBarCode0 is " + fBarCode0.length() + ":
+				// Value is " + fBarCode0);
+				// System.out.println("*****Length of fBarCode1 is " + fBarCode1.length() + ":
+				// Value is " + fBarCode1);
+				// System.out.println("*****Length of fBarCode2 is " + fBarCode2.length() + ":
+				// Value is " + fBarCode2);
 				strCvtBarCode0 = convertBarCode2of5(BarCodeUtilities.formatBarCode(fBarCode0));
 				strCvtBarCode1 = convertBarCode2of5(BarCodeUtilities.formatBarCode(fBarCode1));
 				strCvtBarCode2 = convertBarCode2of5(BarCodeUtilities.formatBarCode(fBarCode2));
-				
-				
+
 				line3.append(ESC).append("&a0.1C").append(strDesc0[0]).append(ESC).append("&a1.1C").append(strDesc1[0])
 						.append(ESC).append("&a2.1C").append(strDesc2[0]);
 				line4.append(ESC).append("&a0.1C").append(strDesc0[1]).append(ESC).append("&a1.1C").append(strDesc1[1])
@@ -354,7 +359,7 @@ public class BarCodeUtilities {
 
 				sb.append(ESC).append("(3Y").append(ESC).append("(s1p").append(POINT_SIZE).append("v0s0b28673T");
 				sb.append(ESC).append("&k330H").append(ESC).append("&l48C");
-				
+
 				sb.append(ESC).append("&a0.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
 						.append(strCvtBarCode0);
 				sb.append(ESC).append("&a1.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
@@ -362,20 +367,11 @@ public class BarCodeUtilities {
 				sb.append(ESC).append("&a2.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
 						.append(strCvtBarCode2);
 
-				
-				
 				intRowCount++;
 				if (intRowCount >= 10) {
 					sb.append(PAGE_EJECT);
 					intRowCount = 0;
 				}
-			}
-			
-			intRowCount++;
-			if (intRowCount >= 10) {
-				intRowCount = 0;
-				sb.append(PAGE_EJECT);
-
 			}
 			detailIndex += 3;
 		}
@@ -383,7 +379,7 @@ public class BarCodeUtilities {
 		sb.append(ESC).append("(0U").append(ESC).append("(s1p8v0s0b16602T"); // ' 8 pitch arial
 		sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
 		sb.append(ESC).append("&a").append(intRowCount).append("R"); // ' Set Vertical Coordinate")
-		
+
 		sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append(star44).append(ESC)
 				.append("&a2.1C").append(star44);
 

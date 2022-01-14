@@ -251,6 +251,7 @@ public class BarCodeUtilities {
 			}
 			if (td1 != null) {
 				String strDescAll = td1.getOperationDescription();
+				strDescAll = strDescAll.replaceAll("\\s+", "_");
 				double rate = isRH ? td1.getHourlyRateSAH() * 1.1 : td1.getHourlyRateSAH();
 				int quantity = td1.getStandardQuantity();
 				strSequence[1] = String.format("%02d", td1.getSequenceOriginal());
@@ -266,6 +267,7 @@ public class BarCodeUtilities {
 			}
 			if (td2 != null) {
 				String strDescAll = td2.getOperationDescription();
+				strDescAll = strDescAll.replaceAll("\\s+", "_");
 				double rate = isRH ? td2.getHourlyRateSAH() * 1.1 : td2.getHourlyRateSAH();
 				int quantity = td2.getStandardQuantity();
 				strSequence[2] = String.format("%02d", td2.getSequenceOriginal());
@@ -280,10 +282,6 @@ public class BarCodeUtilities {
 				strDesc2[2] = StringUtils.left(strDescAll, 17);
 			}
 
-			// if (intKounter < 3) {
-			// intKounter++;
-			// } else {
-			// intKounter = 1;
 			{
 				sb.append(ESC).append("(0U").append(ESC).append("(s1p6v0s0b16602T"); // ' 6 pitch arial
 				sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
@@ -366,7 +364,7 @@ public class BarCodeUtilities {
 						.append(strCvtBarCode1);
 				sb.append(ESC).append("&a2.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
 						.append(strCvtBarCode2);
-
+				System.out.println("Count is " + intRowCount);
 				intRowCount++;
 				if (intRowCount >= 10) {
 					sb.append(PAGE_EJECT);

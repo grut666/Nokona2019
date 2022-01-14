@@ -229,12 +229,13 @@ public class BarCodeUtilities {
 			String strCvtBarCode1;
 			String strCvtBarCode2;
 			if (td0 != null) {
-				String strDescAll = td0.getOperationDescription();
+				String strDescAll = td0.getOperationDescription().replaceAll("\\s+", "_");
 				double rate = isRH ? td0.getHourlyRateSAH() * 1.1 : td0.getHourlyRateSAH();
 				int quantity = td0.getStandardQuantity();
 				strSequence[0] = String.format("%02d", td0.getSequenceOriginal());
 				strRate[0] = String.format("%7.4f", rate);
-				strRateFormatted[0] = strRate[0].replace(" ", "_");
+				
+				strRateFormatted[0] = strRate[0].replaceAll(" ", "_");
 				strExt[0] = String.format("%7.4f", rate * quantity);
 				strExt[0].replace(" ", "_");
 				strDesc0[0] = StringUtils.left(strDescAll, 17);
@@ -358,7 +359,7 @@ public class BarCodeUtilities {
 						.append(strCvtBarCode2);
 				sb.append(ESC).append("(0U").append(ESC).append("(s1p6v0s0b16602T"); // ' 6 pitch arial
 				sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
-				sb.append(ESC).append("&a").append(intRowCount).append("R"); 
+//				sb.append(ESC).append("&a").append(intRowCount).append("R"); // Move to Row number
 				
 				
 				intRowCount++;

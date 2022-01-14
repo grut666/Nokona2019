@@ -114,6 +114,7 @@ public class NokonaTicketResource {
 				throw new DatabaseException("Invalid detail key.  Size is less than 3");
 			}
 			int header = Integer.parseInt(stringKey.substring(0, stringKey.length() - 2));
+			System.out.println("Header in resource is " + header);
 			TicketDetail ticketDetail = db.getTicketDetailByDetailKey(detailKey);
 			TicketHeader ticketHeader = db.getTicketHeaderByKey(header);
 			return Response.status(200).entity(new TicketDetailDtoOut(ticketHeader, ticketDetail)).build();

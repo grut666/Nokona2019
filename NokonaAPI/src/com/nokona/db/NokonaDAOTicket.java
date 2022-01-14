@@ -381,15 +381,18 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	@Override
 	public TicketDetail getTicketDetailByDetailKey(long detailKey) throws DatabaseException {
 		try (PreparedStatement psGetTicketDetails = conn
-				.prepareStatement("Select * from ticketdetail td join operation op on op.OpCode = td.opcode "
-						+ "join laborcode lc on op.laborcode = lc.LaborCode "
-						+ "where td.key = ? and td.sequence = ?")) {
+//				.prepareStatement("Select * from ticketdetail td join operation op on op.OpCode = td.opcode "
+//						+ "join laborcode lc on op.laborcode = lc.LaborCode "
+//						+ "where td.key = ? and td.sequence = ?")) {
+			.prepareStatement("Select * from ticketdetail td  "
+										+ "where td.key = ? and td.sequence = ?")) {			
 			String stringKey = "" + detailKey;
 			if (stringKey.length() < 3) {
 				throw new DatabaseException("Invalid detail key.  Size is less than 3");
 			}
 			int header = Integer.parseInt(stringKey.substring(0, stringKey.length() - 2));
 			int detail = Integer.parseInt(stringKey.substring(stringKey.length() - 2));
+			System.out.println("Header is " + header + "  Detail is " + detail);
 			psGetTicketDetails.setLong(1, header);
 			psGetTicketDetails.setInt(2, detail);
 			try (ResultSet rs = psGetTicketDetails.executeQuery();) {
@@ -450,10 +453,10 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		int updatedSequence = rs.getInt("UpdatedSequence");
 		Date statusDate = DateUtilities.convertSQLDateToUtilDate(rs.getDate("StatusDate"));
 		String operationStatusString = rs.getString("Status");
-		String operationDescription = rs.getString("op.Description");
+		String operationDescription = rs.getString("operationDescription");
 		int laborCode = rs.getInt("LaborCode");
 		double laborRate = rs.getDouble("LaborRate");
-		String laborDescription = rs.getString("Description");
+		String laborDescription = rs.getString("LaborDescription");
 		OperationStatus operationStatus = OperationStatus.INCOMPLETE;
 		if ("C".equals(operationStatusString)) {
 			operationStatus = OperationStatus.valueOf(operationStatusString);

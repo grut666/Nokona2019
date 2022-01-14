@@ -30,6 +30,9 @@ public class TicketDetailDtoOut {
 	private double laborRate;
 	private int employeeBarCodeID;
 	public TicketDetailDtoOut(TicketHeader ticketHeader, TicketDetail ticketDetail) {
+		System.out.println("Ticket Header is " + ticketHeader);
+		System.out.println("Ticket Detail is " + ticketDetail);
+
 		jobId = ticketHeader.getJobId();
 		jobDescription = ticketHeader.getDescription();
 		opCode = ticketDetail.getOpCode();

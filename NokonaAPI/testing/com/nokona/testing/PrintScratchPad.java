@@ -34,6 +34,12 @@ public class PrintScratchPad {
 		strDesc = StringUtils.stripEnd(strDesc, "_");
 		System.out.println("strDesc is " + strDesc);
 		
+		String strDescAll = "aaaa      bbbb               cccc                ";
+		System.out.println(strDescAll.replaceAll("\\s+", "_"));
+		System.out.println(strDescAll);
+		strDescAll = strDescAll.replaceAll("\\s+", "_");
+		System.out.println(strDescAll);
+		
 
 		
 	}

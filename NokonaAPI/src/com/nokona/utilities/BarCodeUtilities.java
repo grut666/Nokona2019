@@ -229,7 +229,8 @@ public class BarCodeUtilities {
 			String strCvtBarCode1;
 			String strCvtBarCode2;
 			if (td0 != null) {
-				String strDescAll = td0.getOperationDescription().replaceAll("\\s+", "_");
+				String strDescAll = td0.getOperationDescription();
+				strDescAll = strDescAll.replaceAll("\\s+", "_");
 				double rate = isRH ? td0.getHourlyRateSAH() * 1.1 : td0.getHourlyRateSAH();
 				int quantity = td0.getStandardQuantity();
 				strSequence[0] = String.format("%02d", td0.getSequenceOriginal());
@@ -281,6 +282,9 @@ public class BarCodeUtilities {
 			// } else {
 			// intKounter = 1;
 			{
+				sb.append(ESC).append("(0U").append(ESC).append("(s1p6v0s0b16602T"); // ' 6 pitch arial
+				sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
+				sb.append(ESC).append("&a").append(intRowCount).append("R"); // Move to Row number
 				line1.append(ESC).append("&a0.1C").append(strJobId).append(ESC).append("&a0.5C").append("TKT:")
 						.append(strTkt1).append("__").append(strSequence[0]).append(ESC).append("&a1.1C")
 						.append(strJobId).append(ESC).append("&a1.5C").append("TKT:").append(strTkt1).append("__")
@@ -357,9 +361,7 @@ public class BarCodeUtilities {
 						.append(strCvtBarCode1);
 				sb.append(ESC).append("&a2.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
 						.append(strCvtBarCode2);
-				sb.append(ESC).append("(0U").append(ESC).append("(s1p6v0s0b16602T"); // ' 6 pitch arial
-				sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
-//				sb.append(ESC).append("&a").append(intRowCount).append("R"); // Move to Row number
+
 				
 				
 				intRowCount++;

@@ -949,6 +949,35 @@ Body:
     "sequenceOriginal": 7\
 }
 
+### Put /tickets/ticketdetails # Update 1 or more ticketDetail records from scanning system
+
+#### In
+{\
+    "dateOfTicket": "2021-01-23",\
+    "detailRecords": [\
+        {\
+            "ticketNumber": 4098847,\
+            "barCodeID": 7004,\
+            "quantity": 10\
+        },\
+        {\
+            "ticketNumber": 4098848,\
+            "barCodeID": 7004,\
+            "quantity": 10\
+        },\
+        {\
+            "ticketNumber": 4098849,\
+            "barCodeID": 7004,\
+            "quantity": 10\
+        }\
+    ]\
+}
+#### Out
+{\
+    "Success": "200"\
+}
+
+
 ### Get /tickets/labels # Generate and Print labels (Will be invoked from POST with QueryParam action=P)
 
 #### In

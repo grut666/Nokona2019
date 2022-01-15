@@ -1,5 +1,10 @@
 package com.nokona.resource;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -7,6 +12,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -15,7 +21,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.nokona.data.NokonaDatabaseTicket;
+import com.nokona.dto.TicketDetailDtoIn;
+import com.nokona.dto.TicketDetailDtoInRecord;
 import com.nokona.dto.TicketDetailDtoOut;
+import com.nokona.enums.OperationStatus;
 import com.nokona.enums.TicketStatus;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
@@ -25,6 +34,7 @@ import com.nokona.model.Ticket;
 import com.nokona.model.TicketDetail;
 import com.nokona.model.TicketHeader;
 import com.nokona.utilities.BarCodeUtilities;
+import com.nokona.utilities.DateUtilities;
 import com.nokona.utilities.TransferToAccess;
 
 @Path("/tickets")
@@ -34,6 +44,7 @@ public class NokonaTicketResource {
 
 	@Inject
 	private NokonaDatabaseTicket db;
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-mm-dd");
 
 	public NokonaTicketResource() throws DatabaseException {
 
@@ -218,6 +229,45 @@ public class NokonaTicketResource {
 		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
+	}
+
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/ticketdetails") // This is the only way to update ticketDetails, from the Scanning application
+							// (for now, anyway)
+	public Response updateTicketDetail(TicketDetailDtoIn ticketDetailDtoIn) {
+		try {
+			for (TicketDetailDtoInRecord dtoIn : ticketDetailDtoIn.getDetailRecords()) {
+				TicketDetail ticketDetail = db.getTicketDetailByDetailKey(dtoIn.getTicketNumber());
+				ticketDetail.setOperationStatus(OperationStatus.COMPLETE);
+				ticketDetail.setActualQuantity(dtoIn.getQuantity());
+				ticketDetail.setEmployeeBarCodeID(dtoIn.getBarCodeID());
+				ticketDetail.setStatusDate(DateUtilities.stringToJavaDate(ticketDetailDtoIn.getDateOfTicket()));
+				db.updateTicketDetail(ticketDetail);
+			}
+			return Response.status(200).entity("{\"Success\":\"200\"}").build();
+
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		}
+
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/ticketdetails/testdto")
+	public Response produceTestDto() {
+		TicketDetailDtoInRecord record1 = new TicketDetailDtoInRecord(4098847, 10, 4690);
+		TicketDetailDtoInRecord record2 = new TicketDetailDtoInRecord(4098848, 10, 4690);
+		TicketDetailDtoInRecord record3 = new TicketDetailDtoInRecord(4098849, 10, 4690);
+		List<TicketDetailDtoInRecord> records = new ArrayList<>(Arrays.asList(record1, record2, record3));
+		TicketDetailDtoIn dtoIn = new TicketDetailDtoIn("2021-01-23", records);
+
+		return Response.status(200).entity(dtoIn).build();
+
 	}
 
 }

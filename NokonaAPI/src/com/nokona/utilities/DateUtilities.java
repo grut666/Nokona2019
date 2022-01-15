@@ -26,4 +26,15 @@ public class DateUtilities {
 		}
 	    return convertUtilDateToSQLDate(convertedDate);
 	}
+	public static java.util.Date stringToJavaDate(String strDate) {
+		DateFormat formatter = null;
+        Date convertedDate = null;
+        formatter =new SimpleDateFormat("yyyy-MM-dd");
+        try {
+			convertedDate =(Date) formatter.parse(strDate);
+		} catch (ParseException e) {
+			convertedDate = null;
+		}
+	    return convertedDate;
+	}
 }

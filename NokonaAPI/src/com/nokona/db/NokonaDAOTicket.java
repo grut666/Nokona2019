@@ -257,8 +257,38 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	}
 	@Override
 	public TicketDetail updateTicketDetail(TicketDetail ticketDetail) throws DatabaseException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		try (PreparedStatement psUpdateTicketDetail = conn.prepareStatement(
+				"Update TicketDetail Set Status = ?, StatusDate = ?, StandardQuantity = ?, "
+				 + "HourlyRateSAH = ?, BarCodeID = ?, LaborRate = ?, "
+				 + "UpdatedSequence = ?, ActualQuantity = ?, OperationDescription = ?, "
+				 + "LaborDescription = ?, LaborCode = ? "
+						+ "WHERE ticketDetail.Key = ? and sequence = ?")) {
+			psUpdateTicketDetail.setString(1, ticketDetail.getOperationStatus().getOperationStatus());
+			psUpdateTicketDetail.setDate(2, DateUtilities.convertUtilDateToSQLDate(ticketDetail.getStatusDate()));
+			psUpdateTicketDetail.setInt(3, ticketDetail.getStandardQuantity());
+			psUpdateTicketDetail.setDouble(4, ticketDetail.getHourlyRateSAH());
+			psUpdateTicketDetail.setInt(5, ticketDetail.getEmployeeBarCodeID());
+			psUpdateTicketDetail.setDouble(6, ticketDetail.getLaborRate());
+			psUpdateTicketDetail.setInt(7, ticketDetail.getSequenceUpdated());
+			psUpdateTicketDetail.setInt(8, ticketDetail.getActualQuantity());
+			psUpdateTicketDetail.setString(9, ticketDetail.getOperationDescription());
+			psUpdateTicketDetail.setString(10, ticketDetail.getLaborDescription());
+			psUpdateTicketDetail.setInt(11, ticketDetail.getLaborCode());
+			psUpdateTicketDetail.setLong(12, ticketDetail.getKey());
+			psUpdateTicketDetail.setInt(13, ticketDetail.getSequenceOriginal());
+
+			int rowCount = psUpdateTicketDetail.executeUpdate();
+			if (rowCount != 1) {
+				System.out.println("Throwing exception in UpdateDetail");
+				throw new DatabaseException("TicketDetail Update Error.  Updated " + rowCount + " rows");
+			}
+			System.out.println("After updateTicketHeader executeUpdate().  Key is " + ticketDetail.getKey());
+			return getTicketDetailByDetailKey(Long.parseLong(ticketDetail.getKey() + "" + ticketDetail.getSequenceOriginal()));
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage());
+		}
 	}
 
 	@Override

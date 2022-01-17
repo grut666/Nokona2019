@@ -549,7 +549,6 @@ Body:
 #### In
 Body:
 {\
-    "deleted": false,\
     "jobId": "BXXX123",\
     "description": "12.25\" Human Skin GLOVE OPEN WEB\"",\
     "jobType": "B",\

@@ -1,9 +1,9 @@
 package com.nokona.enums;
 
 public enum JobType {
-	BASEBALL("B"), SOFTBALL("S"), OTHER("O"), UNKNOWN(" "), 
-	CUSTOM_BASEBALL("BZ"), CUSTOM_SOFTBALL("SZ"), CUSTOM_OTHER("OZ"), 
-			B("B"), S("S"), O("O"), BZ("BZ"), SZ("SZ"), OZ("OZ");
+	BASEBALL("B"), SOFTBALL("S"), OTHER("O"), UNKNOWN(" "), REPAIR("R"), CUSTOM("C"),
+	CUSTOM_BASEBALL("CB"), CUSTOM_SOFTBALL("CS"), CUSTOM_OTHER("CO"), 
+			B("B"), S("S"), O("O"), CB("CB"), CS("CS"), CO("CO"), R("R");
 	private String jobType;
 
 	JobType(String jobType) {

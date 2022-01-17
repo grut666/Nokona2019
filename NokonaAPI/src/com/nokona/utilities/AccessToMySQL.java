@@ -10,6 +10,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nokona.enums.JobType;
+import com.nokona.exceptions.DataNotFoundException;
+import com.nokona.model.JobHeader;
+
 //import lombok.Data; 
 
 //@Data
@@ -40,7 +44,7 @@ public class AccessToMySQL {
 		while (rs.next()) {
 			System.out.println(rs.getString("TABLE_NAME"));
 		}
-		doEmployees(); 
+//		doEmployees(); 
 //		doLaborCodes();
 //		doOperations();
  		doTickets();
@@ -56,7 +60,7 @@ public class AccessToMySQL {
 	}
 	public static void doTickets() {
 		doTicketHeaders();
-		doTicketDetail();
+//		doTicketDetail();
 	}
 	public static void doJobs() {
 		doJobHeaders();
@@ -106,9 +110,8 @@ public class AccessToMySQL {
 
 	public void loadMySQL() {
 
+
 	}
-
-
 
 	private static void doTicketHeaders() {
 		try {
@@ -769,5 +772,43 @@ public class AccessToMySQL {
 			System.err.println("Failed commit: " + e.getMessage());
 		}
 	}
+
+//	public static JobHeader fetchAJobHeader(String JobId) {
+//			JobHeader jobHeader = null;
+//			try (PreparedStatement psGetJobHeaderByJobId = conn
+//					.prepareStatement("Select * from JobHeader where JobID = ?")) {
+//				System.err.println("-----------------JOB ID IS:" + jobId + ":-----------------");
+//				psGetJobHeaderByJobId.setString(1, jobId);
+//				try (ResultSet rs = psGetJobHeaderByJobId.executeQuery();) {
+//
+//					if (rs.next()) {
+//						jobHeader = convertJobHeaderFromResultSet(rs);
+//					} else {
+//						System.err.println("-----------------JOB ID IS NOT FOUND:" + jobId + ":-----------------");
+//						throw new DataNotFoundException("3. Job: JobID " + jobId + " is not in DB");
+//
+//					}
+//				}
+//			} catch (SQLException e) {
+//				System.err.println(e.getMessage());
+//				throw new DataNotFoundException(e.getMessage(), e);
+//			}
+//			return jobHeader;
+//		}
+//	public static JobHeader convertJobHeaderFromResultSet(ResultSet rs) throws SQLException {
+//		int key = rs.getInt("Key");
+//		String jobId = rs.getString("JobID");
+//		String description = rs.getString("Description");
+//
+//		int standardQuantity = rs.getInt("standardQuantity");
+//		String jobTypeString = rs.getString("JobType");
+//		JobType jobType = JobType.UNKNOWN;
+//		if ("B".equals(jobTypeString) || "S".equals(jobTypeString)) {
+//			jobType = JobType.valueOf(jobTypeString);
+//		}
+//
+//		return new JobHeader(key, jobId, description, standardQuantity, jobType);
+//	}
+
 
 }

@@ -283,9 +283,9 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			psDelJobDetailByJobId.setString(1, jobId);
 			int rowCount = psDelJobDetailByJobId.executeUpdate();
 
-			if (rowCount == 0) {
-				throw new DataNotFoundException("Error.  JobDetail  " + jobId + " failed");
-			}
+//			if (rowCount == 0) {
+//				throw new DataNotFoundException("Error.  JobDetail  " + jobId + " failed");
+//			}
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage());

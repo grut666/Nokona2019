@@ -15,6 +15,7 @@ import com.nokona.enums.JobType;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.model.JobHeader;
 
+import com.nokona.constants.Constants;
 //import lombok.Data; 
 
 //@Data
@@ -25,10 +26,10 @@ public class AccessToMySQL {
 	private static int rowsDeleted;
 	private static int[] insertedRows;
 
-	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-	private static String DB_URL = "jdbc:mysql://localhost:3306/Nokona?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useServerPrepStmts=false&rewriteBatchedStatements=true";
-	private static String USER_NAME = "root";
-	private static String PASSWORD = "xyz1234!";
+//	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+//	private static String DB_URL = "jdbc:mysql://localhost:3306/Nokona?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useServerPrepStmts=false&rewriteBatchedStatements=true";
+//	private static String USER_NAME = "root";
+//	private static String PASSWORD = "xyz1234!";
 
 	private static PreparedStatement psSelect;
 	private static PreparedStatement psDelete;
@@ -44,11 +45,11 @@ public class AccessToMySQL {
 		while (rs.next()) {
 			System.out.println(rs.getString("TABLE_NAME"));
 		}
-//		doEmployees(); 
-//		doLaborCodes();
-//		doOperations();
+		doEmployees(); 
+		doLaborCodes();
+		doOperations();
  		doTickets();
-//		doJobs();
+		doJobs();
 		long endTime = System.currentTimeMillis();
 		try {
 			mySqlConn.close();
@@ -59,12 +60,12 @@ public class AccessToMySQL {
 		System.out.println("Total time is " + (endTime - startTime));
 	}
 	public static void doTickets() {
-//		doTicketHeaders();
+		doTicketHeaders();
 		doTicketDetail();
 	}
 	public static void doJobs() {
-//		doJobHeaders();
-//		doJobDetails();
+		doJobHeaders();
+		doJobDetails();
 	}
 
 	public static void connect() {
@@ -74,7 +75,8 @@ public class AccessToMySQL {
 	}
 
 	private static void connectToAccess() {
-		String accessDB = "jdbc:ucanaccess://C://codebase//Data//nokona.mdb";
+		String accessDB = Constants.ACCESS_DB_URL;
+//		String accessDB = "jdbc:ucanaccess://C://codebase//Data//nokona.mdb";
 		try {
 			accessConn = DriverManager.getConnection(accessDB);
 		} catch (SQLException e) {
@@ -86,8 +88,9 @@ public class AccessToMySQL {
 
 	private static void connectToMySQL() {
 		try {
-			Class.forName(JDBC_DRIVER);
-			mySqlConn = DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD);
+			Class.forName(Constants.MYSQL_JDBC_DRIVER);
+			mySqlConn = DriverManager.getConnection(Constants.MYSQL_DB_URL,
+					Constants.USER_NAME, Constants.PASSWORD);
 			mySqlConn.setAutoCommit(false);
 		} catch (ClassNotFoundException e) {
 			System.err.println(e.getMessage());
@@ -224,7 +227,7 @@ public class AccessToMySQL {
 			           " join operation OP on OP.opcode = TD.operation " + 
 					   " join ticketHeader TH on TD.Key = TH.Key " +
 			           " join laborcode LC on OP.LaborCode = LC.[Labor Code]" +
-			           " join job JO on JO.JobCode = TH.Job where TH.JOB = 'W-3350C-LH' Order By TD.Key, TD.Sequence");
+			           " join job JO on JO.JobCode = TH.Job Order By TD.Key, TD.Sequence");
 			ResultSet rs = psSelect.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();

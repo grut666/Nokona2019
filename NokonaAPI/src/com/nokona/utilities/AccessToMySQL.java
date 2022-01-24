@@ -9,6 +9,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.nokona.enums.JobType;
 import com.nokona.exceptions.DataNotFoundException;
@@ -33,8 +34,7 @@ public class AccessToMySQL {
 	private static PreparedStatement psDelete;
 	private static PreparedStatement psInsert;
 	private static List<String> recordsIn;
-	
-	
+
 	public static void main(String[] args) throws SQLException {
 		long startTime = System.currentTimeMillis();
 		connect();
@@ -59,12 +59,12 @@ public class AccessToMySQL {
 		System.out.println("Total time is " + (endTime - startTime));
 	}
 	public static void doTickets() {
-		doTicketHeaders();
-//		doTicketDetail();
+//		doTicketHeaders();
+		doTicketDetail();
 	}
 	public static void doJobs() {
-		doJobHeaders();
-		doJobDetails();
+//		doJobHeaders();
+//		doJobDetails();
 	}
 
 	public static void connect() {
@@ -167,17 +167,26 @@ public class AccessToMySQL {
 		System.out.println("Finished deleting " + rowsDeleted + " TicketHeaders.  Beginning storing TicketHeaders");
 		try {
 			psInsert = mySqlConn.prepareStatement(
-					"Insert into TicketHeader (TicketHeader.Key, JobId, CreatedDate, Status, StatusDate, Quantity) "
-							+ "values (?,?,?,?,?,?)");
+					"Insert into TicketHeader (TicketHeader.Key, JobId, CreatedDate, Status, StatusDate, Quantity, Description) "
+							+ "values (?,?,?,?,?,?,?)");
 			for (String record : recordsIn) {
 				System.out.println(record);
+				
 				String[] fields = record.split("~");
+				JobHeader jh = fetchAJobHeader(fields[1]);
+				String jobDescription;
+				if (jh == null) {
+					jobDescription = "";
+				} else {
+					jobDescription = jh.getDescription();
+				}
 				psInsert.setLong(1, Long.parseLong(fields[0]));
 				psInsert.setString(2, fields[1]);
 				psInsert.setDate(3, DateUtilities.stringToSQLDate(fields[2]));
 				psInsert.setString(4, fields[3]);
 				psInsert.setDate(5, DateUtilities.stringToSQLDate(fields[4]));
 				psInsert.setLong(6, Long.parseLong(fields[5]));
+				psInsert.setString(7, jobDescription);
 				psInsert.addBatch();
 			}
 			insertedRows = psInsert.executeBatch();
@@ -209,7 +218,13 @@ public class AccessToMySQL {
 	private static void doTicketDetail() {
 		try {
 			recordsIn = new ArrayList<>();
-			psSelect = accessConn.prepareStatement("Select TicketDetail.Key, Operation, Sequence, StatusDate, Status, Quantity, Rate, [Bar Code ID], LaborRate from TicketDetail Order By TicketDetail.Key");
+			psSelect = accessConn.prepareStatement("Select TD.Key, TD.Operation,TD.Sequence, StatusDate, Status, TD.Quantity, OP.HourlyRateSAH, [Bar Code ID], " +
+					   " LC.[Labor Rate],  OP.LaborCode, OP.Description, LC.Description, " +
+					   " JO.StdQuantity from TicketDetail TD" +
+			           " join operation OP on OP.opcode = TD.operation " + 
+					   " join ticketHeader TH on TD.Key = TH.Key " +
+			           " join laborcode LC on OP.LaborCode = LC.[Labor Code]" +
+			           " join job JO on JO.JobCode = TH.Job where TH.JOB = 'W-3350C-LH' Order By TD.Key, TD.Sequence");
 			ResultSet rs = psSelect.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();
@@ -231,16 +246,30 @@ public class AccessToMySQL {
 			String sequence = rsmd.getColumnName(3);
 			String statusDate = rsmd.getColumnName(4);
 			String status = rsmd.getColumnName(5);
-			String quantity = rsmd.getColumnName(6);
-			String rate = rsmd.getColumnName(7);
+			String actualQuantity = rsmd.getColumnName(6);
+			String hourlyRateSAH = rsmd.getColumnName(7);
 			String barCodeId = rsmd.getColumnName(8);
 			String laborRate = rsmd.getColumnName(9);
+			String laborCode = rsmd.getColumnName(10);
+			String laborDesc = rsmd.getColumnName(11);
+			String opDesc = rsmd.getColumnName(12);
+			String stdQuantity = rsmd.getColumnName(13);
 
 
+//			while (rs.next()) {
+//				String record = rs.getInt(key) + "~" + rs.getString(operation).trim() + "~" + rs.getInt(sequence) + "~"
+//						+ rs.getDate(statusDate) + "~" + rs.getString(status).trim() + "~" + rs.getInt(actualQuantity) + "~" 
+//						+ rs.getDouble(hourlyRateSAH) +  "~" + rs.getInt(barCodeId) + "~" + rs.getDouble(laborRate) + 
+//						"~" + rs.getInt(laborCode) + "~" + rs.getString(laborDesc) + "~" + rs.getString(opDesc) + "~" + rs.getInt(stdQuantity);
+//
+//				System.out.println(record);
+//				recordsIn.add(record);
+//			}
 			while (rs.next()) {
-				String record = rs.getInt(key) + "~" + rs.getString(operation).trim() + "~" + rs.getInt(sequence) + "~"
-						+ rs.getDate(statusDate) + "~" + rs.getString(status).trim() + "~" + rs.getInt(quantity) + "~" 
-						+ rs.getDouble(rate) +  "~" + rs.getInt(barCodeId) + "~" + rs.getDouble(laborRate);
+				String record = rs.getInt(1) + "~" + rs.getString(2).trim() + "~" + rs.getInt(3) + "~"
+						+ rs.getDate(4) + "~" + rs.getString(5).trim() + "~" + rs.getInt(6) + "~" 
+						+ rs.getDouble(7) +  "~" + rs.getInt(8) + "~" + rs.getDouble(9) + 
+						"~" + rs.getInt(10) + "~" + rs.getString(11) + "~" + rs.getString(12) + "~" + rs.getInt(13);
 
 				System.out.println(record);
 				recordsIn.add(record);
@@ -278,11 +307,19 @@ public class AccessToMySQL {
 //			Bar Code ID - 5
 //			LaborRate - 3
 			psInsert = mySqlConn.prepareStatement(
-					"Insert into TicketDetail (TicketDetail.Key, OpCode, Sequence, StatusDate, Status, Quantity, HourlyRateSAH, BarCodeID, LaborRate, UpdatedSequence) "
-							+ "values (?,?,?,?,?,?,?,?,?,?)");
+					"Insert into TicketDetail (TicketDetail.Key, OpCode, Sequence, StatusDate, Status, StandardQuantity, HourlyRateSAH, BarCodeID, LaborRate, " + 
+									"UpdatedSequence, ActualQuantity, OperationDescription, LaborDescription, LaborCode) "
+							+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			String lastKey = "";
 			for (String record : recordsIn) {
 				System.out.println(record);
 				String[] fields = record.split("~");
+				String thisKey = fields[0]+fields[1]+fields[2];
+				// The following was put in because of duplicates in Access DB that are being rejected from MySQL
+				if (thisKey.equals(lastKey)) {
+					continue;
+				}
+				lastKey = thisKey;
 				psInsert.setLong(1, Long.parseLong(fields[0]));
 				psInsert.setString(2, fields[1]);
 				psInsert.setLong(3, Long.parseLong(fields[2]));
@@ -293,6 +330,10 @@ public class AccessToMySQL {
 				psInsert.setLong(8, Long.parseLong(fields[7]));
 				psInsert.setDouble(9, Double.parseDouble(fields[8]));
 				psInsert.setLong(10, Long.parseLong(fields[2]));  // Set updatedsequence to sequence
+				psInsert.setLong(11, Integer.parseInt(fields[9]));
+				psInsert.setString(12, fields[10]);				
+				psInsert.setString(13, fields[11]);				
+				psInsert.setLong(14, Long.parseLong(fields[12]));  
 				psInsert.addBatch();
 			}
 			insertedRows = psInsert.executeBatch();
@@ -318,6 +359,7 @@ public class AccessToMySQL {
 		} catch (SQLException e) {
 			System.err.println("Failed commit: " + e.getMessage());
 		}
+		
 
 
 	}
@@ -325,7 +367,7 @@ public class AccessToMySQL {
 	private static void doJobHeaders() {
 		try {
 			recordsIn = new ArrayList<>();
-			psSelect = accessConn.prepareStatement("Select Job.key, jobcode, upper(description), category, stdquantity from Job Order By Job.Key");
+			psSelect = accessConn.prepareStatement("Select Job.key, jobcode, upper(description), category, stdquantity from Job Order By JobCode, Job.Key");
 			ResultSet rs = psSelect.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();
@@ -342,9 +384,18 @@ public class AccessToMySQL {
 			String description= rsmd.getColumnName(3);
 			String category = rsmd.getColumnName(4);
 			String stdquantity = rsmd.getColumnName(5);
-
+			int counter = 01;
+			String lastJob = "";
 			while (rs.next()) {
-				String record = rs.getInt(key) + "~" + rs.getString(job).trim() + "~" + rs.getString(description).trim() + "~"
+				String thisJob = rs.getString(job).trim();
+				if (thisJob.equals(lastJob)) {
+					thisJob = thisJob + "-" + String.format("%02d", ++counter);
+					System.out.println("This job is " + thisJob);
+				} else {
+					counter = 1;
+					lastJob = thisJob;
+				}
+				String record = rs.getInt(key) + "~" + thisJob + "~" + rs.getString(description).trim() + "~"
 						+ rs.getString(category).trim() + "~" + rs.getInt(stdquantity);
 				System.out.println(record);
 				recordsIn.add(record);
@@ -773,42 +824,41 @@ public class AccessToMySQL {
 		}
 	}
 
-//	public static JobHeader fetchAJobHeader(String JobId) {
-//			JobHeader jobHeader = null;
-//			try (PreparedStatement psGetJobHeaderByJobId = conn
-//					.prepareStatement("Select * from JobHeader where JobID = ?")) {
-//				System.err.println("-----------------JOB ID IS:" + jobId + ":-----------------");
-//				psGetJobHeaderByJobId.setString(1, jobId);
-//				try (ResultSet rs = psGetJobHeaderByJobId.executeQuery();) {
-//
-//					if (rs.next()) {
-//						jobHeader = convertJobHeaderFromResultSet(rs);
-//					} else {
-//						System.err.println("-----------------JOB ID IS NOT FOUND:" + jobId + ":-----------------");
-//						throw new DataNotFoundException("3. Job: JobID " + jobId + " is not in DB");
-//
-//					}
-//				}
-//			} catch (SQLException e) {
-//				System.err.println(e.getMessage());
-//				throw new DataNotFoundException(e.getMessage(), e);
-//			}
-//			return jobHeader;
-//		}
-//	public static JobHeader convertJobHeaderFromResultSet(ResultSet rs) throws SQLException {
-//		int key = rs.getInt("Key");
-//		String jobId = rs.getString("JobID");
-//		String description = rs.getString("Description");
-//
-//		int standardQuantity = rs.getInt("standardQuantity");
-//		String jobTypeString = rs.getString("JobType");
-//		JobType jobType = JobType.UNKNOWN;
-//		if ("B".equals(jobTypeString) || "S".equals(jobTypeString)) {
-//			jobType = JobType.valueOf(jobTypeString);
-//		}
-//
-//		return new JobHeader(key, jobId, description, standardQuantity, jobType);
-//	}
+	public static JobHeader fetchAJobHeader(String jobId)  {
+			JobHeader jobHeader = null;
+			try (PreparedStatement psGetJobHeaderByJobId = mySqlConn
+					.prepareStatement("Select * from JobHeader where JobID = ?")) {
+				System.err.println("-----------------JOB ID IS:" + jobId + ":-----------------");
+				psGetJobHeaderByJobId.setString(1, jobId);
+				try (ResultSet rs = psGetJobHeaderByJobId.executeQuery();) {
+
+					if (rs.next()) {
+						jobHeader = convertJobHeaderFromResultSet(rs);
+					} else {
+						
+						jobHeader = null;
+					}
+				}
+//				xxxxxx
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+			}
+			return jobHeader;
+		}
+	public static JobHeader convertJobHeaderFromResultSet(ResultSet rs) throws SQLException {
+		int key = rs.getInt("Key");
+		String jobId = rs.getString("JobID");
+		String description = rs.getString("Description");
+
+		int standardQuantity = rs.getInt("standardQuantity");
+		String jobTypeString = rs.getString("JobType");
+		JobType jobType = JobType.UNKNOWN;
+		if ("B".equals(jobTypeString) || "S".equals(jobTypeString)) {
+			jobType = JobType.valueOf(jobTypeString);
+		}
+
+		return new JobHeader(key, jobId, description, standardQuantity, jobType);
+	}
 
 
 }

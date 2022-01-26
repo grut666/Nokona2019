@@ -26,10 +26,6 @@ public class AccessToMySQL {
 	private static int rowsDeleted;
 	private static int[] insertedRows;
 
-//	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-//	private static String DB_URL = "jdbc:mysql://localhost:3306/Nokona?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useServerPrepStmts=false&rewriteBatchedStatements=true";
-//	private static String USER_NAME = "root";
-//	private static String PASSWORD = "xyz1234!";
 
 	private static PreparedStatement psSelect;
 	private static PreparedStatement psDelete;

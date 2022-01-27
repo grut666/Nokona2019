@@ -80,18 +80,19 @@ class TestEmployeeDB {
 
 	@Test
 	void testGetEmployeeFromDBByID() throws DatabaseException {
-		Employee emp = db.getEmployee("MOL20");
+		Employee emp = db.getEmployee("MOL10");
 		assertEquals("MOLSBEE", emp.getLastName());
-		assertEquals("MARY N.", emp.getFirstName());
-		assertEquals(8654, emp.getBarCodeID());
-		assertEquals(167, emp.getKey());
-		assertEquals("MOL20", emp.getEmpId());
-		assertEquals(7, emp.getLaborCode());
-		assertEquals(false, emp.isActive());
-		assertEquals(
-				"Employee(key=167, lastName=MOLSBEE, firstName=MARY N., barCodeID=8654, laborCode=7, empId=MOL20, active=false)",
-				emp.toString());
+		assertEquals("RANDALL", emp.getFirstName());
+		assertEquals(3586, emp.getBarCodeID());
+		assertEquals(385, emp.getKey());
+		assertEquals("MOL10", emp.getEmpId());
+		assertEquals(5, emp.getLaborCode());
+		assertEquals(true, emp.isActive());
+//		assertEquals(
+//				"Employee(key=167, lastName=MOLSBEE, firstName=MARY N., barCodeID=8654, laborCode=7, empId=MOL20, active=false)",
+//				emp.toString());
 	}
+
 
 	@Test
 	void testGetEmployeeFromDBByKey() throws DatabaseException {
@@ -121,7 +122,7 @@ class TestEmployeeDB {
 	@Test
 	void testGetEmployeesFromDB() throws DatabaseException {
 		List<Employee> emps = db.getEmployees();
-		assertEquals(302, emps.size());
+		assertEquals(45, emps.size());
 
 	}
 
@@ -148,7 +149,7 @@ class TestEmployeeDB {
 	void testDeleteEmployee() throws DatabaseException {
 		List<Employee> employees = db.getEmployees();
 		int startingCount = employees.size();
-		db.deleteEmployee("ALV20");
+		db.deleteEmployee("BAS10");
 		assertEquals(startingCount - 1, db.getEmployees().size());
 
 	}
@@ -164,7 +165,7 @@ class TestEmployeeDB {
 	void testDeleteEmployeeByKey() throws DatabaseException {
 		List<Employee> employees = db.getEmployees();
 		int startingCount = employees.size();
-		db.deleteEmployeeByKey(562);
+		db.deleteEmployeeByKey(757);
 		assertEquals(startingCount - 1, db.getEmployees().size());
 
 	}
@@ -180,7 +181,7 @@ class TestEmployeeDB {
 
 	@Test
 	void testAddEmployeeDupeBarCodeIDException() throws DatabaseException {
-		Employee employee = new Employee(-1, "HITLER", "ADOLPH", 587, 7, "HIT666", true);
+		Employee employee = new Employee(-1, "HITLER", "ADOLPH", 6164, 7, "HIT666", true);
 		Assertions.assertThrows(DuplicateDataException.class, () -> {
 			db.addEmployee(employee);
 		});
@@ -188,7 +189,7 @@ class TestEmployeeDB {
 
 	@Test
 	void testAddEmployeeDupeEmpIDException() throws DatabaseException {
-		Employee employee = new Employee(-1, "HITLER", "ADOLPH", 6666, 7, "BOG10", true);
+		Employee employee = new Employee(-1, "HITLER", "ADOLPH", 6666, 7, "CER10", true);
 		Assertions.assertThrows(DuplicateDataException.class, () -> {
 			db.addEmployee(employee);
 		});

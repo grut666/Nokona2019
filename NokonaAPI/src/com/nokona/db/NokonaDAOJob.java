@@ -129,20 +129,20 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			throw new NullInputDataException("Job Header cannot be null");
 		}
 		JobHeader formattedJobHeader = JobFormatter.format(jobHeaderIn);
-		try (PreparedStatement psAddJobHeaderDupeCheck = conn
-				.prepareStatement("Select * from JobHeader where JobID = ?")) {
-			psAddJobHeaderDupeCheck.setString(1, formattedJobHeader.getJobId());
-			try (ResultSet rs = psAddJobHeaderDupeCheck.executeQuery();) {
-
-				if (rs.next()) {
-					throw new DuplicateDataException("Job ID is already in use");
-				}
-			}
-
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new DuplicateDataException(e.getMessage(), e);
-		}
+//		try (PreparedStatement psAddJobHeaderDupeCheck = conn
+//				.prepareStatement("Select * from JobHeader where JobID = ?")) {
+//			psAddJobHeaderDupeCheck.setString(1, formattedJobHeader.getJobId());
+//			try (ResultSet rs = psAddJobHeaderDupeCheck.executeQuery();) {
+//
+//				if (rs.next()) {
+//					throw new DuplicateDataException("Job ID is already in use");
+//				}
+//			}
+//
+//		} catch (SQLException e) {
+//			System.err.println(e.getMessage());
+//			throw new DuplicateDataException(e.getMessage(), e);
+//		}
 		try (PreparedStatement psAddJobHeader = conn.prepareStatement(
 				"Insert into JobHeader (JobId, Description, StandardQuantity, JobType) values (?,?,?,?)",
 				PreparedStatement.RETURN_GENERATED_KEYS);) {
@@ -172,6 +172,9 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			}
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
+			if (e.getMessage().contains("Duplicate")) {
+				throw new DuplicateDataException(e.getMessage());
+			}
 			throw new DatabaseException(e.getMessage());
 		}
 

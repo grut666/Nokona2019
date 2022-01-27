@@ -97,7 +97,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	public Ticket getTicketByKey(long key) throws DatabaseException {
 		Ticket ticket = null;
 		try (PreparedStatement psGetTicketByKey = conn.prepareStatement(
-				"Select * from ticketheader th join ticketdetail td on th.key = td.key  "
+				"Select * from ticketheader th left join ticketdetail td on th.key = td.key  "
 						+ "join operation op on td.opcode = op.OpCode "
 						+ "join jobheader jh on th.jobid = jh.jobid "
 						+ "where th.key = ? order by sequence");) {

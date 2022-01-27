@@ -134,10 +134,10 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 				"Update Employee Set LastName = ?, FirstName = ?, BarCodeID = ?, LaborCode = ?, EmpID = ?, Active = ? "
 						+ "WHERE Employee.KEY = ?");) {
 			Employee formattedEmployee = EmployeeFormatter.format(employeeIn);
-			String validateMessage = EmployeeValidator.validateUpdate(formattedEmployee, conn);
-			if (!"".equals(validateMessage)) {
-				throw new DatabaseException(validateMessage);
-			}
+//			String validateMessage = EmployeeValidator.validateUpdate(formattedEmployee, conn);
+//			if (!"".equals(validateMessage)) {
+//				throw new DatabaseException(validateMessage);
+//			}
 			psUpdateEmployee.setString(1, formattedEmployee.getLastName());
 			psUpdateEmployee.setString(2, formattedEmployee.getFirstName());
 			psUpdateEmployee.setInt(3, formattedEmployee.getBarCodeID());
@@ -164,38 +164,38 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			throw new NullInputDataException("Employee cannot be null");
 		}
 		Employee formattedEmployee = EmployeeFormatter.format(employeeIn);
-		try (PreparedStatement psAddEmployeeDupeCheck = conn
-				.prepareStatement("Select * from Employee where BarCodeID = ? or EmpID = ?");) {
-			psAddEmployeeDupeCheck.setInt(1, formattedEmployee.getBarCodeID());
-			psAddEmployeeDupeCheck.setString(2, formattedEmployee.getEmpId());
-			try (ResultSet rs = psAddEmployeeDupeCheck.executeQuery()) {
-				if (rs.next()) {
-					throw new DuplicateDataException("BarCodeID or EmpID is already in use");
-				}
-
-				try (PreparedStatement psAddEmployeeLaborCodeCheck = conn
-						.prepareStatement("Select * from LaborCode where LaborCode = ?")) {
-					psAddEmployeeLaborCodeCheck.setInt(1, formattedEmployee.getLaborCode());
-					try (ResultSet rs2 = psAddEmployeeLaborCodeCheck.executeQuery()) {
-						if (!rs2.next()) {
-							throw new DataNotFoundException("Invalid Labor Code " + employeeIn.getLaborCode());
-						}
-					}
-				}
-			}
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new DatabaseException(e.getMessage());
-		}
+//		try (PreparedStatement psAddEmployeeDupeCheck = conn
+//				.prepareStatement("Select * from Employee where BarCodeID = ? or EmpID = ?");) {
+//			psAddEmployeeDupeCheck.setInt(1, formattedEmployee.getBarCodeID());
+//			psAddEmployeeDupeCheck.setString(2, formattedEmployee.getEmpId());
+//			try (ResultSet rs = psAddEmployeeDupeCheck.executeQuery()) {
+//				if (rs.next()) {
+//					throw new DuplicateDataException("BarCodeID or EmpID is already in use");
+//				}
+//
+//				try (PreparedStatement psAddEmployeeLaborCodeCheck = conn
+//						.prepareStatement("Select * from LaborCode where LaborCode = ?")) {
+//					psAddEmployeeLaborCodeCheck.setInt(1, formattedEmployee.getLaborCode());
+//					try (ResultSet rs2 = psAddEmployeeLaborCodeCheck.executeQuery()) {
+//						if (!rs2.next()) {
+//							throw new DataNotFoundException("Invalid Labor Code " + employeeIn.getLaborCode());
+//						}
+//					}
+//				}
+//			}
+//		} catch (SQLException e) {
+//			System.err.println(e.getMessage());
+//			throw new DatabaseException(e.getMessage());
+//		}
 
 		// -----------------------
 		try (PreparedStatement psAddEmployee = conn.prepareStatement(
 				"Insert into Employee (LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) values (?,?,?,?,?,?)",
 				PreparedStatement.RETURN_GENERATED_KEYS)) {
-			String validateMessage = EmployeeValidator.validateAdd(formattedEmployee, conn);
-			if (!"".equals(validateMessage)) {
-				throw new DatabaseException(validateMessage);
-			}
+//			String validateMessage = EmployeeValidator.validateAdd(formattedEmployee, conn);
+//			if (!"".equals(validateMessage)) {
+//				throw new DatabaseException(validateMessage);
+//			}
 			psAddEmployee.setString(1, formattedEmployee.getLastName());
 			psAddEmployee.setString(2, formattedEmployee.getFirstName());
 			psAddEmployee.setInt(3, formattedEmployee.getBarCodeID());
@@ -204,9 +204,9 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			psAddEmployee.setInt(6, formattedEmployee.isActive() ? 1 : 0);
 			int rowCount = psAddEmployee.executeUpdate();
 
-			if (rowCount != 1) {
-				throw new DatabaseException("Error. Inserted " + rowCount + " rows");
-			}
+//			if (rowCount != 1) {
+//				throw new DatabaseException("Error. Inserted " + rowCount + " rows");
+//			}
 			Employee newEmp = new Employee();
 			try (ResultSet generatedKeys = psAddEmployee.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
@@ -220,6 +220,11 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
+			if (e.getMessage().contains("Duplicate")) {
+					throw new DuplicateDataException(e.getMessage());
+			} else if (e.getMessage().contains("foreign key")) {
+				throw new DataNotFoundException(e.getMessage());
+			}
 			throw new DatabaseException(e.getMessage());
 
 		}

@@ -18,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.servlet.ServletContext;
 
 import com.nokona.data.NokonaDatabase;
@@ -25,6 +26,7 @@ import com.nokona.enums.ReportCategory;
 import com.nokona.exceptions.PDFException;
 import com.nokona.qualifiers.BaseDaoQualifier;
 import com.nokona.reports.OrderBy;
+import com.nokona.reports.ReportProcesser;
 import com.nokona.reports.ReportProperties;
 
 import net.sf.jasperreports.engine.JRException;
@@ -71,23 +73,24 @@ public class NokonaReportsResource {
 
 	}
 
-	@POST
+	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+//	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@Produces("application/pdf")
 	@Path("/pdf")
 	public Response getPdfReport(ReportProperties properties) {
-
+		new ReportProcesser(properties);
 		File file = null;
 		try {
 			file = getJasperReport(properties);
-			return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()).build();
+			return Response.ok((Object)file)
+					.header("Content-Disposition", "attachment; filename=" + file.getAbsolutePath()).build();
 
 		} catch (PDFException e) {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
 	}
-	@POST
+	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@Path("/csv")
@@ -228,4 +231,20 @@ public class NokonaReportsResource {
 		}
 		return new File(fileName);
 	}
+	private static final String FILE_PATH = "c:\\codebase\\MyJasperReport.pdf";
+
+	@GET
+	@Path("/pdftest")
+	@Produces("application/pdf")
+	public Response getFile() {
+
+		File file = new File(FILE_PATH);
+
+		ResponseBuilder response = Response.ok((Object) file);
+		response.header("Content-Disposition",
+				"attachment; filename=new-android-book.pdf");
+		return response.build();
+
+	}
+
 }

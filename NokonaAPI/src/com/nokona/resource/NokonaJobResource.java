@@ -198,8 +198,8 @@ public class NokonaJobResource {
 
 		try {
 			db.deleteJob(jobId);
-			TransferToAccess.transfer("JOBHEADER_D");
-			TransferToAccess.transfer("JOBDETAIL_D");
+//			TransferToAccess.transfer("JOBHEADER_D");
+//			TransferToAccess.transfer("JOBDETAIL_D");
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + jobId + " not found\"}").build();

@@ -57,14 +57,14 @@ class TestTicketDB {
 	}
 	@Test
 	void testGetTicketByKey() throws DatabaseException {
-		Ticket ticket = db.getTicketByKey(35965);
-		assertEquals(35965, ticket.getTicketHeader().getKey());
-		assertEquals("11.25\" BUFFALO/BUCKSIN MOD TRAP GLOVE", ticket.getTicketHeader().getDescription());
-		assertEquals("Tue Jan 29 18:00:00 CST 2019", ticket.getTicketHeader().getDateCreated().toString());
-		assertEquals("Tue Jan 29 18:00:00 CST 2019", ticket.getTicketHeader().getDateStatus().toString());
-		assertEquals("P", ticket.getTicketHeader().getTicketStatus().getTicketStatus());
-		assertEquals("S-200M-LH", ticket.getTicketHeader().getJobId());
-		assertEquals(10, ticket.getTicketHeader().getQuantity());
+		Ticket ticket = db.getTicketByKey(35514);
+		assertEquals(35514, ticket.getTicketHeader().getKey());
+		assertEquals("WALNUT 33.5\", CLOSED WEB - LEFT", ticket.getTicketHeader().getDescription());
+		assertEquals("Tue Jan 01 18:00:00 CST 2019", ticket.getTicketHeader().getDateCreated().toString());
+		assertEquals("Tue Jan 01 18:00:00 CST 2019", ticket.getTicketHeader().getDateStatus().toString());
+		assertEquals("C", ticket.getTicketHeader().getTicketStatus().getTicketStatus());
+		assertEquals("W-3350C-LH", ticket.getTicketHeader().getJobId());
+		assertEquals(6, ticket.getTicketHeader().getQuantity());
 		
 	}
 

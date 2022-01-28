@@ -233,8 +233,8 @@ public class NokonaJobResource {
 		Job job;
 		try {
 			job = db.addJob(jobIn);
-			TransferToAccess.transfer("JOBHEADER_C");
-			TransferToAccess.transfer("JOBDETAIL_C");
+//			TransferToAccess.transfer("JOBHEADER_C");
+//			TransferToAccess.transfer("JOBDETAIL_C");
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {

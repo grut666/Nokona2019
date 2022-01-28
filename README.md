@@ -492,7 +492,7 @@ operations/XYZ1
     "standardQuantity": 10\
 }
 
-### Put /jobs # Add or update one entire job
+### Post or Put /jobs # Add one entire job or update one entire job
 #### In
 {\
     "header": {\

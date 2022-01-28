@@ -226,10 +226,10 @@ public class NokonaJobResource {
 //			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 //		}
 //	}
-	@POST
+	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addJob(Job jobIn) {
+	public Response updateJob(Job jobIn) {
 		Job job;
 		try {
 			job = db.addJob(jobIn);
@@ -243,6 +243,13 @@ public class NokonaJobResource {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 		return Response.status(201).entity(job).build();
+	}
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response addJob(Job jobIn) {
+		
+		return updateJob(jobIn);
 	}
 
 }

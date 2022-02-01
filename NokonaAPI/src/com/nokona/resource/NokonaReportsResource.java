@@ -92,14 +92,15 @@ public class NokonaReportsResource {
 	}
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	//@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@Produces("application/pdf")
 	@Path("/csv")
 	public Response getCsvReport(ReportProperties properties) {
 
 		File file = null;
 		try {
 			file = getJasperReport(properties);
-			return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
+			return Response.ok((Object)file)
 					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()).build();
 
 		} catch (PDFException e) {

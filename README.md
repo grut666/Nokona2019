@@ -636,7 +636,7 @@ jobs/BXXX123
     ]\
 }
 
-### Get /reports/pdf # Get the requested report in .pdf format.  Only a portion of the body is usually needed.
+### POST /reports/pdf # Get the requested report in .pdf format.  Only a portion of the body is usually needed.
 #### In
 /reports/pdf
 
@@ -663,7 +663,65 @@ Body:
 
 #### Out
 
-Either a .pdf or .csv file, stream, or html.  Not sure yet.
+An application/pdf (.pdf) file.
+
+### POST /reports/csv # Get the requested report in .csv format.  Only a portion of the body is usually needed.
+#### In
+/reports/csv
+
+Body:
+{\
+    ""jobId": "222",\
+    "reportName": "Dummy Report",\
+    "endDate": "20200620142554-0500",\
+    "summaryNotDetail": true,\
+    "operatorId": "111",\
+    "startDate": "20200620142554-0500",\
+    "pdfNotExcel": true,\
+    "orderBys": [\
+        {\
+            "ascending": true,\
+            "columnName": "JobId"\
+        },\
+        {\
+            "ascending": false,\
+            "columnName": "StatusDate"\
+        }\
+    ]\
+}
+
+#### Out
+
+A .csv file.  Not sure yet the format. 
+
+### POST /reports/pdftest # Get a sample .pdf file.
+#### In
+/reports/pdftest
+
+Body:
+{\
+    ""jobId": "222",\
+    "reportName": "Dummy Report",\
+    "endDate": "20200620142554-0500",\
+    "summaryNotDetail": true,\
+    "operatorId": "111",\
+    "startDate": "20200620142554-0500",\
+    "pdfNotExcel": true,\
+    "orderBys": [\
+        {\
+            "ascending": true,\
+            "columnName": "JobId"\
+        },\
+        {\
+            "ascending": false,\
+            "columnName": "StatusDate"\
+        }\
+    ]\
+}
+
+#### Out
+
+A dummy pdf file.  Just for testing.  We can remove this endpoint later.
 
 ## Ticket
 

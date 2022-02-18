@@ -73,7 +73,7 @@ public class NokonaReportsResource {
 
 	}
 
-	@GET
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 //	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@Produces("application/pdf")
@@ -82,7 +82,7 @@ public class NokonaReportsResource {
 		new ReportProcesser(properties);
 		File file = null;
 		try {
-			file = getJasperReport(properties);
+			file = getJasperReportPDF(properties);
 			return Response.ok((Object)file)
 					.header("Content-Disposition", "attachment; filename=" + file.getAbsolutePath()).build();
 
@@ -90,16 +90,16 @@ public class NokonaReportsResource {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
 	}
-	@GET
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	//@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@Produces("application/pdf")
 	@Path("/csv")
 	public Response getCsvReport(ReportProperties properties) {
-
+		System.out.println("**************************" + properties.getReportName());
 		File file = null;
 		try {
-			file = getJasperReport(properties);
+			file = getJasperReportPDF(properties);
 			return Response.ok((Object)file)
 					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()).build();
 
@@ -108,7 +108,7 @@ public class NokonaReportsResource {
 		}
 	}
 
-	@GET
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@Path("/pdftest")
@@ -196,7 +196,64 @@ public class NokonaReportsResource {
 		return "Nokona_" + UUID.randomUUID().toString() + ".pdf";
 	}
 
-	private File getJasperReport(ReportProperties properties) throws PDFException {
+	private File getJasperReportPDF(ReportProperties properties) throws PDFException {
+		String fileName = PDF_DIRECTORY + "/" + generatePDFName();
+		// Check properties, etc. Figure out which template to use. Then, the below:
+		File dir = new File(PDF_DIRECTORY);
+		if (!dir.exists()) {
+			dir.mkdir();
+		}
+			String templateFileName;
+		try {
+//			String templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/LaborCodes.jrxml");
+			switch(properties.getCategory().getCategory()) {
+			case "EMPLOYEE":
+				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
+				break;
+			case "JOB":
+				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
+				break;
+			case "LABOR":
+				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
+				break;
+			case "OPERATION":
+				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
+				break;
+			case "TICKET":
+				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
+				break;
+			default:
+				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
+				break;
+			}
+
+
+			JasperReport jasperReport = JasperCompileManager.compileReport(templateFileName);
+
+			System.out.println("JasperReport");
+			Map<String, Object> parms = new HashMap<String, Object>();
+			
+			//  Practicing
+				parms.put("FIRST_LETTER", "F");
+				parms.put("ACTIVE1", 0);
+				parms.put("ACTIVE2", 1);
+		
+			
+			//  End Practice
+			conn = db.getConn();
+			System.out.println("Conn");
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parms, conn);
+			System.out.println("JasperPrint");
+			JasperExportManager.exportReportToPdfFile(jasperPrint, fileName);
+			System.out.println("JasperExportManager");
+
+		} catch (JRException e) {
+			System.out.println(e.getMessage());
+			throw new PDFException(e.getMessage());
+		}
+		return new File(fileName);
+	}
+	private File getJasperReportCSV(ReportProperties properties) throws PDFException { //TODO This is the CSV version (to be developed)
 		String fileName = PDF_DIRECTORY + "/" + generatePDFName();
 		// Check properties, etc. Figure out which template to use. Then, the below:
 		File dir = new File(PDF_DIRECTORY);

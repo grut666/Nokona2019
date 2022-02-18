@@ -15,8 +15,9 @@
 	</style>
 	<parameter name="ACTIVE1" class="java.lang.Integer"/>
 	<parameter name="ACTIVE2" class="java.lang.Integer"/>
+	<parameter name="FIRST_LETTER" class="java.lang.String"/>
 	<queryString language="SQL">
-		<![CDATA[select * from Employee E Join LaborCode L ON E.LaborCode = L.LaborCode Where Active = $P{ACTIVE1} or Active = $P{ACTIVE2} order by LastName, FirstName, EmpID;]]>
+		<![CDATA[select * from Employee E Join LaborCode L ON E.LaborCode = L.LaborCode Where Active = $P{ACTIVE1} or Active = $P{ACTIVE2} and LASTNAME > $P{FIRST_LETTER} order by LastName, FirstName, EmpID;]]>
 	</queryString>
 	<field name="LastName" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="Last Name"/>

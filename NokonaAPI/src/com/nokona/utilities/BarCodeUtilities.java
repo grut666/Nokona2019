@@ -79,6 +79,7 @@ public class BarCodeUtilities {
 		if (services != null) {
 			for (PrintService service : services) {
 				if (service.getName().contains("P3010") || service.getName().contains("P3015")) {
+					System.out.println(service.getName() + "********************************");
 					barCodePrinter = service;
 					break;
 				}

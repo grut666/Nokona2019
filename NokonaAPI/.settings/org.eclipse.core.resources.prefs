@@ -1,5 +1,7 @@
 eclipse.preferences.version=1
+encoding//JasperReports/EmployeesByName.jrxml=UTF-8
 encoding//JasperReports/LaborCodes.jrxml=UTF-8
 encoding//JasperReports/LaborCodesByLaborCode.jrxml=UTF-8
+encoding//WebContent/WEB-INF/JasperTemplates/Cherry.jrxml=UTF-8
 encoding//WebContent/WEB-INF/JasperTemplates/EmployeesByName.jrxml=UTF-8
 encoding//WebContent/WEB-INF/JasperTemplates/LaborCodes.jrxml=UTF-8

@@ -636,7 +636,7 @@ jobs/BXXX123
     ]\
 }
 
-### Get /reports/pdf # Get the requested report in .pdf format.  Only a portion of the body is usually needed.
+### POST /reports/pdf # Get the requested report in .pdf format.  Only a portion of the body is usually needed.
 #### In
 /reports/pdf
 
@@ -663,7 +663,65 @@ Body:
 
 #### Out
 
-Either a .pdf or .csv file, stream, or html.  Not sure yet.
+An application/pdf (.pdf) file.
+
+### POST /reports/csv # Get the requested report in .csv format.  Only a portion of the body is usually needed.
+#### In
+/reports/csv
+
+Body:
+{\
+    ""jobId": "222",\
+    "reportName": "Dummy Report",\
+    "endDate": "20200620142554-0500",\
+    "summaryNotDetail": true,\
+    "operatorId": "111",\
+    "startDate": "20200620142554-0500",\
+    "pdfNotExcel": true,\
+    "orderBys": [\
+        {\
+            "ascending": true,\
+            "columnName": "JobId"\
+        },\
+        {\
+            "ascending": false,\
+            "columnName": "StatusDate"\
+        }\
+    ]\
+}
+
+#### Out
+
+A .csv file.  Not sure yet the format. 
+
+### POST /reports/pdftest # Get a sample .pdf file.
+#### In
+/reports/pdftest
+
+Body:
+{\
+    ""jobId": "222",\
+    "reportName": "Dummy Report",\
+    "endDate": "20200620142554-0500",\
+    "summaryNotDetail": true,\
+    "operatorId": "111",\
+    "startDate": "20200620142554-0500",\
+    "pdfNotExcel": true,\
+    "orderBys": [\
+        {\
+            "ascending": true,\
+            "columnName": "JobId"\
+        },\
+        {\
+            "ascending": false,\
+            "columnName": "StatusDate"\
+        }\
+    ]\
+}
+
+#### Out
+
+A dummy pdf file.  Just for testing.  We can remove this endpoint later.
 
 ## Ticket
 
@@ -1010,56 +1068,6 @@ Body:
     "labels": "... Long Byte Stream of Multiple Sets of Labels ..."\
     
 }
-
-### Post /tickets # Add 1 ticket
-### Post /tickets?action=P # Add 1 ticket and print it
-
-#### In
-
-Body:
-
-{\
-    "jobId": "A-1150C-GR-LH",\
-    "quantity": 10\
-}
-
-#### Out
-
- "ticketHeader": {\
-        "jobId": "A-1150C-GR-LH",\
-        "dateCreated": "20210314132634-0500",\
-        "quantity": 10,\
-        "ticketStatus": "NEW",\
-        "description": "GRAY AMERICANKIP 11.5\" CLSD WEB - LEFT",\
-        "key": 40978,\
-        "dateStatus": "20210314132634-0500"\
-    },\
-    "ticketDetails": [\
-        {\
-            "employeeBarCodeID": 0,\
-            "operationStatus": "INCOMPLETE",\
-            "operationDescription": "SEGMENT A",\
-            "quantity": 10,\
-            "hourlyRateSAH": 0.0,\
-            "sequenceUpdated": 0,\
-            "opCode": "111",\
-            "sequenceOriginal": 0,\
-            "key": 40978\
-        },\
-        {\
-            "employeeBarCodeID": 0,\
-            "operationStatus": "INCOMPLETE",\
-            "operationDescription": "CLICK HEEL FELT               WORTH",\
-            "quantity": 10,\
-            "hourlyRateSAH": 0.0123,\
-            "sequenceUpdated": 1,\
-            "opCode": "W103",\
-            "sequenceOriginal": 1,\
-            "key": 40978\
-        }\
-    ]\
-}
-
 
 
 ### Labels (Called with @GET /employees/labels/{empID} and Tickets via @POST /tickets with action=P or via @GET /tickets/labels

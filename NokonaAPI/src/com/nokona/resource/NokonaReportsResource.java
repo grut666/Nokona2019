@@ -206,20 +206,20 @@ public class NokonaReportsResource {
 			String templateFileName;
 		try {
 //			String templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/LaborCodes.jrxml");
-			switch(properties.getCategory().getCategory()) {
+			switch(properties.getCategory().getCategory().toUpperCase()) {
 			case "EMPLOYEE":
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
 				break;
-			case "JOB":
+			case "Job":
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
 				break;
-			case "LABOR":
+			case "Labor":
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
 				break;
-			case "OPERATION":
+			case "Operation":
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
 				break;
-			case "TICKET":
+			case "Ticket":
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
 				break;
 			default:

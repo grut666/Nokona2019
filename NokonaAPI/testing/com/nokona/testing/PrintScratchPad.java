@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.nokona.enums.ReportCategory;
 import com.nokona.utilities.BarCodeUtilities;
 
 public class PrintScratchPad {
@@ -22,23 +23,27 @@ public class PrintScratchPad {
 //		System.out.println(BarCodeUtilities.convertBarCode2of5("123456"));
 //		System.out.println(BarCodeUtilities.convertBarCode2of5("1234567"));
 //		System.out.println(BarCodeUtilities.convertBarCode2of5("1234567"));
-		System.out.println(BarCodeUtilities.convertBarCode2of5("01234567"));
-		BarCodeUtilities.loadStrCodeTable();
-		String code = BarCodeUtilities.convertBarCode2of5("04098852");
-		System.out.println("Bar Codes are: ");
-		for (int i = 0; i < code.length(); i++) { 
-			System.out.print(code.charAt(i) + "-");					
-		}
-		System.out.println();
-		String strDesc = "____abcdefg____";
-		strDesc = StringUtils.stripEnd(strDesc, "_");
-		System.out.println("strDesc is " + strDesc);
+//		System.out.println(BarCodeUtilities.convertBarCode2of5("01234567"));
+//		BarCodeUtilities.loadStrCodeTable();
+//		String code = BarCodeUtilities.convertBarCode2of5("04098852");
+//		System.out.println("Bar Codes are: ");
+//		for (int i = 0; i < code.length(); i++) { 
+//			System.out.print(code.charAt(i) + "-");					
+//		}
+//		System.out.println();
+//		String strDesc = "____abcdefg____";
+//		strDesc = StringUtils.stripEnd(strDesc, "_");
+//		System.out.println("strDesc is " + strDesc);
+//		
+//		String strDescAll = "aaaa      bbbb               cccc                ";
+//		System.out.println(strDescAll.replaceAll("\\s+", "_"));
+//		System.out.println(strDescAll);
+//		strDescAll = strDescAll.replaceAll("\\s+", "_");
+//		System.out.println(strDescAll);
+		ReportCategory rc = ReportCategory.EMPLOYEE;
+
+		System.out.println(rc.getCategory());
 		
-		String strDescAll = "aaaa      bbbb               cccc                ";
-		System.out.println(strDescAll.replaceAll("\\s+", "_"));
-		System.out.println(strDescAll);
-		strDescAll = strDescAll.replaceAll("\\s+", "_");
-		System.out.println(strDescAll);
 		
 
 		

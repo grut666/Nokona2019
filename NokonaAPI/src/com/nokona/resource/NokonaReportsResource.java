@@ -19,6 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 import javax.servlet.ServletContext;
 
 import com.nokona.data.NokonaDatabase;
@@ -83,6 +84,9 @@ public class NokonaReportsResource {
 		File file = null;
 		try {
 			file = getJasperReportPDF(properties);
+			if (file == null) {
+				return Response.status(Status.BAD_REQUEST).build();
+			}
 			return Response.ok((Object)file)
 					.header("Content-Disposition", "attachment; filename=" + file.getAbsolutePath()).build();
 
@@ -100,6 +104,9 @@ public class NokonaReportsResource {
 		File file = null;
 		try {
 			file = getJasperReportPDF(properties);
+			if (file == null) {
+				return Response.status(Status.BAD_REQUEST).build();
+			}
 			return Response.ok((Object)file)
 					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()).build();
 
@@ -206,6 +213,11 @@ public class NokonaReportsResource {
 			String templateFileName;
 		try {
 //			String templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/LaborCodes.jrxml");
+			ReportCategory rc = properties.getCategory();
+			if (rc == null) {
+				return null;
+			}
+					
 			switch(properties.getCategory().getCategory().toUpperCase()) {
 			case "EMPLOYEE":
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");

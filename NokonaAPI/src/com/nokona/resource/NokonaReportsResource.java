@@ -279,7 +279,7 @@ public class NokonaReportsResource {
 				JasperExportManager.exportReportToPdfFile(jasperPrint, fileName);
 			} else {
 				JasperExportManager.exportReportToHtmlFile(jasperPrint, fileName);
-				JRCsvExporter.
+//				JRCsvExporter.
 			}
 			System.out.println("JasperExportManager");
 

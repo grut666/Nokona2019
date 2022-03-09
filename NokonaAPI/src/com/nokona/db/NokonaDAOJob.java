@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.nokona.data.NokonaDatabaseJob;
 import com.nokona.enums.JobType;
 import com.nokona.exceptions.DataNotFoundException;
@@ -238,7 +240,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 //				throw new DataNotFoundException("Error.  Delete JobHeader JobID " + jobId + " failed");
 //				Do Nothing because this may have been called from an add or update where it didn't exist
 			}
-			deleteJobDetailsByJobId(jobId, jobHeaderKey);
+//			deleteJobDetailsByJobId(jobId, jobHeaderKey); // Keep Job details for now
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -283,6 +285,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	// }
 	// }
 
+	// Not going to delete Job Details for now as they may be attached to more than one job (-LH, -RH, etc)
 	private void deleteJobDetailsByJobId(String jobId, long jobHeaderKey) throws DatabaseException {
 
 		try (PreparedStatement psDelJobDetailByJobId = conn
@@ -305,6 +308,8 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		try (PreparedStatement psGetJobDetailByJobId = conn
 				.prepareStatement("Select * from JobDetail where JobID = ? order by sequence");) {
 			System.err.println("-----------------JOB ID IS:" + jobId + ":-----------------");
+			jobId = StringUtils.removeEnd(jobId, "-LH");
+			jobId = StringUtils.removeEnd(jobId, "-RH");
 			psGetJobDetailByJobId.setString(1, jobId);
 			ResultSet rs = psGetJobDetailByJobId.executeQuery();
 			details = convertJobDetailsFromResultSet(rs);
@@ -328,7 +333,10 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			try(PreparedStatement psAddJobDetail = conn
 					.prepareStatement("INSERT INTO JobDetail " + "(JobId, OpCode, Sequence) " + " values (?,?,?)");
  ) {
-				psAddJobDetail.setString(1, jobDetail.getJobId());
+				String jobId = jobDetail.getJobId();
+				jobId = StringUtils.removeEnd(jobId, "-LH");
+				jobId = StringUtils.removeEnd(jobId, "-RH");
+				psAddJobDetail.setString(1, jobId);
 				psAddJobDetail.setString(2, jobDetail.getOpCode());
 				psAddJobDetail.setInt(3, jobDetail.getSequence());
 				int rowsAffected = psAddJobDetail.executeUpdate();

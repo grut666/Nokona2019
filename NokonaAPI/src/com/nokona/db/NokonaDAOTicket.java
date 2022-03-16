@@ -190,10 +190,15 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 					op = operationDAO.getOperation(jobDetail.getOpCode());
 					String opCode = jobDetail.getOpCode();
 					String opDesc = op.getDescription();
+					double opPremium =jobDetail.getOpPremium();
+					opPremium = opPremium < 1.000 ? 1.0000 : opPremium;
 					OperationStatus status = OperationStatus.INCOMPLETE;
 					int sequence = jobDetail.getSequence() + 1;    // The plus 1 is to keep consistent with the old system ... for now anyway.
 					int quantity = formattedTicketHeader.getQuantity();
-					double sah = op.getHourlyRateSAH();
+					double sah = op.getHourlyRateSAH() * opPremium;
+					if (ticketHeader.getJobId().endsWith("-RH")) {
+						sah *= 1.1;
+					}
 					String opDescription = op.getDescription();
 					laborCode = laborCodeDAO.getLaborCode(op.getLaborCode());
 					String laborDescription = laborCode.getDescription();

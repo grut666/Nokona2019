@@ -415,7 +415,8 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			String jobId = rs.getString("JobID");
 			String opCode = rs.getString("OpCode");
 			int sequence = rs.getInt("Sequence");
-			details.add(new JobDetail(jobId, opCode, sequence));
+			double opPremium = rs.getInt("OperationPremium");
+			details.add(new JobDetail(jobId, opCode, sequence, opPremium));
 		}
 		return details;
 	}

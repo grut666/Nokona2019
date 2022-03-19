@@ -87,16 +87,18 @@ public class NokonaReportsResource {
 	@Produces("application/pdf")
 	@Path("/pdf")
 	public Response getPdfReport(ReportProperties properties) {
-		new ReportProcesser(properties);
+//		new ReportProcesser(properties);
 		File file = null;
 		try {
 			file = getJasperReport(properties);
 			if (file == null) {
 				return Response.status(Status.BAD_REQUEST).build();
 			}
+			String returnString =  "attachment; filename=" + file.getAbsolutePath();
+			System.out.println(returnString);
 			return Response.ok((Object) file)
-					.header("Content-Disposition", "attachment; filename=" + file.getAbsolutePath()).build();
-
+				//	.header("Content-Disposition", "attachment; filename=" + file.getAbsolutePath()).build();
+					.header("Content-Disposition", returnString).build();
 		} catch (PDFException e) {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
@@ -131,80 +133,7 @@ public class NokonaReportsResource {
 		return getPdfReport(null);
 	}
 
-	// @GET
-	//// @Produces("application/octet-stream")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// @Path("/csv")
-	// public Response getCsvReport(ReportProperties properties) {
-	//// File fileNew = new File("c:/codebase/Reports/output.csv");
-	//// try {
-	//// fileNew.createNewFile();
-	//// } catch (IOException e) {
-	//// return Response.ok(e.getMessage()).build();
-	//// }
-	//// File file = new File("c:/codebase/Reports/output.csv");
-	//// return Response.ok(file).header("Content-Disposition", "attachment;
-	// filename=\"c:/codebase/Reports/output.csv\"").build();
-	// return Response.ok(new Operation("csv","Test",1.1,5,10,15 )).build();
-	// }
-
-	// private File testPDF() throws PDFException {
-	//
-	// File dir = new File(PDF_DIRECTORY);
-	// if (!dir.exists()) {
-	// dir.mkdir();
-	// }
-	//
-	// File file;
-	//
-	// try {
-	// file = new File(pdfFile());
-	// } catch (IOException e) {
-	// throw new PDFException(e.getMessage());
-	// }
-	//
-	// return file;
-	// }
-
-	// private String pdfFile() throws IOException {
-	// String fileName = PDF_DIRECTORY + "/" + generatePDFName();
-	//
-	// PDDocument document = new PDDocument();
-	//
-	// PDPage pdPage = new PDPage();
-	// document.addPage(pdPage);
-	// PDPageContentStream contentStream = new PDPageContentStream(document,
-	// pdPage);
-	//
-	// // Begin the Content stream
-	// contentStream.beginText();
-	//
-	// // Setting the font to the Content stream
-	// contentStream.setFont(PDType1Font.TIMES_ROMAN, 12);
-	//
-	// // Setting the position for the line
-	//
-	// contentStream.newLineAtOffset(1, 500);
-	//
-	// String text = "This is the sample document. Hello from Mark";
-	//
-	// // Adding text in the form of string
-	// contentStream.showText(text);
-	//
-	// // Ending the content stream
-	// contentStream.endText();
-	//
-	// System.out.println("Content added");
-	//
-	// // Closing the content stream
-	// contentStream.close();
-	// document.save(fileName);
-	//
-	// document.close();
-	//
-	// return fileName;
-	// }
-
+	
 	private String generatePDFName() {
 		// return "Nokona_" + UUID.randomUUID().toString() + ".pdf"; // This will be the
 		// real file after test
@@ -253,7 +182,7 @@ public class NokonaReportsResource {
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
 				break;
 			case "TICKET":
-				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
+				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/TicketSummary.jrxml");
 				break;
 			default:
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");

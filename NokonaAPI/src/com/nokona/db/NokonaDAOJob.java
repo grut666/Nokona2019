@@ -353,6 +353,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	@Override
 	public Job getJob(String jobId) throws DatabaseException {
 		Job job = new Job(getJobHeader(jobId), getJobDetails(jobId));
+		
 		return job;
 
 	}

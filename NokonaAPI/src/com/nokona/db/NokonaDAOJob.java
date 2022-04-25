@@ -20,7 +20,7 @@ import com.nokona.formatter.JobFormatter;
 import com.nokona.model.Job;
 import com.nokona.model.JobDetail;
 import com.nokona.model.JobHeader;
-import com.nokona.validator.JobValidator;
+// import com.nokona.validator.JobValidator;
 
 public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
@@ -65,8 +65,9 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 				if (rs.next()) {
 					jobHeader = convertJobHeaderFromResultSet(rs);
 				} else {
-					System.err.println("-----------------JOB ID IS NOT FOUND:" + jobId + ":-----------------");
-					throw new DataNotFoundException("3. Job: JobID " + jobId + " is not in DB");
+					// Do nothing.  Return null.  This may be because of being called from Delete
+//					System.err.println("-----------------JOB ID IS NOT FOUND:" + jobId + ":-----------------");
+//					throw new DataNotFoundException("3. Job: JobID " + jobId + " is not in DB");
 
 				}
 			}
@@ -227,8 +228,8 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
 	@Override
 	public void deleteJob(String jobId) throws DatabaseException {
-		JobHeader jobHeader = getJobHeader(jobId);
-		long jobHeaderKey = jobHeader.getKey();
+//		JobHeader jobHeader = getJobHeader(jobId);
+//		long jobHeaderKey = jobHeader.getKey();
 		if (jobId == null) {
 			throw new NullInputDataException("jobID cannot be null");
 		}
@@ -286,21 +287,21 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	// }
 
 	// Not going to delete Job Details for now as they may be attached to more than one job (-LH, -RH, etc)
-	private void deleteJobDetailsByJobId(String jobId, long jobHeaderKey) throws DatabaseException {
-
-		try (PreparedStatement psDelJobDetailByJobId = conn
-				.prepareStatement("Delete From JobDetail where JobDetail.JobId = ?");) {
-			psDelJobDetailByJobId.setString(1, jobId);
-			int rowCount = psDelJobDetailByJobId.executeUpdate();
-
-//			if (rowCount == 0) {
-//				throw new DataNotFoundException("Error.  JobDetail  " + jobId + " failed");
-//			}
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new DatabaseException(e.getMessage());
-		}
-	}
+//	private void deleteJobDetailsByJobId(String jobId, long jobHeaderKey) throws DatabaseException {
+//
+//		try (PreparedStatement psDelJobDetailByJobId = conn
+//				.prepareStatement("Delete From JobDetail where JobDetail.JobId = ?");) {
+//			psDelJobDetailByJobId.setString(1, jobId);
+//			int rowCount = psDelJobDetailByJobId.executeUpdate();
+//
+////			if (rowCount == 0) {
+////				throw new DataNotFoundException("Error.  JobDetail  " + jobId + " failed");
+////			}
+//		} catch (SQLException e) {
+//			System.err.println(e.getMessage());
+//			throw new DatabaseException(e.getMessage());
+//		}
+//	}
 
 	@Override
 	public List<JobDetail> getJobDetails(String jobId) throws DatabaseException {

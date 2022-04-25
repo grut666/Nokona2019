@@ -20,7 +20,7 @@ import com.nokona.formatter.JobFormatter;
 import com.nokona.model.Job;
 import com.nokona.model.JobDetail;
 import com.nokona.model.JobHeader;
-import com.nokona.validator.JobValidator;
+// import com.nokona.validator.JobValidator;
 
 public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
@@ -65,8 +65,9 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 				if (rs.next()) {
 					jobHeader = convertJobHeaderFromResultSet(rs);
 				} else {
-					System.err.println("-----------------JOB ID IS NOT FOUND:" + jobId + ":-----------------");
-					throw new DataNotFoundException("3. Job: JobID " + jobId + " is not in DB");
+					// Do nothing.  Return null.  This may be because of being called from Delete
+//					System.err.println("-----------------JOB ID IS NOT FOUND:" + jobId + ":-----------------");
+//					throw new DataNotFoundException("3. Job: JobID " + jobId + " is not in DB");
 
 				}
 			}
@@ -240,7 +241,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 //				throw new DataNotFoundException("Error.  Delete JobHeader JobID " + jobId + " failed");
 //				Do Nothing because this may have been called from an add or update where it didn't exist
 			}
-//			deleteJobDetailsByJobId(jobId, jobHeaderKey); // Keep Job details for now
+			deleteJobDetailsByJobId(jobId, jobHeaderKey); // Keep Job details for now
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -286,12 +287,16 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	// }
 
 	// Not going to delete Job Details for now as they may be attached to more than one job (-LH, -RH, etc)
+	// Going to now 4-25-22
 	private void deleteJobDetailsByJobId(String jobId, long jobHeaderKey) throws DatabaseException {
 
 		try (PreparedStatement psDelJobDetailByJobId = conn
-				.prepareStatement("Delete From JobDetail where JobDetail.JobId = ?");) {
+				.prepareStatement("Delete From JobDetail where JobDetail.JobId = ?")) {
+			jobId = StringUtils.removeEnd(jobId, "-LH");
+			jobId = StringUtils.removeEnd(jobId, "-RH");
 			psDelJobDetailByJobId.setString(1, jobId);
-			int rowCount = psDelJobDetailByJobId.executeUpdate();
+//			int rowCount =
+					psDelJobDetailByJobId.executeUpdate();
 
 //			if (rowCount == 0) {
 //				throw new DataNotFoundException("Error.  JobDetail  " + jobId + " failed");

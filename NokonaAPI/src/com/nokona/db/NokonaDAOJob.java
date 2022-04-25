@@ -307,6 +307,23 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		}
 	}
 
+//	private void deleteJobDetailsByJobId(String jobId, long jobHeaderKey) throws DatabaseException {
+//
+//		try (PreparedStatement psDelJobDetailByJobId = conn
+//				.prepareStatement("Delete From JobDetail where JobDetail.JobId = ?");) {
+//			psDelJobDetailByJobId.setString(1, jobId);
+//			int rowCount = psDelJobDetailByJobId.executeUpdate();
+//
+////			if (rowCount == 0) {
+////				throw new DataNotFoundException("Error.  JobDetail  " + jobId + " failed");
+////			}
+//		} catch (SQLException e) {
+//			System.err.println(e.getMessage());
+//			throw new DatabaseException(e.getMessage());
+//		}
+//	}
+
+
 	@Override
 	public List<JobDetail> getJobDetails(String jobId) throws DatabaseException {
 		List<JobDetail> details;

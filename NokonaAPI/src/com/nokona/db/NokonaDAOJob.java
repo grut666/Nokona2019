@@ -228,8 +228,9 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
 	@Override
 	public void deleteJob(String jobId) throws DatabaseException {
-		JobHeader jobHeader = getJobHeader(jobId);
-		long jobHeaderKey = jobHeader.getKey();
+//		JobHeader jobHeader = getJobHeader(jobId);
+//		long jobHeaderKey = jobHeader.getKey();
+		System.err.println("Job ID is " + jobId);
 		if (jobId == null) {
 			throw new NullInputDataException("jobID cannot be null");
 		}
@@ -241,7 +242,8 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 //				throw new DataNotFoundException("Error.  Delete JobHeader JobID " + jobId + " failed");
 //				Do Nothing because this may have been called from an add or update where it didn't exist
 			}
-			deleteJobDetailsByJobId(jobId, jobHeaderKey); // Keep Job details for now
+			System.err.println("Row Count is " + rowCount);
+			deleteJobDetailsByJobId(jobId); 
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -288,16 +290,17 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
 	// Not going to delete Job Details for now as they may be attached to more than one job (-LH, -RH, etc)
 	// Going to now 4-25-22
-	private void deleteJobDetailsByJobId(String jobId, long jobHeaderKey) throws DatabaseException {
-
+	private void deleteJobDetailsByJobId(String jobId) throws DatabaseException {
+		System.err.println("Detail JobId 1 is " + jobId);
 		try (PreparedStatement psDelJobDetailByJobId = conn
 				.prepareStatement("Delete From JobDetail where JobDetail.JobId = ?")) {
 			jobId = StringUtils.removeEnd(jobId, "-LH");
 			jobId = StringUtils.removeEnd(jobId, "-RH");
 			psDelJobDetailByJobId.setString(1, jobId);
-//			int rowCount =
+			System.err.println("Detail JobId 2 is " + jobId);
+			int rowCount =
 					psDelJobDetailByJobId.executeUpdate();
-
+			System.err.println("Detail Row Count is " + rowCount);
 //			if (rowCount == 0) {
 //				throw new DataNotFoundException("Error.  JobDetail  " + jobId + " failed");
 //			}
@@ -335,9 +338,9 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			psGetJobDetailByJobId.setString(1, jobId);
 			ResultSet rs = psGetJobDetailByJobId.executeQuery();
 			details = convertJobDetailsFromResultSet(rs);
-			if (details.isEmpty()) {
-				throw new DataNotFoundException("2. Job: JobID " + jobId + " is not in DB");
-			}
+//			if (details.isEmpty()) {
+//				throw new DataNotFoundException("2. Job: JobID " + jobId + " is not in DB");
+//			} // This may be legit.  A Job with no details.
 			return details;
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -353,7 +356,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	@Override
 	public void addJobDetail(JobDetail jobDetail) throws DatabaseException {
 			try(PreparedStatement psAddJobDetail = conn
-					.prepareStatement("INSERT INTO JobDetail " + "(JobId, OpCode, Sequence) " + " values (?,?,?)");
+					.prepareStatement("INSERT INTO JobDetail " + "(JobId, OpCode, Sequence, OperationPremium) " + " values (?,?,?,?)");
  ) {
 				String jobId = jobDetail.getJobId();
 				jobId = StringUtils.removeEnd(jobId, "-LH");
@@ -361,6 +364,8 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 				psAddJobDetail.setString(1, jobId);
 				psAddJobDetail.setString(2, jobDetail.getOpCode());
 				psAddJobDetail.setInt(3, jobDetail.getSequence());
+				System.err.println("Op Premium is " + jobDetail.getOpPremium());
+				psAddJobDetail.setDouble(4, jobDetail.getOpPremium());
 				int rowsAffected = psAddJobDetail.executeUpdate();
 				if (rowsAffected != 1) {
 					throw new DatabaseException("Detail row not added");
@@ -408,7 +413,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		System.err.println("Formatted JobHeader is " + formattedJobHeader);
 
 		for (JobDetail jobDetail : job.getDetails()) {
-			System.err.println(jobDetail);
+			System.err.println("Job detail in is " + jobDetail);
 			addJobDetail(jobDetail);
 		}
 		return getJob(jobId);
@@ -433,12 +438,14 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	private List<JobDetail> convertJobDetailsFromResultSet(ResultSet rs) throws SQLException {
 
 		List<JobDetail> details = new ArrayList<JobDetail>();
+		System.err.println("Getting rs details");
 		while (rs.next()) {
-			System.err.println("Getting rs details");
+			
 			String jobId = rs.getString("JobID");
 			String opCode = rs.getString("OpCode");
 			int sequence = rs.getInt("Sequence");
-			double opPremium = rs.getInt("OperationPremium");
+			double opPremium = rs.getDouble("OperationPremium");
+			System.err.println("Op Premium in convert is " + sequence + "  " + opPremium);
 			details.add(new JobDetail(jobId, opCode, sequence, opPremium));
 		}
 		return details;

@@ -20,7 +20,7 @@ import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.model.Job;
 import com.nokona.model.JobDetail;
 import com.nokona.model.JobHeader;
-import com.nokona.utilities.TransferToAccess;
+
 
 @Path("/jobs")
 public class NokonaJobResource {
@@ -84,7 +84,7 @@ public class NokonaJobResource {
 		}
 		try {
 			JobHeader jobHeader = db.updateJobHeader(jobHeaderIn);
-			TransferToAccess.transfer("JOBHEADER_U");
+//			TransferToAccess.transfer("JOBHEADER_U");
 			return Response.status(200).entity(jobHeader).build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
@@ -104,7 +104,7 @@ public class NokonaJobResource {
 		JobHeader jobHeader;
 		try {
 			jobHeader = db.addJobHeader(jobHeaderIn);
-			TransferToAccess.transfer("JOBHEADER_C");
+//			TransferToAccess.transfer("JOBHEADER_C");
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -144,7 +144,7 @@ public class NokonaJobResource {
 		}
 		try {
 			db.updateJobDetail(jobDetailIn);
-			TransferToAccess.transfer("JOBDETAIL_U");
+//			TransferToAccess.transfer("JOBDETAIL_U");
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
@@ -164,7 +164,7 @@ public class NokonaJobResource {
 
 		try {
 		  db.addJobDetail(jobDetailIn);
-		  TransferToAccess.transfer("JOBDETAIL_C");
+//		  TransferToAccess.transfer("JOBDETAIL_C");
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {

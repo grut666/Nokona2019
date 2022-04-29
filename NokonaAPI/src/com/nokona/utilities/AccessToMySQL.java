@@ -887,7 +887,7 @@ public class AccessToMySQL {
 		int standardQuantity = rs.getInt("standardQuantity");
 		String jobTypeString = rs.getString("JobType");
 		JobType jobType = JobType.UNKNOWN;
-		if ("B".equals(jobTypeString) || "S".equals(jobTypeString)) {
+		if (JobType.contains(jobTypeString)) {
 			jobType = JobType.valueOf(jobTypeString);
 		}
 

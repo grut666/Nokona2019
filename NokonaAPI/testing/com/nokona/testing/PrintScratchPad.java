@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.nokona.enums.JobType;
 import com.nokona.enums.ReportCategory;
 import com.nokona.utilities.BarCodeUtilities;
 
@@ -40,12 +41,16 @@ public class PrintScratchPad {
 //		System.out.println(strDescAll);
 //		strDescAll = strDescAll.replaceAll("\\s+", "_");
 //		System.out.println(strDescAll);
-		ReportCategory rc = ReportCategory.EMPLOYEE;
+//		ReportCategory rc = ReportCategory.EMPLOYEE;
 
-		System.out.println(rc.getCategory());
+//		System.out.println(rc.getCategory());
 		
-		
-
+		String code = "CS";
+		if (JobType.contains(code)) {
+			System.out.println("Yes");
+		} else
+		{ System.out.println("No");
+		}
 		
 	}
 

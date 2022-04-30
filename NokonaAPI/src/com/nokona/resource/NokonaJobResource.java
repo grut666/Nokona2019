@@ -232,6 +232,7 @@ public class NokonaJobResource {
 	public Response updateJob(Job jobIn) {
 		Job job;
 		try {
+			System.err.println("Job Type is " + jobIn.getHeader().getJobType().getJobType());
 			job = db.addJob(jobIn);
 //			TransferToAccess.transfer("JOBHEADER_C");
 //			TransferToAccess.transfer("JOBDETAIL_C");

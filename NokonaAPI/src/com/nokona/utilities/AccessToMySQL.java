@@ -42,11 +42,12 @@ public class AccessToMySQL {
 		while (rs.next()) {
 			System.out.println(rs.getString("TABLE_NAME"));
 		}
-		// doEmployees();
-		// doLaborCodes();
+		//  doLaborCodes();
+		 // doEmployees();
+		
 		// doOperations();
-		// doTickets();
-		doJobs();
+		 doTickets();
+		// doJobs();
 		long endTime = System.currentTimeMillis();
 		try {
 			mySqlConn.close();
@@ -58,13 +59,13 @@ public class AccessToMySQL {
 	}
 
 	public static void doTickets() {
-		doTicketHeaders();
-		doTicketDetail();
+//		doTicketHeaders();
+ 		doTicketDetail();
 	}
 
 	public static void doJobs() {
 //		doJobHeaders();
-		doJobDetails();
+//		doJobDetails();
 	}
 
 	public static void connect() {
@@ -328,15 +329,15 @@ public class AccessToMySQL {
 				psInsert.setLong(3, Long.parseLong(fields[2]));
 				psInsert.setDate(4, DateUtilities.stringToSQLDate(fields[3]));
 				psInsert.setString(5, fields[4]);
-				psInsert.setLong(6, Long.parseLong(fields[5]));
+				psInsert.setLong(6, Long.parseLong(fields[12]));
 				psInsert.setDouble(7, Double.parseDouble(fields[6]));
 				psInsert.setLong(8, Long.parseLong(fields[7]));
 				psInsert.setDouble(9, Double.parseDouble(fields[8]));
 				psInsert.setLong(10, Long.parseLong(fields[2])); // Set updatedsequence to sequence
-				psInsert.setLong(11, Integer.parseInt(fields[9]));
+				psInsert.setLong(11, Integer.parseInt(fields[5]));
 				psInsert.setString(12, fields[10]);
 				psInsert.setString(13, fields[11]);
-				psInsert.setLong(14, Long.parseLong(fields[12]));
+				psInsert.setLong(14, Long.parseLong(fields[9]));
 				psInsert.addBatch();
 			}
 			insertedRows = psInsert.executeBatch();
@@ -642,16 +643,33 @@ public class AccessToMySQL {
 			for (String record : recordsIn) {
 				System.out.println(record);
 				String[] fields = record.split("~");
+				if ("FALSE".equals(fields[6]) && ! "GUI10".equals(fields[5]) ) {
+					continue;
+				}
+				if ("Last Name".equals(fields[1])) {
+					continue;
+				}
 				psInsert.setLong(1, Long.parseLong(fields[0]));
 				psInsert.setString(2, fields[1]);
 				psInsert.setString(3, fields[2]);
+				if (fields[3].equals("1045")) {
+					fields[5] = "VIL30";
+				}
+//				if (fields[3].equals("2535")) {
+//					fields[5] = "THO21";
+//				}
+//				if (fields[3].equals("3901")) {
+//					fields[5] = "MOR11";
+//				}
+				
 				psInsert.setLong(4, Long.parseLong(fields[3]));
 				psInsert.setLong(5, Long.parseLong(fields[4]));
 				psInsert.setString(6, fields[5]);
 				psInsert.setLong(7, "TRUE".equals(fields[6]) ? 1 : 0);
-				psInsert.addBatch();
+				psInsert.executeUpdate();
+//				psInsert.addBatch();
 			}
-			insertedRows = psInsert.executeBatch();
+//			insertedRows = psInsert.executeBatch();
 			psInsert.close();
 		} catch (SQLException e) {
 			try {
@@ -662,11 +680,11 @@ public class AccessToMySQL {
 			}
 		}
 		System.out.println("Finished Inserting: ");
-		for (int i : insertedRows) {
-			System.out.print(i + " ");
-		}
+//		for (int i : insertedRows) {
+//			System.out.print(i + " ");
+//		}
 		System.out.println();
-		System.out.println(insertedRows.length + " Rows inserted");
+//		System.out.println(insertedRows.length + " Rows inserted");
 
 		try {
 			mySqlConn.commit();
@@ -711,7 +729,7 @@ public class AccessToMySQL {
 		}
 		System.out.println("Finished loading laborcodes.  Beginning deleting laborcodes");
 		try {
-			psDelete = mySqlConn.prepareStatement("Truncate LaborCode");
+			psDelete = mySqlConn.prepareStatement("delete from LaborCode WHERE LABORRATE > -1");
 			rowsDeleted = psDelete.executeUpdate();
 			psDelete.close();
 		} catch (SQLException e) {

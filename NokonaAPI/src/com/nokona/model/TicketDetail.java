@@ -27,5 +27,15 @@ public class TicketDetail {
 	private String laborDescription;
 	private double laborRate;
 	private int employeeBarCodeID;
+	public TicketDetail(long key) {
+		// This is for the final ticket in the sequence - Job Complete
+		this.key = key;
+		this.opCode = "ZZZ";
+		this.operationDescription = "Job Complete";
+		this.operationStatus = OperationStatus.COMPLETE;
+		this.sequenceOriginal = 99;
+		this.sequenceUpdated = 99;
+		this.statusDate = new Date();
+	}
 		
-}
+	}

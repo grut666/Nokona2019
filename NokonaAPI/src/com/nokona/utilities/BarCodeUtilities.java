@@ -149,8 +149,9 @@ public class BarCodeUtilities {
 		if (ticketIn == null) {
 			throw new NullInputDataException("Ticket cannot be null");
 		}
-
+		TicketDetail ticketComplete = new TicketDetail(ticketIn.getTicketHeader().getKey());
 		TicketHeader th = ticketIn.getTicketHeader();
+		ticketIn.getTicketDetails().add(ticketComplete); // Add to produce a final ticket with opCode ZZZ.  When scanned, shows job completed
 
 		String star44 = "********************************************";
 		String star15 = "***************     ";

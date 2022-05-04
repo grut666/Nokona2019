@@ -182,7 +182,7 @@ public class NokonaReportsResource {
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
 				break;
 			case "TICKET":
-				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/TicketSummary.jrxml");
+				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/TicketWIP.jrxml");
 				break;
 			default:
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");

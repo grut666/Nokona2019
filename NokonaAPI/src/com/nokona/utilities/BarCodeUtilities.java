@@ -408,8 +408,8 @@ public class BarCodeUtilities {
 				.append("&a2.1C").append(star44);
 
 		String output = sb.toString();
-//		return output.replaceAll("\"", "\\\\\""); // What the hell is this?
-		return output; 
+		return output.replaceAll("\"", "\\\\\""); // What the hell is this?
+//		return output; 
 
 	}
 

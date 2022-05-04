@@ -23,16 +23,18 @@ public class BarCodeUtilities {
 	private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
 	public static String formatBarCode(String strIn) {
+		String strOut = strIn;;
 		if (!isBuilt) {
 			loadStrCodeTable();
+			isBuilt = true;
 		}
 		int strLen = strIn.length();
 		if (strLen < 8) {
-			strIn = new String(new char[8 - strLen]).replace("\0", "0") + strIn;
+			strOut = new String(new char[8 - strLen]).replace("\0", "0") + strIn;
 		} else if (strLen % 2 == 1) {
-			strIn = "0" + strIn;
+			strOut = "0" + strIn;
 		}
-		return strIn;
+		return strOut;
 	}
 
 	public static String convertBarCode2of5(String strIn) {
@@ -393,7 +395,8 @@ public class BarCodeUtilities {
 
 		sb.append(ESC).append("&a").append(intRowCount + 0.3).append("R"); // ' Set Vertical Coordinate)
 		sb.append(ESC).append("&a0.1C").append("TICKET:").append(strTkt1).append(ESC).append("&a0.5C")
-				.append(dateCreated);
+				.append(dateCreated).append(ESC).append("&a1.1C").append(strJobDesc).append(ESC).append("&a2.1C").append("TICKET:")
+				.append(strTkt1).append(ESC).append("&a2.5C").append(dateCreated);
 
 		sb.append(ESC).append("&a").append(intRowCount + 0.48).append("R"); // ' Set Vertical Coordinate)
 		sb.append(ESC).append("&a0.1C").append(star44).append(ESC).append("&a1.1C").append("TICKET:");
@@ -405,7 +408,9 @@ public class BarCodeUtilities {
 				.append("&a2.1C").append(star44);
 
 		String output = sb.toString();
-		return output.replaceAll("\"", "\\\\\"");
+//		return output.replaceAll("\"", "\\\\\""); // What the hell is this?
+		return output; 
+
 	}
 
 	private static String replaceLeadingWithUnderScores(String input) {

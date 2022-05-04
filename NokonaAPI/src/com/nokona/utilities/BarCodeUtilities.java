@@ -240,7 +240,6 @@ public class BarCodeUtilities {
 				int quantity = td0.getStandardQuantity();
 				strSequence[0] = String.format("%02d", td0.getSequenceOriginal());
 				strRate[0] = String.format("%7.4f", rate);
-
 				strRateFormatted[0] = strRate[0].replaceAll(" ", "_");
 				strExt[0] = String.format("%7.4f", rate * quantity);
 				strExt[0].replace(" ", "_");
@@ -288,19 +287,20 @@ public class BarCodeUtilities {
 				sb.append(ESC).append("(0U").append(ESC).append("(s1p6v0s0b16602T"); // ' 6 pitch arial
 				sb.append(ESC).append("&k330H").append(ESC).append("&l48C"); // ' Column width and vertical height
 				sb.append(ESC).append("&a").append(intRowCount).append("R"); // Move to Row number
+				// Line 1 - Job and TKT:
 				line1.append(ESC).append("&a0.1C").append(strJobId).append(ESC).append("&a0.5C").append("TKT:")
 						.append(strTkt1).append("__").append(strSequence[0]).append(ESC).append("&a1.1C")
 						.append(strJobId).append(ESC).append("&a1.5C").append("TKT:").append(strTkt1).append("__")
 						.append(strSequence[1]).append(ESC).append("&a2.1C").append(strJobId).append(ESC)
 						.append("&a2.5C").append("TKT:").append(strTkt1).append("__").append(strSequence[2]);
-
+				// Line 2 - QTY: and RATE and EXT
 				line2.append(ESC).append("&a0.1C").append("QTY:").append(strQtyFormatted).append(ESC).append("&a0.4C")
 						.append("RATE:_").append(strRateFormatted[0]).append(ESC).append("&a0.7C").append("EXT:")
-						.append(ESC).append("&a1.1C").append("QTY:").append(strQtyFormatted).append(ESC)
+						.append(strExt[0]).append(ESC).append("&a1.1C").append("QTY:").append(strQtyFormatted).append(ESC)
 						.append("&a1.4C").append("RATE:_").append(strRateFormatted[1]).append(ESC).append("&a01.7C")
-						.append("EXT:").append(ESC).append("&a2.1C").append("QTY:").append(strQtyFormatted).append(ESC)
+						.append("EXT:").append(strExt[1]).append(ESC).append("&a2.1C").append("QTY:").append(strQtyFormatted).append(ESC)
 						.append("&a2.4C").append("RATE:_").append(strRateFormatted[2]).append(ESC).append("&a2.7C")
-						.append("EXT:");
+						.append("EXT:").append(strExt[2]);
 				strDesc0[0] = strDesc0[0] == null ? "" : strDesc0[0].replace(" ", "_");
 				strDesc0[0] = StringUtils.stripEnd(strDesc0[0], "_");
 				strDesc0[1] = strDesc0[1] == null ? "" : strDesc0[1].replace(" ", "_");
@@ -336,14 +336,18 @@ public class BarCodeUtilities {
 				strCvtBarCode0 = convertBarCode2of5(BarCodeUtilities.formatBarCode(fBarCode0));
 				strCvtBarCode1 = convertBarCode2of5(BarCodeUtilities.formatBarCode(fBarCode1));
 				strCvtBarCode2 = convertBarCode2of5(BarCodeUtilities.formatBarCode(fBarCode2));
-
+				// Line 3 - Description part 1
 				line3.append(ESC).append("&a0.1C").append(strDesc0[0]).append(ESC).append("&a1.1C").append(strDesc1[0])
 						.append(ESC).append("&a2.1C").append(strDesc2[0]);
+				// Line 4 - Description part 2
 				line4.append(ESC).append("&a0.1C").append(strDesc0[1]).append(ESC).append("&a1.1C").append(strDesc1[1])
 						.append(ESC).append("&a2.1C").append(strDesc2[1]);
+				// Line 5 - Bar Code
 				line5.append(ESC).append("&a0.6C").append(fBarCode0).append(ESC).append("&a1.6C").append(fBarCode1)
 						.append(ESC).append("&a2.6C").append(fBarCode2);
-
+				System.err.println(fBarCode0);
+				System.err.println(fBarCode1);
+				System.err.println(fBarCode2);
 				sb.append(ESC).append("&a").append(intRowCount).append("R");
 				sb.append(line1);
 				sb.append(ESC).append("&a").append(intRowCount + 0.14).append("R");

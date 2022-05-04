@@ -36,6 +36,7 @@ public class TicketDetail {
 		this.sequenceOriginal = 99;
 		this.sequenceUpdated = 99;
 		this.statusDate = new Date();
+		this.laborDescription = "None";
 	}
 		
 	}

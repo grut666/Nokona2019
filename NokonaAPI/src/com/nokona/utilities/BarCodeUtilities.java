@@ -149,7 +149,7 @@ public class BarCodeUtilities {
 		if (ticketIn == null) {
 			throw new NullInputDataException("Ticket cannot be null");
 		}
-		TicketDetail ticketComplete = new TicketDetail(ticketIn.getTicketHeader().getKey());
+		TicketDetail ticketComplete = new TicketDetail(ticketIn.getTicketHeader().getKey()); // 1-arg constructor
 		TicketHeader th = ticketIn.getTicketHeader();
 		ticketIn.getTicketDetails().add(ticketComplete); // Add to produce a final ticket with opCode ZZZ.  When scanned, shows job completed
 
@@ -242,7 +242,7 @@ public class BarCodeUtilities {
 				strRate[0] = String.format("%7.4f", rate);
 				strRateFormatted[0] = strRate[0].replaceAll(" ", "_");
 				strExt[0] = String.format("%7.4f", rate * quantity);
-				strExt[0].replace(" ", "_");
+				strExt[0] = strExt[0].replaceAll(" ", "_");
 				strDesc0[0] = StringUtils.left(strDescAll, 17);
 				strDescAll = StringUtils.mid(strDescAll, 17, 17);
 				strDesc0[1] = StringUtils.left(strDescAll, 17);
@@ -259,7 +259,7 @@ public class BarCodeUtilities {
 				strRate[1] = String.format("%7.4f", rate);
 				strRateFormatted[1] = strRate[1].replace(" ", "_");
 				strExt[1] = String.format("%7.4f", rate * quantity);
-				strExt[1].replace(" ", "_");
+				strExt[1] = strExt[1].replaceAll(" ", "_");
 				strDesc1[0] = StringUtils.left(strDescAll, 17);
 				strDescAll = StringUtils.mid(strDescAll, 17, 17);
 				strDesc1[1] = StringUtils.left(strDescAll, 17);
@@ -275,7 +275,7 @@ public class BarCodeUtilities {
 				strRate[2] = String.format("%7.4f", rate);
 				strRateFormatted[2] = strRate[2].replace(" ", "_");
 				strExt[2] = String.format("%7.4f", rate * quantity);
-				strExt[2].replace(" ", "_");
+				strExt[2] = strExt[2].replaceAll(" ", "_");
 				strDesc2[0] = StringUtils.left(strDescAll, 17);
 				strDescAll = StringUtils.mid(strDescAll, 17, 17);
 				strDesc2[1] = StringUtils.left(strDescAll, 17);

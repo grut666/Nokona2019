@@ -14,10 +14,11 @@
 		</conditionalStyle>
 	</style>
 	<queryString language="SQL">
-		<![CDATA[Select th.key as "Ticket", th.jobid as "Job", th.quantity as "Quantity"
-from ticketheader th
+		<![CDATA[Select th.key as "Ticket", th.jobid as "Job", th.quantity as "Quantity",
+jh.jobtype as "Category"
+from ticketheader th join jobheader jh on th.jobid = jh.jobid
 where status = 'P'
-order by th.jobid, th.key]]>
+order by jh.jobtype, th.jobid, th.key]]>
 	</queryString>
 	<field name="Ticket" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="Ticket"/>
@@ -31,17 +32,21 @@ order by th.jobid, th.key]]>
 		<property name="com.jaspersoft.studio.field.label" value="Quantity"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
 	</field>
+	<field name="Category" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Category"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="jobheader"/>
+	</field>
 	<variable name="SumOfQuantity" class="java.lang.Integer" resetType="Group" resetGroup="Group1" calculation="Sum">
 		<variableExpression><![CDATA[$F{Quantity}]]></variableExpression>
 	</variable>
 	<group name="Group1">
 		<groupExpression><![CDATA[$F{Job}]]></groupExpression>
 		<groupHeader>
-			<band height="64">
+			<band height="62">
 				<frame>
-					<reportElement mode="Opaque" x="-6" y="26" width="551" height="24" forecolor="#B89F7D" backcolor="#000000" uuid="0a5fc4ac-2e39-4b7a-8f96-59f8eb2df66d"/>
+					<reportElement mode="Opaque" x="-6" y="26" width="551" height="24" forecolor="#B89F7D" backcolor="#FFFFFF" uuid="0a5fc4ac-2e39-4b7a-8f96-59f8eb2df66d"/>
 					<textField textAdjust="StretchHeight">
-						<reportElement style="SubTitle" isPrintRepeatedValues="false" x="0" y="-1" width="479" height="20" forecolor="#FFFFFF" uuid="4fbebfd3-a184-45af-b7d9-5c3faaf087b5"/>
+						<reportElement style="SubTitle" isPrintRepeatedValues="false" x="0" y="-1" width="479" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="4fbebfd3-a184-45af-b7d9-5c3faaf087b5"/>
 						<textElement>
 							<font isBold="false"/>
 						</textElement>
@@ -60,7 +65,7 @@ order by th.jobid, th.key]]>
 					<text><![CDATA[Total]]></text>
 				</staticText>
 				<textField>
-					<reportElement style="Detail" x="280" y="11" width="140" height="20" uuid="859143e2-968e-41a4-9102-cac9d69ba983">
+					<reportElement style="Detail" x="200" y="5" width="140" height="20" uuid="859143e2-968e-41a4-9102-cac9d69ba983">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<textElement>
@@ -77,16 +82,16 @@ order by th.jobid, th.key]]>
 	<title>
 		<band height="137" splitType="Stretch">
 			<frame>
-				<reportElement mode="Opaque" x="0" y="0" width="553" height="70" backcolor="#000000" uuid="6c6ca4e1-17cd-4913-93d6-5e670ea9ae8a"/>
+				<reportElement mode="Opaque" x="0" y="0" width="553" height="70" backcolor="#FFFFFF" uuid="6c6ca4e1-17cd-4913-93d6-5e670ea9ae8a"/>
 				<staticText>
-					<reportElement style="Title" x="20" y="10" width="230" height="60" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
+					<reportElement style="Title" x="20" y="10" width="230" height="60" forecolor="#000000" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
 					<textElement>
 						<font isBold="false"/>
 					</textElement>
 					<text><![CDATA[Nokona]]></text>
 				</staticText>
 				<staticText>
-					<reportElement style="SubTitle" x="288" y="30" width="193" height="29" uuid="8978eac3-c578-41c9-837e-48d2b0184642"/>
+					<reportElement style="SubTitle" x="288" y="30" width="193" height="29" forecolor="#000000" uuid="8978eac3-c578-41c9-837e-48d2b0184642"/>
 					<textElement>
 						<font size="22" isBold="false"/>
 					</textElement>
@@ -94,9 +99,9 @@ order by th.jobid, th.key]]>
 				</staticText>
 			</frame>
 			<frame>
-				<reportElement mode="Opaque" x="0" y="70" width="451" height="32" forecolor="#000000" backcolor="#CC0000" uuid="e3c14156-5b51-4201-918b-97fdc012e5d4"/>
+				<reportElement mode="Opaque" x="0" y="70" width="451" height="32" forecolor="#000000" backcolor="#FFFFFF" uuid="e3c14156-5b51-4201-918b-97fdc012e5d4"/>
 				<textField pattern="EEEEE dd MMMMM yyyy">
-					<reportElement x="290" y="6" width="144" height="20" forecolor="#FFFFFF" uuid="5c3301e7-a737-4c59-8a2f-a6c79fd1adb8"/>
+					<reportElement x="290" y="6" width="144" height="20" forecolor="#000000" uuid="5c3301e7-a737-4c59-8a2f-a6c79fd1adb8"/>
 					<textElement textAlignment="Right">
 						<font size="12"/>
 					</textElement>
@@ -104,7 +109,7 @@ order by th.jobid, th.key]]>
 				</textField>
 			</frame>
 			<staticText>
-				<reportElement style="Column header" x="-4" y="112" width="220" height="18" forecolor="#000000" uuid="6d682838-4e50-4d60-9fb3-889ed5d95eb2">
+				<reportElement style="Column header" x="-4" y="112" width="84" height="18" forecolor="#000000" uuid="6d682838-4e50-4d60-9fb3-889ed5d95eb2">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3fd5ea23-1ca0-4ddf-b370-294a49c381e0"/>
 				</reportElement>
 				<textElement>
@@ -113,13 +118,22 @@ order by th.jobid, th.key]]>
 				<text><![CDATA[Ticket]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="273" y="112" width="223" height="18" forecolor="#000000" uuid="d4e5c5ec-7293-4b6f-a758-2dd7844730cf">
+				<reportElement style="Column header" x="180" y="110" width="77" height="18" forecolor="#000000" uuid="d4e5c5ec-7293-4b6f-a758-2dd7844730cf">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3f6a0ced-fb25-41c3-b21f-7883a2438718"/>
 				</reportElement>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="370" y="112" width="77" height="18" forecolor="#000000" uuid="415ab4ef-6aaa-423b-be31-d574e259b6fe">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3f6a0ced-fb25-41c3-b21f-7883a2438718"/>
+				</reportElement>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Category]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -143,13 +157,20 @@ order by th.jobid, th.key]]>
 					<textFieldExpression><![CDATA[$F{Ticket}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight">
-					<reportElement style="Detail" positionType="Float" x="279" y="-10" width="143" height="18" uuid="6bf39ed3-04f5-432b-af4f-91701e9bf5b5">
+					<reportElement style="Detail" positionType="Float" x="199" y="0" width="143" height="18" uuid="6bf39ed3-04f5-432b-af4f-91701e9bf5b5">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3f6a0ced-fb25-41c3-b21f-7883a2438718"/>
 					</reportElement>
 					<textElement>
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{Quantity}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="373" y="-2" width="100" height="23" uuid="b9101845-bca0-48fa-b844-2e9a1d6cdae5"/>
+					<textElement>
+						<font fontName="Times New Roman" size="14" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Category}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
@@ -163,7 +184,7 @@ order by th.jobid, th.key]]>
 				</graphicElement>
 			</line>
 			<frame>
-				<reportElement mode="Opaque" x="2" y="-10" width="555" height="24" forecolor="#D0B48E" backcolor="#000000" uuid="729c3539-f946-4d0e-a0a7-bda2815ea1b0"/>
+				<reportElement mode="Opaque" x="2" y="-10" width="555" height="24" forecolor="#D0B48E" backcolor="#FFFFFF" uuid="729c3539-f946-4d0e-a0a7-bda2815ea1b0"/>
 				<textField evaluationTime="Report">
 					<reportElement style="Column header" x="513" y="0" width="40" height="20" forecolor="#FFFFFF" uuid="4834e99c-7f6c-485a-b098-50e5187f2ab4"/>
 					<textElement verticalAlignment="Middle">
@@ -172,14 +193,14 @@ order by th.jobid, th.key]]>
 					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement style="Column header" x="433" y="0" width="80" height="20" forecolor="#FFFFFF" uuid="9825b46e-76f1-469a-abb8-a1cc27aad685"/>
+					<reportElement style="Column header" x="433" y="0" width="80" height="20" forecolor="#000000" uuid="9825b46e-76f1-469a-abb8-a1cc27aad685"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="10" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 				</textField>
 				<textField pattern="EEEEE dd MMMMM yyyy">
-					<reportElement style="Column header" x="2" y="1" width="197" height="20" forecolor="#FFFFFF" uuid="137d38c7-1a83-4fc5-b156-9d5f1b1a0ddc"/>
+					<reportElement style="Column header" x="2" y="1" width="197" height="20" forecolor="#000000" uuid="137d38c7-1a83-4fc5-b156-9d5f1b1a0ddc"/>
 					<textElement verticalAlignment="Middle">
 						<font size="10" isBold="false"/>
 					</textElement>

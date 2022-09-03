@@ -40,9 +40,9 @@
 		<band height="102" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<frame>
-				<reportElement mode="Opaque" x="0" y="0" width="802" height="66" backcolor="#000000" uuid="d8d9e644-3a32-491d-97cb-a277aff17133"/>
+				<reportElement mode="Opaque" x="0" y="0" width="802" height="66" backcolor="#FFFFFF" uuid="d8d9e644-3a32-491d-97cb-a277aff17133"/>
 				<staticText>
-					<reportElement style="Title" x="0" y="0" width="370" height="66" uuid="27d8f6ee-f0a9-44f6-a160-1763c3b00f30"/>
+					<reportElement style="Title" x="0" y="0" width="370" height="66" forecolor="#000000" uuid="27d8f6ee-f0a9-44f6-a160-1763c3b00f30"/>
 					<box topPadding="4" leftPadding="4" bottomPadding="4" rightPadding="4"/>
 					<textElement verticalAlignment="Bottom">
 						<font isBold="false"/>
@@ -50,7 +50,7 @@
 					<text><![CDATA[Nokona]]></text>
 				</staticText>
 				<staticText>
-					<reportElement style="SubTitle" x="210" y="28" width="148" height="29" uuid="cfa21334-0634-4605-9ea7-aca4981f67e4"/>
+					<reportElement style="SubTitle" x="210" y="28" width="148" height="29" forecolor="#000000" uuid="cfa21334-0634-4605-9ea7-aca4981f67e4"/>
 					<textElement textAlignment="Right">
 						<font size="22" isBold="false"/>
 					</textElement>
@@ -66,9 +66,9 @@
 				</image>
 			</frame>
 			<frame>
-				<reportElement mode="Opaque" x="0" y="70" width="802" height="32" forecolor="#000000" backcolor="#CC0000" uuid="b0c895f6-6dbd-477d-9858-9ad66af087e1"/>
+				<reportElement mode="Opaque" x="0" y="70" width="802" height="32" forecolor="#000000" backcolor="#FFFFFF" uuid="b0c895f6-6dbd-477d-9858-9ad66af087e1"/>
 				<textField pattern="EEEEE dd MMMMM yyyy">
-					<reportElement x="553" y="12" width="144" height="20" forecolor="#FFFFFF" uuid="a33fce3b-20c1-4696-873a-fe134d1e7d88"/>
+					<reportElement x="553" y="12" width="144" height="20" forecolor="#000000" uuid="a33fce3b-20c1-4696-873a-fe134d1e7d88"/>
 					<textElement textAlignment="Right">
 						<font size="12"/>
 					</textElement>
@@ -147,7 +147,7 @@
 					<reportElement style="Detail" positionType="Float" x="398" y="0" width="199" height="18" uuid="1eb5b8db-2306-48a7-a3ac-d65e162c5347">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f87bc92d-bf52-4273-8315-7cd73e44e875"/>
 					</reportElement>
-					<textElement textAlignment="Right">
+					<textElement>
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{LaborRate}]]></textFieldExpression>
@@ -156,7 +156,7 @@
 					<reportElement style="Detail" positionType="Float" x="597" y="0" width="199" height="18" uuid="afae0967-a274-4c42-915c-de9c6457ed4d">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4c4412e-085c-497a-b7d5-9253aaaf159b"/>
 					</reportElement>
-					<textElement textAlignment="Right">
+					<textElement>
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{Key}]]></textFieldExpression>
@@ -177,7 +177,7 @@
 	<pageFooter>
 		<band height="25" splitType="Stretch">
 			<frame>
-				<reportElement mode="Opaque" x="0" y="0" width="802" height="25" forecolor="#D0B48E" backcolor="#000000" uuid="ffb10ec8-0371-4545-8eaa-96d62ad3cec0"/>
+				<reportElement mode="Opaque" x="0" y="0" width="802" height="25" forecolor="#000000" backcolor="#FFFFFF" uuid="ffb10ec8-0371-4545-8eaa-96d62ad3cec0"/>
 				<textField evaluationTime="Report">
 					<reportElement style="Column header" x="757" y="3" width="40" height="20" forecolor="#FFFFFF" uuid="b5521ea6-5f36-4864-856f-58d0bcd011f2"/>
 					<textElement verticalAlignment="Middle">

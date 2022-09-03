@@ -1,10 +1,10 @@
 package com.nokona.resource;
 
 import java.io.File;
-import java.io.OutputStream;
+//import java.io.OutputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Date;
+//import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,22 +28,22 @@ import com.nokona.enums.ReportCategory;
 import com.nokona.exceptions.PDFException;
 import com.nokona.qualifiers.BaseDaoQualifier;
 import com.nokona.reports.OrderBy;
-import com.nokona.reports.ReportProcesser;
+//import com.nokona.reports.ReportProcesser;
 import com.nokona.reports.ReportProperties;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporterParameter;
+//import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.export.ExporterFilter;
-import net.sf.jasperreports.engine.export.JRCsvExporter;
-import net.sf.jasperreports.engine.export.JRExportProgressMonitor;
-import net.sf.jasperreports.engine.export.JRHyperlinkProducerFactory;
-import net.sf.jasperreports.export.CsvReportConfiguration;
-import net.sf.jasperreports.export.SimpleCsvReportConfiguration;
+//import net.sf.jasperreports.engine.export.ExporterFilter;
+//import net.sf.jasperreports.engine.export.JRCsvExporter;
+//import net.sf.jasperreports.engine.export.JRExportProgressMonitor;
+//import net.sf.jasperreports.engine.export.JRHyperlinkProducerFactory;
+//import net.sf.jasperreports.export.CsvReportConfiguration;
+//import net.sf.jasperreports.export.SimpleCsvReportConfiguration;
 
 @Path("/reports")
 public class NokonaReportsResource {
@@ -140,11 +140,11 @@ public class NokonaReportsResource {
 		return "Nokona_" + UUID.randomUUID().toString() + ".pdf";
 	}
 
-	private String generateCSVName() {
-		// return "Nokona_" + UUID.randomUUID().toString() + ".pdf"; // This will be the
-		// real file after test
-		return "Nokona_" + UUID.randomUUID().toString() + ".csv";
-	}
+//	private String generateCSVName() {
+//		// return "Nokona_" + UUID.randomUUID().toString() + ".pdf"; // This will be the
+//		// real file after test
+//		return "Nokona_" + UUID.randomUUID().toString() + ".csv";
+//	}
 
 	private File getJasperReport(ReportProperties properties) throws PDFException {
 		String fileName;
@@ -234,11 +234,11 @@ public class NokonaReportsResource {
 		return response.build();
 
 	}
-	private void exportToCsv(JasperPrint jasperPrint, OutputStream os) throws JRException{
-	    JRCsvExporter  exporter = new JRCsvExporter();
-	    CsvReportConfiguration configuration = new SimpleCsvReportConfiguration();	
-	    exporter.setConfiguration(configuration);   
-	    exporter.exportReport();
-	}
+//	private void exportToCsv(JasperPrint jasperPrint, OutputStream os) throws JRException{
+//	    JRCsvExporter  exporter = new JRCsvExporter();
+//	    CsvReportConfiguration configuration = new SimpleCsvReportConfiguration();	
+//	    exporter.setConfiguration(configuration);   
+//	    exporter.exportReport();
+//	}
 
 }

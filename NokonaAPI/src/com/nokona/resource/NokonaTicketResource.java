@@ -1,6 +1,5 @@
 package com.nokona.resource;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,13 +37,13 @@ import com.nokona.utilities.DateUtilities;
 //import com.nokona.utilities.TransferToAccess;
 
 @Path("/tickets")
-
+@ApplicationScoped
 public class NokonaTicketResource {
-	@ApplicationScoped
+
 
 	@Inject
 	private NokonaDatabaseTicket db;
-	private static SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-mm-dd");
+//	private static SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-mm-dd");
 
 	public NokonaTicketResource() throws DatabaseException {
 

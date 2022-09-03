@@ -10,9 +10,6 @@ import javax.ws.rs.core.Response;
 
 public class NokonaTest {
 	
-
-
-
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	

@@ -14,7 +14,6 @@ import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.EmployeeFormatter;
 import com.nokona.model.Employee;
-import com.nokona.validator.EmployeeValidator;
 
 public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 
@@ -202,7 +201,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 			psAddEmployee.setInt(4, formattedEmployee.getLaborCode());
 			psAddEmployee.setString(5, formattedEmployee.getEmpId());
 			psAddEmployee.setInt(6, formattedEmployee.isActive() ? 1 : 0);
-			int rowCount = psAddEmployee.executeUpdate();
+			psAddEmployee.executeUpdate();
 
 //			if (rowCount != 1) {
 //				throw new DatabaseException("Error. Inserted " + rowCount + " rows");

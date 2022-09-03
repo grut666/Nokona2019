@@ -1,5 +1,6 @@
 package com.nokona.resource;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -21,13 +22,14 @@ import com.nokona.model.Operation;
 import com.nokona.utilities.TransferToAccess;
 
 @Path("/operations")
+@ApplicationScoped
 public class NokonaOperationResource {
 
 	@Inject
 	private NokonaDatabaseOperation db;
 
-	public NokonaOperationResource() throws DatabaseException {
-
+	public NokonaOperationResource() {
+		super();
 	}
 
 	@GET

@@ -1,5 +1,6 @@
 package com.nokona.resource;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -11,7 +12,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-
 import com.nokona.data.NokonaDatabaseLaborCode;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
@@ -22,62 +22,59 @@ import com.nokona.model.LaborCode;
 import com.nokona.utilities.TransferToAccess;
 
 @Path("/laborcodes")
+@ApplicationScoped
 public class NokonaLaborCodeResource {
-//	@Inject
-//	private NokonaDAOManager dbMgr;
-//	@Inject @Named("x")
+
 	@Inject
 	private NokonaDatabaseLaborCode db;
-public NokonaLaborCodeResource()   {
-//	db =  (NokonaDatabaseOperation) dbMgr.getDAO(DAOType.OPERATION);
-//	db = new NokonaDAOOperation();
-	
-}
-	
+
+	public NokonaLaborCodeResource() {
+		super();
+	}
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{laborcode}")
 	public Response getLaborCode(@PathParam("laborcode") int laborCodeIn) {
-		
+
 		LaborCode laborCode;
-		
+
 		try {
-//			getDB();
-			
-				laborCode = db.getLaborCode(laborCodeIn);
-	
+			// getDB();
+
+			laborCode = db.getLaborCode(laborCodeIn);
+
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + laborCodeIn + " not found\"}").build();
-		} catch (DatabaseException ex ) {
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
-		catch (Exception ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		}
-		
+
 		return Response.status(200).entity(laborCode).build();
 	}
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/bykey/{key}")
 	public Response getLaborCodeByKey(@PathParam("key") int key) {
-		
+
 		LaborCode laborCode;
-		
+
 		try {
-//			getDB();
-			
-				laborCode = db.getLaborCodeByKey(key);
-	
+			// getDB();
+
+			laborCode = db.getLaborCodeByKey(key);
+
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
-		} catch (DatabaseException ex ) {
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
-		catch (Exception ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		}
-		
+
 		return Response.status(200).entity(laborCode).build();
 	}
 
@@ -86,12 +83,11 @@ public NokonaLaborCodeResource()   {
 	@Path("/")
 	public Response getLaborCodes() {
 		try {
-//			getDB();
+			// getDB();
 			return Response.status(200).entity(db.getLaborCodes()).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 	}
@@ -117,6 +113,7 @@ public NokonaLaborCodeResource()   {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 	}
+
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	// @Consumes(MediaType.APPLICATION_JSON)
@@ -136,47 +133,45 @@ public NokonaLaborCodeResource()   {
 		}
 		return Response.status(201).entity(laborCode).build();
 	}
+
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{laborCode}")
 	public Response deleteLaborCode(@PathParam("laborCode") int laborCode) {
-		
-		
+
 		try {
-//			getDB();
-				db.deleteLaborCode(laborCode);
-				TransferToAccess.transfer("LABOR_D");
+			// getDB();
+			db.deleteLaborCode(laborCode);
+			TransferToAccess.transfer("LABOR_D");
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + laborCode + " not found\"}").build();
-		} catch (DatabaseException ex ) {
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
-		catch (Exception ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		}
-		
+
 		return Response.status(200).entity("{\"Success\":\"200\"}").build();
 	}
+
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/bykey/{key}")
 	public Response deleteLaborCodeByKey(@PathParam("key") int key) {
-		
-		
+
 		try {
-//			getDB();
-				db.deleteLaborCodeByKey(key);
-				TransferToAccess.transfer("LABOR_D");
-	
+			// getDB();
+			db.deleteLaborCodeByKey(key);
+			TransferToAccess.transfer("LABOR_D");
+
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
-		} catch (DatabaseException ex ) {
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
-		catch (Exception ex) {
-			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
-		}
-		
+
 		return Response.status(200).entity("{\"Success\":\"200\"}").build();
 	}
 

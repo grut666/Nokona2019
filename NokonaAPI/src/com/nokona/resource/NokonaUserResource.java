@@ -1,6 +1,5 @@
 package com.nokona.resource;
 
-import javax.annotation.security.PermitAll;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -22,9 +21,10 @@ import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.model.User;
 
 @Path("/users")
-@PermitAll
+
+@ApplicationScoped
 public class NokonaUserResource {
-	@ApplicationScoped
+
 
 	@Inject 
 	private NokonaDatabaseUser db;

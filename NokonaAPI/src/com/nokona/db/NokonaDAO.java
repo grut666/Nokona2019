@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 import com.nokona.constants.Constants;
 import com.nokona.data.NokonaDatabase;
 import com.nokona.exceptions.DatabaseConnectionException;
@@ -17,7 +17,7 @@ public class NokonaDAO implements NokonaDatabase {
 	private static String USER_NAME = Constants.USER_NAME;
 	private static String PASSWORD = Constants.PASSWORD;
 
-	protected static Gson gson = new Gson();
+	//protected static Gson gson = new Gson();
 
 	protected Connection conn;
 

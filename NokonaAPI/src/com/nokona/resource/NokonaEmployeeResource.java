@@ -2,7 +2,6 @@ package com.nokona.resource;
 
 import java.util.List;
 
-import javax.annotation.security.PermitAll;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -30,9 +29,9 @@ import com.nokona.utilities.TransferToAccess;
 
 
 @Path("/employees")
-@PermitAll
+@ApplicationScoped
 public class NokonaEmployeeResource {
-	@ApplicationScoped
+
 
 	@Inject
 	private NokonaDatabaseEmp db;

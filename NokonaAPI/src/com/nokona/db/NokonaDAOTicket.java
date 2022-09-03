@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.nokona.data.NokonaDatabaseJob;
@@ -196,7 +197,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 					int sequence = jobDetail.getSequence() + 1;    // The plus 1 is to keep consistent with the old system ... for now anyway.
 					int quantity = formattedTicketHeader.getQuantity();
 					double sah = op.getHourlyRateSAH() * opPremium;
-					if (ticketHeader.getJobId().endsWith("-RH")) {
+					if (ticketHeader.getJobId().contains("-RH")) {
 						sah *= 1.1;
 					}
 					String opDescription = op.getDescription();

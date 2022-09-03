@@ -1,5 +1,6 @@
 package com.nokona.resource;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -23,13 +24,14 @@ import com.nokona.model.JobHeader;
 
 
 @Path("/jobs")
+@ApplicationScoped
 public class NokonaJobResource {
 
 	@Inject
 	private NokonaDatabaseJob db;
 
-	public NokonaJobResource() throws DatabaseException {
-
+	public NokonaJobResource()  {
+		super();
 	}
 	
 //  HEADERS

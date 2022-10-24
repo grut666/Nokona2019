@@ -49,6 +49,23 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 	}
 
 	@Override
+	public List<Operation> getOperationsByJobId(String jobId) throws DatabaseException {
+		List<Operation> operations = new ArrayList<Operation>();
+		try (PreparedStatement psGetOperations = conn.prepareStatement("Select * from Operation op "
+				+ "join jobDetail jd on op.OpCode = jd.OpCode where jd.jobId = ? order by jd.sequence");) {
+			psGetOperations.setString(1, jobId);
+			try (ResultSet rs = psGetOperations.executeQuery();) {
+				while (rs.next()) {
+					operations.add(convertOperationFromResultSet(rs));
+				}
+			}
+			return operations;
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+	}
+
+	@Override
 	public Operation getOperation(String opCode) throws DatabaseException {
 		if (opCode == null) {
 			throw new NullInputDataException("opCode cannot be null");
@@ -90,8 +107,8 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 	@Override
 	public Operation updateOperation(Operation operationIn) throws DatabaseException {
 		try (PreparedStatement psUpdateOperation = conn.prepareStatement(
-				"Update Operation Set OpCode = ?, Description = ?, HourlyRateSAH = ?, LaborCode = ?, LastStudyYear = ? "
-						+ "WHERE Operation.Key = ?")) {
+				"Update Operation Set OpCode = ?, Description = ?, HourlyRateSAH = ?, LaborCode = ?, LastStudyYear = ?, "
+						+ "Level = ? WHERE Operation.Key = ?")) {
 
 			Operation formattedOperation = OperationFormatter.format(operationIn);
 			String validateMessage = OperationValidator.validateUpdate(formattedOperation, conn);
@@ -103,7 +120,8 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			psUpdateOperation.setDouble(3, formattedOperation.getHourlyRateSAH());
 			psUpdateOperation.setInt(4, formattedOperation.getLaborCode());
 			psUpdateOperation.setInt(5, formattedOperation.getLastStudyYear());
-			psUpdateOperation.setLong(6, formattedOperation.getKey());
+			psUpdateOperation.setInt(6, formattedOperation.getLevel());
+			psUpdateOperation.setLong(7, formattedOperation.getKey());
 			int rowCount = psUpdateOperation.executeUpdate();
 
 			if (rowCount != 1) {
@@ -123,7 +141,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 		}
 
 		try (PreparedStatement psAddOperation = conn.prepareStatement(
-				"Insert into Operation (OpCode, Description, HourlyRateSAH, LaborCode, LastStudyYear) values (?,?,?,?,?)",
+				"Insert into Operation (OpCode, Description, HourlyRateSAH, LaborCode, LastStudyYear, Level) values (?,?,?,?, ?,?)",
 				PreparedStatement.RETURN_GENERATED_KEYS)) {
 			Operation formattedOperation = OperationFormatter.format(operationIn);
 			String validateMessage = OperationValidator.validateAdd(operationIn, conn);
@@ -135,6 +153,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			psAddOperation.setDouble(3, formattedOperation.getHourlyRateSAH());
 			psAddOperation.setInt(4, formattedOperation.getLaborCode());
 			psAddOperation.setInt(5, formattedOperation.getLastStudyYear());
+			psAddOperation.setInt(6, formattedOperation.getLevel());
 			int rowCount = psAddOperation.executeUpdate();
 
 			if (rowCount != 1) {
@@ -177,17 +196,17 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 		if (opCode == null) {
 			throw new NullInputDataException("opID cannot be null");
 		}
-			try (PreparedStatement psDelOperationByOpId = conn.prepareStatement("Delete From Operation where OpCode = ?")){
-			
-				psDelOperationByOpId.setString(1, opCode);
-				int rowCount = psDelOperationByOpId.executeUpdate();
-				if (rowCount == 0) {
-					throw new DataNotFoundException("Error.  Delete Operation ID " + opCode + " failed");
-				}
-				
-			} catch (SQLException e) {
-				throw new DatabaseException(e.getMessage());
+		try (PreparedStatement psDelOperationByOpId = conn.prepareStatement("Delete From Operation where OpCode = ?")) {
+
+			psDelOperationByOpId.setString(1, opCode);
+			int rowCount = psDelOperationByOpId.executeUpdate();
+			if (rowCount == 0) {
+				throw new DataNotFoundException("Error.  Delete Operation ID " + opCode + " failed");
 			}
+
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
 	}
 
 	private Operation convertOperationFromResultSet(ResultSet rs) throws SQLException {
@@ -197,8 +216,9 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 		double hourlyRateSAH = rs.getDouble("HourlyRateSAH");
 		int laborCode = rs.getInt("LaborCode");
 		int lastStudyYear = rs.getInt("LastStudyYear");
+		int level = rs.getInt("Level");
 
-		return new Operation(key, opCode, description, laborCode, hourlyRateSAH, lastStudyYear);
+		return new Operation(key, opCode, description, laborCode, hourlyRateSAH, lastStudyYear, level);
 	}
-	
+
 }

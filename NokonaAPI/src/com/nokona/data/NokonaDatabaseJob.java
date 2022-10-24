@@ -26,4 +26,6 @@ public interface NokonaDatabaseJob extends NokonaDatabase {
 	void deleteJob(String jobId) throws DatabaseException;
 	
 	
+	
+	
 }

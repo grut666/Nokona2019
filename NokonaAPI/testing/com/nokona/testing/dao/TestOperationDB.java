@@ -51,7 +51,7 @@ class TestOperationDB {
 
 	@Test
 	void testGetOperationFullArguments() throws DatabaseException {
-		Operation op = new Operation( 9693,"A55", "INSTALL RUBBER IN POCKET", 3, .0225, 2020);
+		Operation op = new Operation( 9693,"A55", "INSTALL RUBBER IN POCKET", 3, .0225, 2020, 2);
 		assertEquals("INSTALL RUBBER IN POCKET", op.getDescription());
 		assertEquals(.0225, op.getHourlyRateSAH());
 		assertEquals(9693, op.getKey());
@@ -64,7 +64,7 @@ class TestOperationDB {
 //
 	@Test
 	void testGetOperationFullArgumentsLowerCase() throws DatabaseException {
-		Operation op = new Operation(987654, "zzz", "install rubber in pocket",3,.0225, 2020);
+		Operation op = new Operation(987654, "zzz", "install rubber in pocket",3,.0225, 2020, 2);
 		db.addOperation(op);
 		op = db.getOperation("ZZZ");
 		assertEquals("INSTALL RUBBER IN POCKET", op.getDescription());
@@ -160,7 +160,7 @@ class TestOperationDB {
 //
 	@Test
 	void testAddOperation() throws DatabaseException {
-		Operation op = new Operation(555,"yyy", "Do something cool",4, .0678,2010);
+		Operation op = new Operation(555,"yyy", "Do something cool",4, .0678,2010, 2);
 		List<Operation> operations = db.getOperations();
 		int startingCount = operations.size();
 		db.addOperation(op);
@@ -170,7 +170,7 @@ class TestOperationDB {
 //
 	@Test
 	void testAddOperationDupeOpCodeException() throws DatabaseException {
-		Operation op = new Operation(555, "A50", "Do something cool",4, .0678,2010);
+		Operation op = new Operation(555, "A50", "Do something cool",4, .0678,2010, 2);
 		Assertions.assertThrows(DuplicateDataException.class, () -> {
 			db.addOperation(op);
 		});

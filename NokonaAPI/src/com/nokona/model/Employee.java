@@ -14,7 +14,7 @@ public class Employee {
 	private int barCodeID;
 	private int laborCode;
 	private String empId;
-	boolean active;
+	private boolean active;
 	
 	public Employee() {
 		this(-1, "", "", 0, 0, "", false);

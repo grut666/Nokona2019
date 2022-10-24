@@ -75,7 +75,6 @@ public class NokonaOperationResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/")
 	public Response getOperations() {
 		try {
 			return Response.status(200).entity(db.getOperations()).build();
@@ -85,7 +84,19 @@ public class NokonaOperationResource {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/byJobId/{jobId}")
+	public Response getOperationsByJobId(@PathParam("jobId") String jobId) {
+		try {
 
+			return Response.status(200).entity(db.getOperationsByJobId(jobId)).build();
+		} catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		}
+	}
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)

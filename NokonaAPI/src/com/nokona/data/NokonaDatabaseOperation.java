@@ -13,5 +13,7 @@ public interface NokonaDatabaseOperation extends NokonaDatabase {
 	Operation addOperation(Operation operation) throws DatabaseException;
 	void deleteOperationByKey(long key) throws DatabaseException;
 	void deleteOperation(String opID) throws DatabaseException;
-	List<Operation> getOperations() throws DatabaseException;	
+	List<Operation> getOperations() throws DatabaseException;
+	
+	List<Operation> getOperationsByJobId(String jobId) throws DatabaseException;
 }

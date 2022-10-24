@@ -13,6 +13,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.nokona.data.NokonaDatabaseJob;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseConnectionException;
@@ -62,6 +64,7 @@ public class NokonaJobResource {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
 	}
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/jobheaders/bykey/{key}")
@@ -124,7 +127,8 @@ public class NokonaJobResource {
 	@Path("/jobdetails/{jobid}")
 	public Response getJobDetailsByJobId(@PathParam("jobid") String jobId) {
 		try {
-
+			jobId = StringUtils.removeEnd(jobId, "-LH");
+			jobId = StringUtils.removeEnd(jobId, "-RH");
 			return Response.status(200).entity(db.getJobDetails(jobId)).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();

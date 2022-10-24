@@ -14,6 +14,7 @@ import lombok.ToString;
 @ToString(includeFieldNames=true)
 @Data
 public class TicketDetailDtoOut {
+	private Long ticketNo;
 	private String jobId;
 	private String jobDescription;
 	private String opCode;
@@ -29,10 +30,11 @@ public class TicketDetailDtoOut {
 	private String laborDescription;
 	private double laborRate;
 	private int employeeBarCodeID;
+	
 	public TicketDetailDtoOut(TicketHeader ticketHeader, TicketDetail ticketDetail) {
 		System.out.println("Ticket Header is " + ticketHeader);
 		System.out.println("Ticket Detail is " + ticketDetail);
-
+		ticketNo = ticketHeader.getKey() * 100 + ticketDetail.getSequenceOriginal();
 		jobId = ticketHeader.getJobId();
 		jobDescription = ticketHeader.getDescription();
 		opCode = ticketDetail.getOpCode();

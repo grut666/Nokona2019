@@ -13,5 +13,4 @@ public class JobDetail {
 	private String jobId;
 	private String opCode;
 	private int sequence;
-	private double opPremium;
 }

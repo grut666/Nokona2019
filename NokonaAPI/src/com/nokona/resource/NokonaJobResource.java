@@ -204,8 +204,6 @@ public class NokonaJobResource {
 
 		try {
 			db.deleteJob(jobId);
-//			TransferToAccess.transfer("JOBHEADER_D");
-//			TransferToAccess.transfer("JOBDETAIL_D");
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + jobId + " not found\"}").build();
@@ -236,9 +234,12 @@ public class NokonaJobResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateJob(Job jobIn) {
+		System.err.println("----------------------------" + jobIn + "-------------------------------");
 		Job job;
 		try {
-			System.err.println("Job Type is " + jobIn.getHeader().getJobType().getJobType());
+			System.err.println("Incoming");
+			System.err.println(jobIn.getHeader().getJobType());
+//			System.err.println("Job Type is " + jobIn.getHeader().getJobType().getJobType());
 			job = db.addJob(jobIn);
 //			TransferToAccess.transfer("JOBHEADER_C");
 //			TransferToAccess.transfer("JOBDETAIL_C");

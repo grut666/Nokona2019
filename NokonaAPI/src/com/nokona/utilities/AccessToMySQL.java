@@ -564,7 +564,7 @@ public class AccessToMySQL {
 		System.out.println("Finished deleting " + rowsDeleted + " JobDetails.  Beginning storing JobDetails");
 		try {
 			psInsert = mySqlConn.prepareStatement(
-					"Insert into JobDetail (JobId, OpCode, Sequence, JobDetail.Key) " + "values (?,?,?,?)");
+					"Insert into JobDetail (JobId, OpCode, Sequence) " + "values (?,?,?)");
 			// String lastKey = "";;
 			for (String record : recordsIn) {
 				// System.out.println(record);
@@ -580,12 +580,12 @@ public class AccessToMySQL {
 				psInsert.setString(1, fields[0]);
 				psInsert.setString(2, fields[1]);
 				psInsert.setLong(3, Long.parseLong(fields[2]));
-				if (mapIn.containsKey(thisKey)) {
-					psInsert.setLong(4, mapIn.get(thisKey));
-				} else {
-					System.err.println("No Key match for " + fields[0]);
-					continue;
-				}
+//				if (mapIn.containsKey(thisKey)) {
+//					psInsert.setLong(4, mapIn.get(thisKey));
+//				} else {
+//					System.err.println("No Key match for " + fields[0]);
+//					continue;
+//				}
 
 				try {
 					psInsert.executeUpdate();

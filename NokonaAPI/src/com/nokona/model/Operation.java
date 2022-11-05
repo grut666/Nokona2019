@@ -14,10 +14,9 @@ public class Operation {
 	private int laborCode;
 	private double hourlyRateSAH;
 	private int lastStudyYear;
-	private int level;
 	
 	public Operation() {
-		this(-1, "", "", 0, 0, 0, 0);
+		this(-1, "", "", 0, 0, 0);
 	}
 	
 }

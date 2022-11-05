@@ -685,7 +685,7 @@ public class MySqlToAccess {
 			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
 				Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"),
 						rs.getString("Description"), rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),
-						rs.getInt("LastStudyYear"), rs.getInt("Level"));
+						rs.getInt("LastStudyYear"));
 				recordsIn.add(operation);
 			}
 		} catch (SQLException ex) {
@@ -726,7 +726,7 @@ public class MySqlToAccess {
 			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
 				Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"),
 						rs.getString("Description"), rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),
-						rs.getInt("LastStudyYear"), rs.getInt("Level"));
+						rs.getInt("LastStudyYear"));
 				recordsIn.add(operation);
 			}
 		} catch (SQLException ex) {
@@ -734,7 +734,7 @@ public class MySqlToAccess {
 		}
 
 		query = "Update OPERATION Set  OpCode = ?, Description = ?, LaborCode = ?, HourlyRateSAH = ?, "
-				+ "LastStudyYear = ?, Level = ? where EMPLOYEE.KEY = ?";
+				+ "LastStudyYear = ? where EMPLOYEE.KEY = ?";
 		try (PreparedStatement psUpdate = accessConn.prepareStatement(query)) {
 			for (Operation operation : recordsIn) {
 				psUpdate.setString(1, operation.getOpCode());
@@ -742,8 +742,7 @@ public class MySqlToAccess {
 				psUpdate.setInt(3, operation.getLaborCode());
 				psUpdate.setDouble(4, operation.getHourlyRateSAH());
 				psUpdate.setInt(5, operation.getLastStudyYear());
-				psUpdate.setInt(6, operation.getLevel());
-				psUpdate.setLong(7, operation.getKey());
+				psUpdate.setLong(6, operation.getKey());
 
 				int rowsAffected = psUpdate.executeUpdate();
 				if (rowsAffected == 0) {
@@ -778,7 +777,7 @@ public class MySqlToAccess {
 			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
 				Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"),
 						rs.getString("Description"), rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),
-						rs.getInt("LastStudyYear"), rs.getInt("Level"));
+						rs.getInt("LastStudyYear"));
 				recordsIn.add(operation);
 			}
 		} catch (SQLException ex) {
@@ -788,7 +787,7 @@ public class MySqlToAccess {
 		}
 
 		query = "Insert INTO Operation (OpCode, Description, LaborCode, HourlyRateSAH, "
-				+ "LastStudyYear, Level) values (?,?,?,?,?,?)";
+				+ "LastStudyYear, Level) values (?,?,?,?,?)";
 		try (PreparedStatement psInsert = accessConn.prepareStatement(query)) {
 			for (Operation operation : recordsIn) {
 				psInsert.setString(1, operation.getOpCode());
@@ -796,7 +795,6 @@ public class MySqlToAccess {
 				psInsert.setInt(3, operation.getLaborCode());
 				psInsert.setDouble(4, operation.getHourlyRateSAH());
 				psInsert.setInt(5, operation.getLastStudyYear());
-				psInsert.setInt(6, operation.getLevel());
 
 				int rowsAffected = psInsert.executeUpdate();
 				if (rowsAffected == 0) {

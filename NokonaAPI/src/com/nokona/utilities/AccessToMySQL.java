@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +20,7 @@ import javax.sound.midi.SysexMessage;
 import org.apache.commons.lang.StringUtils;
 
 import com.nokona.enums.JobType;
+import com.nokona.enums.OperationStatus;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.model.JobHeader;
 
@@ -53,8 +55,8 @@ public class AccessToMySQL {
 		// doEmployees();
 
 		// doOperations();
-		// doTickets();
-		doJobs();
+		 doTickets();
+		//doJobs();
 		long endTime = System.currentTimeMillis();
 		try {
 			mySqlConn.close();
@@ -66,8 +68,8 @@ public class AccessToMySQL {
 	}
 
 	public static void doTickets() {
-		// doTicketHeaders();
-		doTicketDetail();
+		doTicketHeaders();
+		//doTicketDetail();
 	}
 
 	public static void doJobs() {
@@ -249,6 +251,19 @@ public class AccessToMySQL {
 			// Bar Code ID - 5
 			// LaborRate - 3
 			//
+
+
+//			private String operationDescription;
+
+
+
+
+//			private double hourlyRateSAH;
+//			private int laborCode;
+//			private String laborDescription;
+
+
+			
 			String key = rsmd.getColumnName(1);
 			String operation = rsmd.getColumnName(2);
 			String sequence = rsmd.getColumnName(3);

@@ -39,20 +39,23 @@ public class NokonaDAO implements NokonaDatabase {
 	}
 
 	private void connectToDB(String userName, String password) throws DatabaseConnectionException {
-		if (conn == null) {
+		
 			try {
+				if (conn == null || conn.isClosed()) { // added check for conn.isclosed() to prevent timeouts
 				System.err.println("Logging in with " + userName + " and " + password);
 				Class.forName(JDBC_DRIVER);
 				conn = DriverManager.getConnection(DB_URL, userName, password);
 				conn.setAutoCommit(true);
+				}
 			} catch (ClassNotFoundException e) {
 				throw new DatabaseConnectionException(e.getMessage(), e);
 
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
 				throw new DatabaseConnectionException(e.getMessage(), e);
-			}
+			
 		}
+
 	}
 
 	public void rollback() {

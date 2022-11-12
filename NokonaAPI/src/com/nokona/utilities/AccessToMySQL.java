@@ -68,8 +68,8 @@ public class AccessToMySQL {
 	}
 
 	public static void doTickets() {
-		doTicketHeaders();
-		//doTicketDetail();
+//		doTicketHeaders();
+		doTicketDetail();
 	}
 
 	public static void doJobs() {

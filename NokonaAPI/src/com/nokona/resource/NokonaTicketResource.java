@@ -40,10 +40,10 @@ import com.nokona.utilities.DateUtilities;
 @ApplicationScoped
 public class NokonaTicketResource {
 
-
 	@Inject
 	private NokonaDatabaseTicket db;
-//	private static SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-mm-dd");
+	// private static SimpleDateFormat dateFormat = new
+	// SimpleDateFormat("YYYY-mm-dd");
 
 	public NokonaTicketResource() throws DatabaseException {
 
@@ -189,8 +189,8 @@ public class NokonaTicketResource {
 
 		try {
 			db.deleteTicketByKey(key);
-//			TransferToAccess.transfer("TICKETHEADER_D");
-//			TransferToAccess.transfer("TICKETDETAIL_D");
+			// TransferToAccess.transfer("TICKETHEADER_D");
+			// TransferToAccess.transfer("TICKETDETAIL_D");
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
@@ -218,8 +218,8 @@ public class NokonaTicketResource {
 			if (yesPrint) {
 				getTicketLabels(ticket);
 			}
-//			TransferToAccess.transfer("TICKETHEADER_C");
-//			TransferToAccess.transfer("TICKETDETAIL_C");
+			// TransferToAccess.transfer("TICKETHEADER_C");
+			// TransferToAccess.transfer("TICKETDETAIL_C");
 			return Response.status(200).entity(ticket).build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity(ex.getMessage()).build();
@@ -238,8 +238,9 @@ public class NokonaTicketResource {
 	public Response updateTicketDetail(TicketDetailDtoIn ticketDetailDtoIn) {
 		try {
 			for (TicketDetailDtoInRecord dtoIn : ticketDetailDtoIn.getDetailRecords()) {
+				System.out.println("Ticket Number:" + dtoIn.getTicketNumber());
 				TicketDetail ticketDetail = db.getTicketDetailByDetailKey(dtoIn.getTicketNumber());
-				if ("ZZZ".equals(ticketDetail.getOpCode()))  { // Job has been scanned as complete
+				if ("ZZZ".equals(ticketDetail.getOpCode())) { // Job has been scanned as complete
 					TicketHeader th = db.getTicketHeaderByKey(ticketDetail.getKey());
 					th.setTicketStatus(TicketStatus.COMPLETE);
 					db.updateTicketHeader(th);
@@ -250,7 +251,7 @@ public class NokonaTicketResource {
 				ticketDetail.setEmployeeBarCodeID(dtoIn.getBarCodeID());
 				ticketDetail.setStatusDate(DateUtilities.stringToJavaDate(ticketDetailDtoIn.getDateOfTicket()));
 				db.updateTicketDetail(ticketDetail);
-				
+
 			}
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 

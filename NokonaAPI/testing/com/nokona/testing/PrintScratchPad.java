@@ -44,14 +44,14 @@ public class PrintScratchPad {
 //		ReportCategory rc = ReportCategory.EMPLOYEE;
 
 //		System.out.println(rc.getCategory());
-		
-		String code = "CS";
-		if (JobType.contains(code)) {
-			System.out.println("Yes");
-		} else
-		{ System.out.println("No");
-		}
-		
+//		
+//		String code = "CS";
+//		if (JobType.contains(code)) {
+//			System.out.println("Yes");
+//		} else
+//		{ System.out.println("No");
+//		}
+		System.out.println("Formatted string is " + 52913 + "" + String.format("%02d", 9));
 	}
 
 	public static String replaceLeadingWithUnderScores(String input) {

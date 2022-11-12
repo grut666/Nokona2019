@@ -288,7 +288,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 				throw new DatabaseException("TicketDetail Update Error.  Updated " + rowCount + " rows");
 			}
 			System.out.println("After updateTicketHeader executeUpdate().  Key is " + ticketDetail.getKey());
-			return getTicketDetailByDetailKey(Long.parseLong(ticketDetail.getKey() + "" + ticketDetail.getSequenceOriginal()));
+		
+			return getTicketDetailByDetailKey(Long.parseLong(ticketDetail.getKey() + "" + String.format("%02d", ticketDetail.getSequenceOriginal())));
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage());

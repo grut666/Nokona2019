@@ -58,7 +58,6 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		JobHeader jobHeader = null;
 		try (PreparedStatement psGetJobHeaderByJobId = conn
 				.prepareStatement("Select * from JobHeader where JobID = ?")) {
-			System.err.println("-----------------JOB ID IS:" + jobId + ":-----------------");
 			psGetJobHeaderByJobId.setString(1, jobId);
 			try (ResultSet rs = psGetJobHeaderByJobId.executeQuery();) {
 
@@ -66,7 +65,6 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 					jobHeader = convertJobHeaderFromResultSet(rs);
 				} else {
 					// Do nothing.  Return null.  This may be because of being called from Delete
-//					System.err.println("-----------------JOB ID IS NOT FOUND:" + jobId + ":-----------------");
 //					throw new DataNotFoundException("3. Job: JobID " + jobId + " is not in DB");
 
 				}
@@ -242,7 +240,6 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		List<JobDetail> details;
 		try (PreparedStatement psGetJobDetailByJobId = conn
 				.prepareStatement("Select * from JobDetail where JobID = ? order by sequence");) {
-			System.err.println("-----------------JOB ID IS:" + jobId + ":-----------------");
 			jobId = StringUtils.removeEnd(jobId, "-LH");
 			jobId = StringUtils.removeEnd(jobId, "-RH");
 			psGetJobDetailByJobId.setString(1, jobId);
@@ -347,7 +344,6 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	private List<JobDetail> convertJobDetailsFromResultSet(ResultSet rs) throws SQLException {
 
 		List<JobDetail> details = new ArrayList<JobDetail>();
-		System.err.println("Getting rs details");
 		while (rs.next()) {
 			
 			String jobId = rs.getString("JobID");

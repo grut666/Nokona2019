@@ -41,6 +41,10 @@ public class NokonaDAO implements NokonaDatabase {
 	private void connectToDB(String userName, String password) throws DatabaseConnectionException {
 		
 			try {
+				System.err.println("Conn is " + conn);
+				if (conn != null) {
+					System.err.println("isClose is " + conn.isClosed());
+				}
 				if (conn == null || conn.isClosed()) { // added check for conn.isclosed() to prevent timeouts
 				System.err.println("Logging in with " + userName + " and " + password);
 				Class.forName(JDBC_DRIVER);

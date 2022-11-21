@@ -1,8 +1,15 @@
 package com.nokona.db;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+//import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+//import org.apache.tomcat.jdbc.pool.DataSource;
 
 //import com.google.gson.Gson;
 import com.nokona.constants.Constants;
@@ -17,7 +24,7 @@ public class NokonaDAO implements NokonaDatabase {
 	private static String USER_NAME = Constants.USER_NAME;
 	private static String PASSWORD = Constants.PASSWORD;
 
-	//protected static Gson gson = new Gson();
+	// protected static Gson gson = new Gson();
 
 	protected Connection conn;
 
@@ -39,26 +46,53 @@ public class NokonaDAO implements NokonaDatabase {
 	}
 
 	private void connectToDB(String userName, String password) throws DatabaseConnectionException {
-		
-			try {
-				System.err.println("Conn is " + conn);
-				if (conn != null) {
-					System.err.println("isClose is " + conn.isClosed());
-				}
-				if (conn == null || conn.isClosed()) { // added check for conn.isclosed() to prevent timeouts
-				System.err.println("Logging in with " + userName + " and " + password);
-				Class.forName(JDBC_DRIVER);
-				conn = DriverManager.getConnection(DB_URL, userName, password);
-				conn.setAutoCommit(true);
-				}
-			} catch (ClassNotFoundException e) {
-				throw new DatabaseConnectionException(e.getMessage(), e);
 
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseConnectionException(e.getMessage(), e);
-			
+		// try {
+		// System.err.println("Conn is " + conn);
+		// if (conn != null) {
+		// System.err.println("IsClosed is " + conn.isClosed());
+		// System.err.println("IsValid(3) is " + conn.isValid(3));
+		// }
+		// if (conn != null) {
+		// System.err.println("isClose is " + conn.isClosed());
+		// }
+		// if (conn == null || conn.isClosed() || !conn.isValid(3)) { // added check for
+		// conn.isclosed() to prevent
+		// // timeouts
+		// System.err.println("Logging in with " + userName + " and " + password);
+		// Class.forName(JDBC_DRIVER);
+		// conn = DriverManager.getConnection(DB_URL, userName, password);
+		// conn.setAutoCommit(true);
+		// }
+		// } catch (ClassNotFoundException e) {
+		// throw new DatabaseConnectionException(e.getMessage(), e);
+		//
+		// } catch (SQLException e) {
+		// System.err.println(e.getMessage());
+		// throw new DatabaseConnectionException(e.getMessage(), e);
+		//
+		// }
+		try {
+
+			Context context = new InitialContext();
+			DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/jndiNokona");
+			conn = ds.getConnection();
+			if (conn != null) {
+				System.err.println("isClose is " + conn.isClosed());
+			}
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			// throw new DatabaseConnectionException(e.getMessage(), e);
+
+		} catch (NamingException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
 		}
+		System.err.println("Final connect is " + conn);
 
 	}
 

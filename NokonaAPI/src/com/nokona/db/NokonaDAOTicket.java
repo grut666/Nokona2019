@@ -38,7 +38,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	private NokonaDatabaseOperation operationDAO;
 	@Inject
 	private NokonaDatabaseLaborCode laborCodeDAO;
-	
+
 	public NokonaDAOTicket() throws DatabaseException {
 		super();
 
@@ -54,11 +54,10 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		List<Ticket> tickets = new ArrayList<Ticket>();
 		try (PreparedStatement psGetTickets = getConn()
 				.prepareStatement("Select * from ticketheader th join jobheader jh on th.jobid = jh.jobid "
-						+ "join ticketdetail td on th.key = td.key "
-						+ "join operation op on td.opcode = op.OpCode "
-	//					+ "where ticketheader.jobid like 'A-1275%' " + // Limiting for testing, otherwise too large
-						+ "order by CreatedDate desc, th.key, th.status, sequence "
-						+ "limit ?, 200 ")) {
+						+ "join ticketdetail td on th.key = td.key " + "join operation op on td.opcode = op.OpCode "
+						// + "where ticketheader.jobid like 'A-1275%' " + // Limiting for testing,
+						// otherwise too large
+						+ "order by th.key desc, CreatedDate desc, th.status, sequence " + "limit ?, 200 ")) {
 			psGetTickets.setInt(1, offset);
 			try (ResultSet rs = psGetTickets.executeQuery()) {
 				while (rs.next()) {
@@ -71,17 +70,17 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		}
 
 	}
+
 	@Override
 	public List<Ticket> getTicketsByStatus(String status, int offset) throws DatabaseException {
 		List<Ticket> tickets = new ArrayList<Ticket>();
 		try (PreparedStatement psGetTickets = getConn()
 				.prepareStatement("Select * from ticketheader th join jobheader jh on th.jobid = jh.jobid "
-						+ "join ticketdetail td on th.key = td.key "
-						+ "join operation op on td.opcode = op.OpCode "
+						+ "join ticketdetail td on th.key = td.key " + "join operation op on td.opcode = op.OpCode "
 						+ "where th.status = ?" + // Limiting for testing, otherwise too large
-						"order by CreatedDate desc, th.key, sequence limit ?, 200")) {
+						"order by th.key desc, CreatedDate desc, sequence limit ?, 200")) {
 			psGetTickets.setString(1, status);
-			psGetTickets.setInt(2,  offset);
+			psGetTickets.setInt(2, offset);
 			try (ResultSet rs = psGetTickets.executeQuery()) {
 				while (rs.next()) {
 					tickets.add(convertTicketFromResultSet(rs));
@@ -97,10 +96,9 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	@Override
 	public Ticket getTicketByKey(long key) throws DatabaseException {
 		Ticket ticket = null;
-		try (PreparedStatement psGetTicketByKey = conn.prepareStatement(
-				"Select * from ticketheader th left join ticketdetail td on th.key = td.key  "
-						+ "join operation op on td.opcode = op.OpCode "
-						+ "join jobheader jh on th.jobid = jh.jobid "
+		try (PreparedStatement psGetTicketByKey = conn
+				.prepareStatement("Select * from ticketheader th left join ticketdetail td on th.key = td.key  "
+						+ "join operation op on td.opcode = op.OpCode " + "join jobheader jh on th.jobid = jh.jobid "
 						+ "where th.key = ? order by sequence");) {
 			psGetTicketByKey.setLong(1, key);
 			try (ResultSet rs = psGetTicketByKey.executeQuery();) {
@@ -121,8 +119,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	public List<Ticket> getTicketsByJob(String job) throws DatabaseException {
 		List<Ticket> tickets = new ArrayList<Ticket>();
 		try (PreparedStatement psGetTicketsByJob = getConn()
-				.prepareStatement("Select * from ticketheader join ticketdetail on ticketheader.key = ticketdetail.key "
-						+ "where jobID = ? order by ticketheader.key, sequence")) {
+				.prepareStatement("Select * from ticketheader th join ticketdetail td on th.key = td.key "
+						+ "where jobID = ? order by th.key desc, sequence")) {
 			psGetTicketsByJob.setString(1, job);
 			try (ResultSet rs = psGetTicketsByJob.executeQuery();) {
 
@@ -191,8 +189,9 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 					op = operationDAO.getOperation(jobDetail.getOpCode());
 					String opCode = jobDetail.getOpCode();
 					String opDesc = op.getDescription();
-					OperationStatus status = OperationStatus.INCOMPLETE;
-					int sequence = jobDetail.getSequence() + 1;    // The plus 1 is to keep consistent with the old system ... for now anyway.
+					OperationStatus status = OperationStatus.I;
+					int sequence = jobDetail.getSequence() + 1; // The plus 1 is to keep consistent with the old system
+																// ... for now anyway.
 					int quantity = formattedTicketHeader.getQuantity();
 					double sah = op.getHourlyRateSAH();
 					if (ticketHeader.getJobId().contains("-RH")) {
@@ -201,10 +200,10 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 					String opDescription = op.getDescription();
 					laborCode = laborCodeDAO.getLaborCode(op.getLaborCode());
 					String laborDescription = laborCode.getDescription();
-					
+
 					TicketDetail td = new TicketDetail(key, opCode, opDesc, status, sequence, sequence, null, quantity,
 							0, sah, laborCode.getLaborCode(), laborCode.getDescription(), laborCode.getRate(), 0);
-					
+
 					newTicketDetails.add(td);
 					psAddTicketDetail.setLong(1, key);
 					psAddTicketDetail.setString(2, opCode);
@@ -236,11 +235,11 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	@Override
 	public TicketHeader updateTicketHeader(TicketHeader ticketHeader) throws DatabaseException {
 		try (PreparedStatement psUpdateTicketHeader = conn.prepareStatement(
-				"Update TicketHeader Set Status = ?, StatusDate = ?, Quantity = ? "
-						+ "WHERE ticketheader.Key = ?")) {
+				"Update TicketHeader Set Status = ?, StatusDate = ?, Quantity = ? " + "WHERE ticketheader.Key = ?")) {
 			psUpdateTicketHeader.setString(1, ticketHeader.getTicketStatus().getTicketStatus());
 			psUpdateTicketHeader.setDate(2, DateUtilities.convertUtilDateToSQLDate(new Date()));
 			psUpdateTicketHeader.setInt(3, ticketHeader.getQuantity());
@@ -259,15 +258,15 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
+
 	@Override
 	public TicketDetail updateTicketDetail(TicketDetail ticketDetail) throws DatabaseException {
-		
-		try (PreparedStatement psUpdateTicketDetail = conn.prepareStatement(
-				"Update TicketDetail Set Status = ?, StatusDate = ?, StandardQuantity = ?, "
-				 + "HourlyRateSAH = ?, BarCodeID = ?, LaborRate = ?, "
-				 + "UpdatedSequence = ?, ActualQuantity = ?, OperationDescription = ?, "
-				 + "LaborDescription = ?, LaborCode = ? "
-						+ "WHERE ticketDetail.Key = ? and sequence = ?")) {
+
+		try (PreparedStatement psUpdateTicketDetail = conn
+				.prepareStatement("Update TicketDetail Set Status = ?, StatusDate = ?, StandardQuantity = ?, "
+						+ "HourlyRateSAH = ?, BarCodeID = ?, LaborRate = ?, "
+						+ "UpdatedSequence = ?, ActualQuantity = ?, OperationDescription = ?, "
+						+ "LaborDescription = ?, LaborCode = ? " + "WHERE ticketDetail.Key = ? and sequence = ?")) {
 			psUpdateTicketDetail.setString(1, ticketDetail.getOperationStatus().getOperationStatus());
 			psUpdateTicketDetail.setDate(2, DateUtilities.convertUtilDateToSQLDate(ticketDetail.getStatusDate()));
 			psUpdateTicketDetail.setInt(3, ticketDetail.getStandardQuantity());
@@ -288,8 +287,9 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 				throw new DatabaseException("TicketDetail Update Error.  Updated " + rowCount + " rows");
 			}
 			System.out.println("After updateTicketHeader executeUpdate().  Key is " + ticketDetail.getKey());
-		
-			return getTicketDetailByDetailKey(Long.parseLong(ticketDetail.getKey() + "" + String.format("%02d", ticketDetail.getSequenceOriginal())));
+
+			return getTicketDetailByDetailKey(Long
+					.parseLong(ticketDetail.getKey() + "" + String.format("%02d", ticketDetail.getSequenceOriginal())));
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage());
@@ -298,18 +298,18 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 
 	@Override
 	public void deleteTicketByKey(long key) throws DatabaseException {
-			try (PreparedStatement psDelTicketByKey = conn.prepareStatement("Delete From TicketHeader where Job.Key = ?")){
-				psDelTicketByKey.setLong(1, key);
-				int rowCount = psDelTicketByKey.executeUpdate();
+		try (PreparedStatement psDelTicketByKey = conn.prepareStatement("Delete From TicketHeader where Job.Key = ?")) {
+			psDelTicketByKey.setLong(1, key);
+			int rowCount = psDelTicketByKey.executeUpdate();
 
-				if (rowCount == 0) {
-					throw new DataNotFoundException("Error.  Delete JobHeader key " + key + " failed");
-				}
-				deleteTicketDetailsByKey(key);
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage());
+			if (rowCount == 0) {
+				throw new DataNotFoundException("Error.  Delete JobHeader key " + key + " failed");
 			}
+			deleteTicketDetailsByKey(key);
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage());
+		}
 
 	}
 
@@ -331,8 +331,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	public List<TicketHeader> getTicketHeaders(int offset) throws DatabaseException {
 		List<TicketHeader> ticketHeaders = new ArrayList<TicketHeader>();
 		try (PreparedStatement psGetTicketHeaders = conn
-				.prepareStatement("Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid "
-						+ "order by CreatedDate desc, jobheader.jobID, Status limit ?, 200")) {
+				.prepareStatement("Select * from ticketheader th join jobheader jh on th.jobid = jh.jobid "
+						+ "order by th.key desc, CreatedDate desc, jh.jobID, Status limit ?, 200")) {
 			psGetTicketHeaders.setInt(1, offset);
 			try (ResultSet rs = psGetTicketHeaders.executeQuery();) {
 
@@ -346,12 +346,13 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			throw new DatabaseException(e.getMessage(), e);
 		}
 	}
+
 	@Override
 	public List<TicketHeader> getTicketHeadersByStatus(String status, int offset) throws DatabaseException {
 		List<TicketHeader> ticketHeaders = new ArrayList<TicketHeader>();
 		try (PreparedStatement psGetTicketHeaders = conn
-				.prepareStatement("Select * from ticketheader join jobheader on ticketheader.jobid = jobheader.jobid "
-						+ " where ticketheader.status = ? order by CreatedDate desc, jobheader.jobID, Status limit ?, 200")) {
+				.prepareStatement("Select * from ticketheader th join jobheader jh on th.jobid = jh.jobid "
+						+ " where th.status = ? order by th.key, CreatedDate desc, jh.jobID, Status limit ?, 200")) {
 			psGetTicketHeaders.setString(1, status);
 			psGetTicketHeaders.setInt(2, offset);
 			try (ResultSet rs = psGetTicketHeaders.executeQuery();) {
@@ -370,7 +371,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	@Override
 	public TicketHeader getTicketHeaderByKey(long headerKey) throws DatabaseException {
 		System.out.println("Entering getTicketHeaderByKey");
-		
+
 		TicketHeader ticketHeader = null;
 		try (PreparedStatement psGetTicketHeaderByKey = conn
 				.prepareStatement("Select * from ticketheader join jobHeader on "
@@ -396,8 +397,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		List<TicketDetail> ticketDetails = new ArrayList<TicketDetail>();
 		try (PreparedStatement psGetTicketDetails = conn
 				.prepareStatement("Select * from ticketdetail td join operation op on op.OpCode = td.opcode "
-						+ "join laborcode lc on op.laborcode = lc.LaborCode "
-						+ "where td.key = ? order by sequence")) {
+						+ "join laborcode lc on op.laborcode = lc.LaborCode " + "where td.key = ? order by sequence")) {
 			psGetTicketDetails.setLong(1, headerKey);
 			try (ResultSet rs = psGetTicketDetails.executeQuery();) {
 				while (rs.next()) {
@@ -412,15 +412,15 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		}
 
 	}
-	
+
 	@Override
 	public TicketDetail getTicketDetailByDetailKey(long detailKey) throws DatabaseException {
 		try (PreparedStatement psGetTicketDetails = conn
-//				.prepareStatement("Select * from ticketdetail td join operation op on op.OpCode = td.opcode "
-//						+ "join laborcode lc on op.laborcode = lc.LaborCode "
-//						+ "where td.key = ? and td.sequence = ?")) {
-			.prepareStatement("Select * from ticketdetail td  "
-										+ "where td.key = ? and td.sequence = ?")) {			
+				// .prepareStatement("Select * from ticketdetail td join operation op on
+				// op.OpCode = td.opcode "
+				// + "join laborcode lc on op.laborcode = lc.LaborCode "
+				// + "where td.key = ? and td.sequence = ?")) {
+				.prepareStatement("Select * from ticketdetail td  " + "where td.key = ? and td.sequence = ?")) {
 			String stringKey = "" + detailKey;
 			if (stringKey.length() < 3) {
 				throw new DatabaseException("Invalid detail key.  Size is less than 3");
@@ -444,14 +444,15 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		}
 
 	}
+
 	private Ticket convertTicketFromResultSet(ResultSet rs) throws SQLException {
 
 		TicketHeader th = convertTicketHeaderFromResultSet(rs);
 		List<TicketDetail> details = new ArrayList<TicketDetail>();
 		rs.first(); // reset rs back to first record
-		while (rs.next()) {
+		do {
 			details.add(convertTicketDetailFromResultSet(rs));
-		}
+		} while (rs.next());
 		return TicketFormatter.format(new Ticket(th, details)); // TODO Need to pass values in for Ticket - maybe
 																// already done
 	}
@@ -474,14 +475,14 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	}
 
 	private TicketDetail convertTicketDetailFromResultSet(ResultSet rs) throws SQLException {
-		
+
 		ResultSetMetaData rsMetaData = rs.getMetaData();
-	      System.out.println("List of column names in the current table: ");
-	      //Retrieving the list of column names
-	      int count = rsMetaData.getColumnCount();
-	      for(int i = 1; i<=count; i++) {
-	         System.out.println(rsMetaData.getColumnName(i));
-	      }
+//		System.out.println("List of column names in the current table: ");
+//		// Retrieving the list of column names
+//		int count = rsMetaData.getColumnCount();
+//		for (int i = 1; i <= count; i++) {
+//			System.out.println(rsMetaData.getColumnName(i));
+//		}
 		long key = rs.getInt("Key");
 		String opCode = rs.getString("opCode");
 		int sequence = rs.getInt("Sequence");
@@ -492,19 +493,19 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		int laborCode = rs.getInt("LaborCode");
 		double laborRate = rs.getDouble("LaborRate");
 		String laborDescription = rs.getString("LaborDescription");
-		OperationStatus operationStatus = OperationStatus.INCOMPLETE;
+		OperationStatus operationStatus = OperationStatus.I;
 		if ("C".equals(operationStatusString)) {
 			operationStatus = OperationStatus.valueOf(operationStatusString);
 		}
 		int standardQuantity = rs.getInt("StandardQuantity");
 		int actualQuantity = rs.getInt("ActualQuantity");
 
-
 		int barCodeID = rs.getInt("BarCodeID");
 		double hourlyRateSAH = rs.getDouble("HourlyRateSAH");
 		TicketDetail td = new TicketDetail(key, opCode, operationDescription, operationStatus, sequence,
-				updatedSequence, statusDate, standardQuantity, actualQuantity, hourlyRateSAH, laborCode, laborDescription, laborRate, barCodeID);
-	
+				updatedSequence, statusDate, standardQuantity, actualQuantity, hourlyRateSAH, laborCode,
+				laborDescription, laborRate, barCodeID);
+
 		return td;
 	}
 

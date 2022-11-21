@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Context>
+	<Resource name="jdbc/jndiNokona" 
+	    auth="Container"
+		type="javax.sql.DataSource" 
+		maxTotal="10" 
+		maxIdle="30"
+		maxWaitMillis="10000" 
+		driverClassName="com.mysql.cj.jdbc.Driver"
+		url="jdbc:mysql://localhost:3306/Nokona?autoreconnect=true&amp;Autoreconnectforpools=true"
+		autoReconnect="true"
+		cMaxReconnects="5"
+		initialTimeout="1" 
+		username="nokona"
+		password="xyz1234!" 
+		validationQuery="SELECT 1"
+		testOnBorrow="true"
+		validationInteval="30000"
+	/>
+</Context>

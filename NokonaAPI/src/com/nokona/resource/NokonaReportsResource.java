@@ -25,6 +25,7 @@ import javax.servlet.ServletContext;
 
 import com.nokona.data.NokonaDatabase;
 import com.nokona.enums.ReportCategory;
+import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.PDFException;
 import com.nokona.qualifiers.BaseDaoQualifier;
 import com.nokona.reports.OrderBy;
@@ -65,9 +66,13 @@ public class NokonaReportsResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getEmptyReportProperties() {
 		System.out.println(conn);
-		conn = db.getConn();
-		System.out.println(conn);
-		conn = db.getConn();
+		try {
+			conn = db.getConn();
+			System.out.println(conn);
+			conn = db.getConn();
+		} catch (DatabaseConnectionException ex) {
+			return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ex.getMessage()).build();
+		}
 		OrderBy orderBy = new OrderBy("JobId", true);
 		OrderBy orderBy2 = new OrderBy("StatusDate", false);
 		List<OrderBy> ordersBy = new ArrayList<OrderBy>();
@@ -87,17 +92,18 @@ public class NokonaReportsResource {
 	@Produces("application/pdf")
 	@Path("/pdf")
 	public Response getPdfReport(ReportProperties properties) {
-//		new ReportProcesser(properties);
+		// new ReportProcesser(properties);
 		File file = null;
 		try {
 			file = getJasperReport(properties);
 			if (file == null) {
 				return Response.status(Status.BAD_REQUEST).build();
 			}
-			String returnString =  "attachment; filename=" + file.getAbsolutePath();
+			String returnString = "attachment; filename=" + file.getAbsolutePath();
 			System.out.println(returnString);
 			return Response.ok((Object) file)
-				//	.header("Content-Disposition", "attachment; filename=" + file.getAbsolutePath()).build();
+					// .header("Content-Disposition", "attachment; filename=" +
+					// file.getAbsolutePath()).build();
 					.header("Content-Disposition", returnString).build();
 		} catch (PDFException e) {
 			return Response.status(500).entity(e.getMessage()).build();
@@ -133,18 +139,18 @@ public class NokonaReportsResource {
 		return getPdfReport(null);
 	}
 
-	
 	private String generatePDFName() {
 		// return "Nokona_" + UUID.randomUUID().toString() + ".pdf"; // This will be the
 		// real file after test
 		return "Nokona_" + UUID.randomUUID().toString() + ".pdf";
 	}
 
-//	private String generateCSVName() {
-//		// return "Nokona_" + UUID.randomUUID().toString() + ".pdf"; // This will be the
-//		// real file after test
-//		return "Nokona_" + UUID.randomUUID().toString() + ".csv";
-//	}
+	// private String generateCSVName() {
+	// // return "Nokona_" + UUID.randomUUID().toString() + ".pdf"; // This will be
+	// the
+	// // real file after test
+	// return "Nokona_" + UUID.randomUUID().toString() + ".csv";
+	// }
 
 	private File getJasperReport(ReportProperties properties) throws PDFException {
 		String fileName;
@@ -198,9 +204,12 @@ public class NokonaReportsResource {
 			parms.put("FIRST_LETTER", "F");
 			parms.put("ACTIVE1", 0);
 			parms.put("ACTIVE2", 1);
-
+			try {
 			// End Practice
 			conn = db.getConn();
+		} catch (DatabaseConnectionException ex) {
+			return null;
+		}
 			System.out.println("Conn");
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parms, conn);
 			System.out.println("JasperPrint");
@@ -208,7 +217,7 @@ public class NokonaReportsResource {
 				JasperExportManager.exportReportToPdfFile(jasperPrint, fileName);
 			} else {
 				JasperExportManager.exportReportToHtmlFile(jasperPrint, fileName);
-//				JRCsvExporter.
+				// JRCsvExporter.
 			}
 			System.out.println("JasperExportManager");
 
@@ -218,7 +227,6 @@ public class NokonaReportsResource {
 		}
 		return new File(fileName);
 	}
-
 
 	private static final String FILE_PATH = "c:\\codebase\\MyJasperReport.pdf";
 
@@ -234,11 +242,12 @@ public class NokonaReportsResource {
 		return response.build();
 
 	}
-//	private void exportToCsv(JasperPrint jasperPrint, OutputStream os) throws JRException{
-//	    JRCsvExporter  exporter = new JRCsvExporter();
-//	    CsvReportConfiguration configuration = new SimpleCsvReportConfiguration();	
-//	    exporter.setConfiguration(configuration);   
-//	    exporter.exportReport();
-//	}
+	// private void exportToCsv(JasperPrint jasperPrint, OutputStream os) throws
+	// JRException{
+	// JRCsvExporter exporter = new JRCsvExporter();
+	// CsvReportConfiguration configuration = new SimpleCsvReportConfiguration();
+	// exporter.setConfiguration(configuration);
+	// exporter.exportReport();
+	// }
 
 }

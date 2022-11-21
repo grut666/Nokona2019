@@ -68,14 +68,14 @@ public class AccessToMySQL {
 	}
 
 	public static void doTickets() {
-//		doTicketHeaders();
+		doTicketHeaders();
 		doTicketDetail();
 	}
 
 	public static void doJobs() {
 		// Must run both
-		doJobHeaders();
-		doJobDetails();
+		//doJobHeaders();
+		// doJobDetails();
 	}
 
 	public static void connect() {

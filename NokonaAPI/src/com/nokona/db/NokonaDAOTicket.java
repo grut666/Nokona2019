@@ -57,7 +57,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 						+ "join ticketdetail td on th.key = td.key " + "join operation op on td.opcode = op.OpCode "
 						// + "where ticketheader.jobid like 'A-1275%' " + // Limiting for testing,
 						// otherwise too large
-						+ "order by th.key desc, CreatedDate desc, th.status, sequence " + "limit ?, 200 ")) {
+						+ "order by th.key desc, CreatedDate desc, th.status, sequence " + "limit ?, 20000 ")) {
 			psGetTickets.setInt(1, offset);
 			try (ResultSet rs = psGetTickets.executeQuery()) {
 				while (rs.next()) {
@@ -78,7 +78,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 				.prepareStatement("Select * from ticketheader th join jobheader jh on th.jobid = jh.jobid "
 						+ "join ticketdetail td on th.key = td.key " + "join operation op on td.opcode = op.OpCode "
 						+ "where th.status = ?" + // Limiting for testing, otherwise too large
-						"order by th.key desc, CreatedDate desc, sequence limit ?, 200")) {
+						"order by th.key desc, CreatedDate desc, sequence limit ?, 20000")) {
 			psGetTickets.setString(1, status);
 			psGetTickets.setInt(2, offset);
 			try (ResultSet rs = psGetTickets.executeQuery()) {
@@ -332,7 +332,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		List<TicketHeader> ticketHeaders = new ArrayList<TicketHeader>();
 		try (PreparedStatement psGetTicketHeaders = conn
 				.prepareStatement("Select * from ticketheader th join jobheader jh on th.jobid = jh.jobid "
-						+ "order by th.key desc, CreatedDate desc, jh.jobID, Status limit ?, 200")) {
+						+ "order by th.key desc, CreatedDate desc, jh.jobID, Status limit ?, 20000")) {
 			psGetTicketHeaders.setInt(1, offset);
 			try (ResultSet rs = psGetTicketHeaders.executeQuery();) {
 
@@ -352,7 +352,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		List<TicketHeader> ticketHeaders = new ArrayList<TicketHeader>();
 		try (PreparedStatement psGetTicketHeaders = conn
 				.prepareStatement("Select * from ticketheader th join jobheader jh on th.jobid = jh.jobid "
-						+ " where th.status = ? order by th.key, CreatedDate desc, jh.jobID, Status limit ?, 200")) {
+						+ " where th.status = ? order by th.key, CreatedDate desc, jh.jobID, Status limit ?, 20000")) {
 			psGetTicketHeaders.setString(1, status);
 			psGetTicketHeaders.setInt(2, offset);
 			try (ResultSet rs = psGetTicketHeaders.executeQuery();) {

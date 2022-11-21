@@ -66,13 +66,11 @@ public class NokonaReportsResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getEmptyReportProperties() {
 		System.out.println(conn);
-		try {
+		
 			conn = db.getConn();
 			System.out.println(conn);
 			conn = db.getConn();
-		} catch (DatabaseConnectionException ex) {
-			return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(ex.getMessage()).build();
-		}
+
 		OrderBy orderBy = new OrderBy("JobId", true);
 		OrderBy orderBy2 = new OrderBy("StatusDate", false);
 		List<OrderBy> ordersBy = new ArrayList<OrderBy>();
@@ -204,12 +202,10 @@ public class NokonaReportsResource {
 			parms.put("FIRST_LETTER", "F");
 			parms.put("ACTIVE1", 0);
 			parms.put("ACTIVE2", 1);
-			try {
+			
 			// End Practice
 			conn = db.getConn();
-		} catch (DatabaseConnectionException ex) {
-			return null;
-		}
+		
 			System.out.println("Conn");
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parms, conn);
 			System.out.println("JasperPrint");

@@ -150,6 +150,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		formattedTicketHeader.setDateCreated(new Date());
 		formattedTicketHeader.setQuantity(ticketHeader.getQuantity());
 		formattedTicketHeader.setTicketStatus(ticketHeader.getTicketStatus());
+		formattedTicketHeader.setPremiumPercent(ticketHeader.getPremiumPercent());
 		formattedTicketHeader = TicketHeaderFormatter.format(formattedTicketHeader);
 		try (PreparedStatement psAddTicketHeader = conn.prepareStatement(
 				"Insert into TicketHeader (JobID, Description, CreatedDate, Status, StatusDate, Quantity, PremiumPercent) values (?,?,?,?,?,?,?)",

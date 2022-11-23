@@ -1035,7 +1035,7 @@ Body:
 }
 
 
-### Get /tickets/labels # Generate and Print labels (Will be invoked from POST with QueryParam action=P)
+### Post /tickets/labels # Generate and Print labels (Will be invoked from POST with QueryParam action=P)
 
 #### In
 "ticketHeader": {\

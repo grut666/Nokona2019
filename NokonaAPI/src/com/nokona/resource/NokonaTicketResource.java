@@ -158,7 +158,7 @@ public class NokonaTicketResource {
 		return Response.status(200).entity(ticketHeader).build();
 	}
 
-	@GET
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/labels")

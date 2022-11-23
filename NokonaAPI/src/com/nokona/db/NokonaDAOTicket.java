@@ -247,13 +247,14 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 
 	@Override
 	public TicketHeader updateTicketHeader(TicketHeader ticketHeader) throws DatabaseException {
+		System.err.println("TicketHeader is " + ticketHeader);
 		try (PreparedStatement psUpdateTicketHeader = conn.prepareStatement(
 				"Update TicketHeader Set Status = ?, StatusDate = ?, Quantity = ?, PremiumPercent = ? " + "WHERE ticketheader.Key = ?")) {
 			psUpdateTicketHeader.setString(1, ticketHeader.getTicketStatus().getTicketStatus());
 			psUpdateTicketHeader.setDate(2, DateUtilities.convertUtilDateToSQLDate(new Date()));
 			psUpdateTicketHeader.setInt(3, ticketHeader.getQuantity());
-			psUpdateTicketHeader.setLong(4, ticketHeader.getKey());
-			psUpdateTicketHeader.setInt(5, ticketHeader.getPremiumPercent());
+			psUpdateTicketHeader.setInt(4, ticketHeader.getPremiumPercent());
+			psUpdateTicketHeader.setLong(5, ticketHeader.getKey());
 			System.out.println("In updateTicketHeader.  Key is " + ticketHeader.getKey());
 			int rowCount = psUpdateTicketHeader.executeUpdate();
 			if (rowCount != 1) {

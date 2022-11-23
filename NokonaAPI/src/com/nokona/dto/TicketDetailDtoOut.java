@@ -24,12 +24,14 @@ public class TicketDetailDtoOut {
 	private int sequenceUpdated;
 	private Date statusDate;
 	private int standardQuantity;
-	private int actualQuantity;
 	private double hourlyRateSAH;
 	private int laborCode;
 	private String laborDescription;
 	private double laborRate;
-	private int employeeBarCodeID;
+	private int employeeBarCodeID1;
+	private int actualQuantity1;
+	private int employeeBarCodeID2;
+	private int actualQuantity2;
 	
 	public TicketDetailDtoOut(TicketHeader ticketHeader, TicketDetail ticketDetail) {
 		System.out.println("Ticket Header is " + ticketHeader);
@@ -44,11 +46,13 @@ public class TicketDetailDtoOut {
 		sequenceUpdated = ticketDetail.getSequenceUpdated();
 		statusDate = ticketDetail.getStatusDate();
 		standardQuantity = ticketDetail.getStandardQuantity();
-		actualQuantity = ticketDetail.getActualQuantity();
 		hourlyRateSAH = ticketDetail.getHourlyRateSAH();
 		laborCode = ticketDetail.getLaborCode();
 		laborDescription = ticketDetail.getLaborDescription();
 		laborRate = ticketDetail.getLaborRate();
-		employeeBarCodeID = ticketDetail.getEmployeeBarCodeID();		
+		employeeBarCodeID1 = ticketDetail.getEmployeeBarCodeID1();
+		actualQuantity1 = ticketDetail.getActualQuantity1();
+		employeeBarCodeID2 = ticketDetail.getEmployeeBarCodeID2();
+		actualQuantity2 = ticketDetail.getActualQuantity2();
 	}
 }

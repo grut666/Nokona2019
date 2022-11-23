@@ -11,7 +11,9 @@ import lombok.ToString;
 @Data
 public class TicketDetailDtoInRecord {
 	private long ticketNumber;
-	private int quantity;
-	private int barCodeID;
+	private int quantity1;
+	private int barCodeID1;
+	private int quantity2;
+	private int barCodeID2;
 	
 }

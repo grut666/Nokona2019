@@ -247,8 +247,11 @@ public class NokonaTicketResource {
 					continue;
 				}
 				ticketDetail.setOperationStatus(OperationStatus.COMPLETE);
-				ticketDetail.setActualQuantity(dtoIn.getQuantity());
-				ticketDetail.setEmployeeBarCodeID(dtoIn.getBarCodeID());
+
+				ticketDetail.setEmployeeBarCodeID1(dtoIn.getBarCodeID1());
+				ticketDetail.setActualQuantity1(dtoIn.getQuantity1());
+				ticketDetail.setEmployeeBarCodeID2(dtoIn.getBarCodeID2());
+				ticketDetail.setActualQuantity2(dtoIn.getQuantity2());
 				ticketDetail.setStatusDate(DateUtilities.stringToJavaDate(ticketDetailDtoIn.getDateOfTicket()));
 				db.updateTicketDetail(ticketDetail);
 
@@ -267,9 +270,9 @@ public class NokonaTicketResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/ticketdetails/testdto")
 	public Response produceTestDto() {
-		TicketDetailDtoInRecord record1 = new TicketDetailDtoInRecord(4098847, 10, 4690);
-		TicketDetailDtoInRecord record2 = new TicketDetailDtoInRecord(4098848, 10, 4690);
-		TicketDetailDtoInRecord record3 = new TicketDetailDtoInRecord(4098849, 10, 4690);
+		TicketDetailDtoInRecord record1 = new TicketDetailDtoInRecord(4098847, 10, 4690, 4098847, 0);
+		TicketDetailDtoInRecord record2 = new TicketDetailDtoInRecord(4098848, 10, 4690, 4098847, 0);
+		TicketDetailDtoInRecord record3 = new TicketDetailDtoInRecord(4098849, 10, 4690, 4098847, 0);
 		List<TicketDetailDtoInRecord> records = new ArrayList<>(Arrays.asList(record1, record2, record3));
 		TicketDetailDtoIn dtoIn = new TicketDetailDtoIn("2021-01-23", records);
 

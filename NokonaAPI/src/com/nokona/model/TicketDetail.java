@@ -27,8 +27,9 @@ public class TicketDetail {
 	private double laborRate;
 	private int employeeBarCodeID1;
 	private int actualQuantity1;
-	private int actualQuantity2;
 	private int employeeBarCodeID2;
+	private int actualQuantity2;
+	
 	public TicketDetail(long key) {
 		// This is for the final ticket in the sequence - Job Complete
 		this.key = key;

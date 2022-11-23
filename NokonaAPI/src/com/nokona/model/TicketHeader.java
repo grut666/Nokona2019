@@ -12,14 +12,23 @@ public class TicketHeader {
 	private TicketStatus ticketStatus;
 	private Date dateStatus;
 	private int quantity;
+	private int premiumPercent;
+	public int getPremiumPercent() {
+		return premiumPercent;
+	}
+
+	public void setPremiumPercent(int premiumPercent) {
+		this.premiumPercent = premiumPercent;
+	}
+
 	public TicketHeader() {
-		this(-1, "", "", new Date(), TicketStatus.NEW, new Date(), 0);
+		this(-1, "", "", new Date(), TicketStatus.NEW, new Date(), 0, 0);
 	}
 
 	public TicketHeader(TicketHeader ticketHeader) {
-		this(-1, ticketHeader.getJobId(), ticketHeader.getDescription(), new Date(), TicketStatus.NEW, new Date(), ticketHeader.getQuantity());
+		this(-1, ticketHeader.getJobId(), ticketHeader.getDescription(), new Date(), TicketStatus.NEW, new Date(), ticketHeader.getQuantity(), ticketHeader.getPremiumPercent());
 	}
-	public TicketHeader(long key, String jobId, String description, Date dateCreated, TicketStatus ticketStatus, Date dateStatus, int quantity) {
+	public TicketHeader(long key, String jobId, String description, Date dateCreated, TicketStatus ticketStatus, Date dateStatus, int quantity, int premiumPercent) {
 		this.setKey(key);
 		this.setJobId(jobId);
 		this.setDescription(description);
@@ -27,6 +36,7 @@ public class TicketHeader {
 		this.setTicketStatus(ticketStatus);
 		this.setDateStatus(dateStatus);
 		this.setQuantity(quantity);
+		this.setPremiumPercent(premiumPercent);
 	}
 	public long getKey() {
 		return key;

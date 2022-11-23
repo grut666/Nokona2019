@@ -152,24 +152,26 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		formattedTicketHeader.setTicketStatus(ticketHeader.getTicketStatus());
 		formattedTicketHeader = TicketHeaderFormatter.format(formattedTicketHeader);
 		try (PreparedStatement psAddTicketHeader = conn.prepareStatement(
-				"Insert into TicketHeader (JobID, Description, CreatedDate, Status, StatusDate, Quantity) values (?, ?,?,?,?,?)",
+				"Insert into TicketHeader (JobID, Description, CreatedDate, Status, StatusDate, Quantity, PremiumPercent) values (?,?,?,?,?,?,?)",
 				PreparedStatement.RETURN_GENERATED_KEYS);
 				PreparedStatement psAddTicketDetail = conn.prepareStatement(
 						"Insert into TicketDetail (TicketDetail.Key, OpCode, Sequence, StatusDate, Status, "
 								+ "StandardQuantity, HourlyRateSAH, LaborRate, UpdatedSequence, "
-								+ " OperationDescription, LaborDescription, BarCodeID1, ActualQuantity1, BarCodeID2, ActualQuantity2, )  "
+								+ " OperationDescription, LaborDescription, BarCodeID1, ActualQuantity1, BarCodeID2, ActualQuantity2 )  "
 								+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
 			psAddTicketHeader.setString(1, formattedTicketHeader.getJobId());
 			psAddTicketHeader.setString(2, formattedTicketHeader.getDescription());
 			psAddTicketHeader.setDate(3,
 					DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateCreated()));
 			psAddTicketHeader.setString(4, formattedTicketHeader.getTicketStatus().getTicketStatus());
+			System.out.println("Formatted Ticket Header is " + formattedTicketHeader);
 			System.out.println("**********Status is " + formattedTicketHeader.getTicketStatus().getTicketStatus());
 			psAddTicketHeader.setDate(5, DateUtilities.convertUtilDateToSQLDate(formattedTicketHeader.getDateStatus()));
 			psAddTicketHeader.setInt(6, formattedTicketHeader.getQuantity());
-
+			psAddTicketHeader.setInt(7, formattedTicketHeader.getPremiumPercent());
+			System.out.println("Before Update");
 			int rowCount = psAddTicketHeader.executeUpdate();
-
+			System.out.println("After Update");
 			if (rowCount != 1) {
 				throw new DatabaseException("Error.  Inserted " + rowCount + " rows");
 			}
@@ -197,6 +199,9 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 					if (ticketHeader.getJobId().contains("-RH")) {
 						sah *= 1.1;
 					}
+					if (ticketHeader.getPremiumPercent() > 0 ) {
+						sah *= 1 + (ticketHeader.getPremiumPercent() / 100.0); 
+					} // Will not do this on update so we don't get a compounding increase in premium
 					String opDescription = op.getDescription();
 					laborCode = laborCodeDAO.getLaborCode(op.getLaborCode());
 					String laborDescription = laborCode.getDescription();
@@ -221,6 +226,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 					psAddTicketDetail.setLong(14, 0);
 					psAddTicketDetail.setLong(15, 0);
 					psAddTicketDetail.addBatch();
+					System.out.println("Ticket Detail is " + td);
 				}
 				psAddTicketDetail.executeBatch();
 				return new Ticket(formattedTicketHeader, newTicketDetails);
@@ -241,11 +247,12 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	@Override
 	public TicketHeader updateTicketHeader(TicketHeader ticketHeader) throws DatabaseException {
 		try (PreparedStatement psUpdateTicketHeader = conn.prepareStatement(
-				"Update TicketHeader Set Status = ?, StatusDate = ?, Quantity = ? " + "WHERE ticketheader.Key = ?")) {
+				"Update TicketHeader Set Status = ?, StatusDate = ?, Quantity = ?, PremiumPercent = ? " + "WHERE ticketheader.Key = ?")) {
 			psUpdateTicketHeader.setString(1, ticketHeader.getTicketStatus().getTicketStatus());
 			psUpdateTicketHeader.setDate(2, DateUtilities.convertUtilDateToSQLDate(new Date()));
 			psUpdateTicketHeader.setInt(3, ticketHeader.getQuantity());
 			psUpdateTicketHeader.setLong(4, ticketHeader.getKey());
+			psUpdateTicketHeader.setInt(5, ticketHeader.getPremiumPercent());
 			System.out.println("In updateTicketHeader.  Key is " + ticketHeader.getKey());
 			int rowCount = psUpdateTicketHeader.executeUpdate();
 			if (rowCount != 1) {
@@ -475,8 +482,9 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			ticketStatus = TicketStatus.valueOf(ticketStatusString);
 		}
 		int quantity = rs.getInt("Quantity");
+		int premiumPercent = rs.getInt("PremiumPercent");
 		return TicketHeaderFormatter
-				.format(new TicketHeader(key, jobId, description, createdDate, ticketStatus, dateStatus, quantity));
+				.format(new TicketHeader(key, jobId, description, createdDate, ticketStatus, dateStatus, quantity, premiumPercent));
 	}
 
 	private TicketDetail convertTicketDetailFromResultSet(ResultSet rs) throws SQLException {

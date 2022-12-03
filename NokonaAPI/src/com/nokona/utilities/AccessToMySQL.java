@@ -51,12 +51,12 @@ public class AccessToMySQL {
 		while (rs.next()) {
 			System.out.println(rs.getString("TABLE_NAME"));
 		}
-		// doLaborCodes();
-		// doEmployees();
-
-		// doOperations();
+//		 doLaborCodes();
+//		 doEmployees();
+//
+//		 doOperations();
 		 doTickets();
-		//doJobs();
+//		 doJobs();
 		long endTime = System.currentTimeMillis();
 		try {
 			mySqlConn.close();
@@ -68,14 +68,14 @@ public class AccessToMySQL {
 	}
 
 	public static void doTickets() {
-		doTicketHeaders();
+//		doTicketHeaders();
 		doTicketDetail();
 	}
 
 	public static void doJobs() {
 		// Must run both
-		//doJobHeaders();
-		// doJobDetails();
+		doJobHeaders();
+		 doJobDetails();
 	}
 
 	public static void connect() {
@@ -269,9 +269,9 @@ public class AccessToMySQL {
 			String sequence = rsmd.getColumnName(3);
 			String statusDate = rsmd.getColumnName(4);
 			String status = rsmd.getColumnName(5);
-			String actualQuantity = rsmd.getColumnName(6);
+			String actualQuantity1 = rsmd.getColumnName(6);
 			String hourlyRateSAH = rsmd.getColumnName(7);
-			String barCodeId = rsmd.getColumnName(8);
+			String barCodeId1 = rsmd.getColumnName(8);
 			String laborRate = rsmd.getColumnName(9);
 			String laborCode = rsmd.getColumnName(10);
 			String laborDesc = rsmd.getColumnName(11);
@@ -333,8 +333,8 @@ public class AccessToMySQL {
 			// Bar Code ID - 5
 			// LaborRate - 3
 			psInsert = mySqlConn.prepareStatement(
-					"Insert into TicketDetail (TicketDetail.Key, OpCode, Sequence, StatusDate, Status, StandardQuantity, HourlyRateSAH, BarCodeID, LaborRate, "
-							+ "UpdatedSequence, ActualQuantity, OperationDescription, LaborDescription, LaborCode) "
+					"Insert into TicketDetail (TicketDetail.Key, OpCode, Sequence, StatusDate, Status, StandardQuantity, HourlyRateSAH, BarCodeID1, LaborRate, "
+							+ "UpdatedSequence, ActualQuantity1, OperationDescription, LaborDescription, LaborCode) "
 							+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			String lastKey = "";
 			for (String record : recordsIn) {
@@ -647,7 +647,7 @@ public class AccessToMySQL {
 			String key = rsmd.getColumnName(1);
 			String lastName = rsmd.getColumnName(2);
 			String firstName = rsmd.getColumnName(3);
-			String barCodeId = rsmd.getColumnName(4);
+			String barCodeId1 = rsmd.getColumnName(4);
 
 			String laborCode = rsmd.getColumnName(5);
 			String empId = rsmd.getColumnName(6);
@@ -655,7 +655,7 @@ public class AccessToMySQL {
 			//
 			while (rs.next()) {
 				String record = rs.getInt(key) + "~" + rs.getString(lastName).trim() + "~"
-						+ rs.getString(firstName).trim() + "~" + rs.getInt(barCodeId) + "~" + rs.getInt(laborCode) + "~"
+						+ rs.getString(firstName).trim() + "~" + rs.getInt(barCodeId1) + "~" + rs.getInt(laborCode) + "~"
 						+ rs.getString(empId).trim() + "~" + rs.getString(active);
 				System.out.println(record);
 				recordsIn.add(record);
@@ -684,7 +684,7 @@ public class AccessToMySQL {
 		System.out.println("Finished deleting " + rowsDeleted + " employees.  Beginning storing employees");
 		try {
 			psInsert = mySqlConn.prepareStatement(
-					"Insert into employee (employee.Key, LastName, FirstName, BarCodeID, LaborCode, EmpID, Active) "
+					"Insert into employee (employee.Key, LastName, FirstName, BarCodeID1, LaborCode, EmpID, Active) "
 							+ "values (?,?,?,?,?,?,?)");
 			for (String record : recordsIn) {
 				System.out.println(record);

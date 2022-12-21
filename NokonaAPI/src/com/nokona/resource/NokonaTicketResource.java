@@ -218,8 +218,6 @@ public class NokonaTicketResource {
 			if (yesPrint) {
 				getTicketLabels(ticket);
 			}
-			// TransferToAccess.transfer("TICKETHEADER_C");
-			// TransferToAccess.transfer("TICKETDETAIL_C");
 			return Response.status(200).entity(ticket).build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity(ex.getMessage()).build();

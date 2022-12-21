@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.nokona.model.Labels;
+import com.nokona.printer.PrintJobWatcher;
 import com.nokona.utilities.BarCodeUtilities;
 
 @Path("/labels")
@@ -44,7 +45,6 @@ public class NokonaLabelsResource {
 		System.out.println("******** Entering printIt ***********************");
 		PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 		pras.add(new Copies(1));
-
 		DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
 		Doc doc = new SimpleDoc(labels.getLabels().getBytes(), flavor, null);
 		PrintService printService = BarCodeUtilities.getBarCodePrinter();
@@ -55,47 +55,10 @@ public class NokonaLabelsResource {
 
 		PrintJobWatcher pjw = new PrintJobWatcher(job);
 		job.print(doc, pras);
+		System.out.println("******************Before pjw.waitForDone");
 		pjw.waitForDone();
+		System.out.println("******************After pjw.waitForDone");
+		
 	}
 }
 
-class PrintJobWatcher {
-	boolean done = false;
-
-	PrintJobWatcher(DocPrintJob job) {
-		job.addPrintJobListener(new PrintJobAdapter() {
-			public void printJobCanceled(PrintJobEvent pje) {
-				allDone();
-			}
-
-			public void printJobCompleted(PrintJobEvent pje) {
-				allDone();
-			}
-
-			public void printJobFailed(PrintJobEvent pje) {
-				allDone();
-			}
-
-			public void printJobNoMoreEvents(PrintJobEvent pje) {
-				allDone();
-			}
-
-			void allDone() {
-				synchronized (PrintJobWatcher.this) {
-					done = true;
-					System.out.println("Printing done ...");
-					PrintJobWatcher.this.notify();
-				}
-			}
-		});
-	}
-
-	public synchronized void waitForDone() {
-		try {
-			while (!done) {
-				wait();
-			}
-		} catch (InterruptedException e) {
-		}
-	}
-}

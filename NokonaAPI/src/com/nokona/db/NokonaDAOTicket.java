@@ -398,6 +398,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 				} else {
 					throw new DataNotFoundException("Ticket key " + headerKey + " is not in DB");
 				}
+				System.out.println("Ticket Header is " + ticketHeader);
 				return TicketHeaderFormatter.format(ticketHeader);
 			}
 		} catch (SQLException e) {

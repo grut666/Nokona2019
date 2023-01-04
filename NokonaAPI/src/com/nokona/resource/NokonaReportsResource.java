@@ -31,6 +31,7 @@ import com.nokona.qualifiers.BaseDaoQualifier;
 import com.nokona.reports.OrderBy;
 //import com.nokona.reports.ReportProcesser;
 import com.nokona.reports.ReportProperties;
+import com.nokona.reports.TicketReports;
 
 import net.sf.jasperreports.engine.JRException;
 //import net.sf.jasperreports.engine.JRExporterParameter;
@@ -66,10 +67,10 @@ public class NokonaReportsResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getEmptyReportProperties() {
 		System.out.println(conn);
-		
-			conn = db.getConn();
-			System.out.println(conn);
-			conn = db.getConn();
+
+		conn = db.getConn();
+		System.out.println(conn);
+		conn = db.getConn();
 
 		OrderBy orderBy = new OrderBy("JobId", true);
 		OrderBy orderBy2 = new OrderBy("StatusDate", false);
@@ -168,10 +169,12 @@ public class NokonaReportsResource {
 		String templateFileName;
 		try {
 			ReportCategory rc = properties.getCategory();
+
 			if (rc == null) {
 				return null;
 			}
-
+			Map<String, Object> parms = new HashMap<String, Object>();
+			String reportName = properties.getReportName();
 			switch (rc.getCategory().toUpperCase()) {
 			case "EMPLOYEE":
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
@@ -186,7 +189,7 @@ public class NokonaReportsResource {
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
 				break;
 			case "TICKET":
-				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/TicketWIP.jrxml");
+					templateFileName = TicketReports.construct(context, properties, parms);				
 				break;
 			default:
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
@@ -196,16 +199,16 @@ public class NokonaReportsResource {
 			JasperReport jasperReport = JasperCompileManager.compileReport(templateFileName);
 
 			System.out.println("JasperReport");
-			Map<String, Object> parms = new HashMap<String, Object>();
+			
 
 			// Practicing
-			parms.put("FIRST_LETTER", "F");
-			parms.put("ACTIVE1", 0);
-			parms.put("ACTIVE2", 1);
-			
+//			parms.put("FIRST_LETTER", "F");
+//			parms.put("ACTIVE1", 0);
+//			parms.put("ACTIVE2", 1);
+
 			// End Practice
 			conn = db.getConn();
-		
+
 			System.out.println("Conn");
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parms, conn);
 			System.out.println("JasperPrint");

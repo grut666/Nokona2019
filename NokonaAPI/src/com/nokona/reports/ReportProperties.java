@@ -24,6 +24,6 @@ public class ReportProperties {
 	private String operatorId;
 	private String jobId;
 	private String operationId;
-	private boolean pdfNotExcel;
+	private boolean csvNotHtml;
 	private boolean summaryNotDetail;
 }

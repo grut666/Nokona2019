@@ -23,8 +23,7 @@ import com.nokona.model.JobHeader;
 // import com.nokona.validator.JobValidator;
 
 public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
-
-
+	private boolean isAdding = false; // always delete and re-add detail
 
 	public NokonaDAOJob() throws DatabaseException {
 		super();
@@ -64,8 +63,8 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 				if (rs.next()) {
 					jobHeader = convertJobHeaderFromResultSet(rs);
 				} else {
-					// Do nothing.  Return null.  This may be because of being called from Delete
-//					throw new DataNotFoundException("3. Job: JobID " + jobId + " is not in DB");
+					// Do nothing. Return null. This may be because of being called from Delete
+					// throw new DataNotFoundException("3. Job: JobID " + jobId + " is not in DB");
 
 				}
 			}
@@ -99,10 +98,11 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 						+ "WHERE JobHeader.KEY = ?")) {
 
 			JobHeader formattedJobHeader = JobFormatter.format(jobHeaderIn);
-//			String validateMessage = JobValidator.validateUpdate(formattedJobHeader, conn);
-//			if (!"".equals(validateMessage)) {
-//				throw new DatabaseException(validateMessage);
-//			}
+			// String validateMessage = JobValidator.validateUpdate(formattedJobHeader,
+			// conn);
+			// if (!"".equals(validateMessage)) {
+			// throw new DatabaseException(validateMessage);
+			// }
 			psUpdateJobHeader.setString(1, formattedJobHeader.getJobId());
 			psUpdateJobHeader.setString(2, formattedJobHeader.getDescription());
 			psUpdateJobHeader.setInt(3, formattedJobHeader.getStandardQuantity());
@@ -130,27 +130,27 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			throw new NullInputDataException("Job Header cannot be null");
 		}
 		JobHeader formattedJobHeader = JobFormatter.format(jobHeaderIn);
-//		try (PreparedStatement psAddJobHeaderDupeCheck = conn
-//				.prepareStatement("Select * from JobHeader where JobID = ?")) {
-//			psAddJobHeaderDupeCheck.setString(1, formattedJobHeader.getJobId());
-//			try (ResultSet rs = psAddJobHeaderDupeCheck.executeQuery();) {
-//
-//				if (rs.next()) {
-//					throw new DuplicateDataException("Job ID is already in use");
-//				}
-//			}
-//
-//		} catch (SQLException e) {
-//			System.err.println(e.getMessage());
-//			throw new DuplicateDataException(e.getMessage(), e);
-//		}
+		// try (PreparedStatement psAddJobHeaderDupeCheck = conn
+		// .prepareStatement("Select * from JobHeader where JobID = ?")) {
+		// psAddJobHeaderDupeCheck.setString(1, formattedJobHeader.getJobId());
+		// try (ResultSet rs = psAddJobHeaderDupeCheck.executeQuery();) {
+		//
+		// if (rs.next()) {
+		// throw new DuplicateDataException("Job ID is already in use");
+		// }
+		// }
+		//
+		// } catch (SQLException e) {
+		// System.err.println(e.getMessage());
+		// throw new DuplicateDataException(e.getMessage(), e);
+		// }
 		try (PreparedStatement psAddJobHeader = conn.prepareStatement(
 				"Insert into JobHeader (JobId, Description, StandardQuantity, JobType) values (?,?,?,?)",
 				PreparedStatement.RETURN_GENERATED_KEYS);) {
-//			String validateMessage = JobValidator.validateAdd(formattedJobHeader, conn);
-//			if (!"".equals(validateMessage)) {
-//				throw new DatabaseException(validateMessage);
-//			}
+			// String validateMessage = JobValidator.validateAdd(formattedJobHeader, conn);
+			// if (!"".equals(validateMessage)) {
+			// throw new DatabaseException(validateMessage);
+			// }
 			psAddJobHeader.setString(1, formattedJobHeader.getJobId());
 			psAddJobHeader.setString(2, formattedJobHeader.getDescription());
 			psAddJobHeader.setInt(3, formattedJobHeader.getStandardQuantity());
@@ -168,7 +168,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 					// loggitHeader("ADD", newJobHeader);
 
 					System.err.println("Generated key 1 is " + generatedKeys.getLong(1));
-//					return null;
+					// return null;
 					return getJobHeaderByKey(generatedKeys.getLong(1));
 				} else {
 					throw new SQLException("Creating JobHeader failed, no ID obtained.");
@@ -184,12 +184,10 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
 	}
 
-	
-
 	@Override
 	public void deleteJob(String jobId) throws DatabaseException {
-//		JobHeader jobHeader = getJobHeader(jobId);
-//		long jobHeaderKey = jobHeader.getKey();
+		// JobHeader jobHeader = getJobHeader(jobId);
+		// long jobHeaderKey = jobHeader.getKey();
 		System.err.println("Job ID is " + jobId);
 		if (jobId == null) {
 			throw new NullInputDataException("jobID cannot be null");
@@ -199,11 +197,16 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			int rowCount = psDelJobByJobId.executeUpdate();
 
 			if (rowCount == 0) {
-//				throw new DataNotFoundException("Error.  Delete JobHeader JobID " + jobId + " failed");
-//				Do Nothing because this may have been called from an add or update where it didn't exist
+				// throw new DataNotFoundException("Error. Delete JobHeader JobID " + jobId + "
+				// failed");
+				// Do Nothing because this may have been called from an add or update where it
+				// didn't exist
 			}
-//			System.err.println("Row Count is " + rowCount);
-//			deleteJobDetailsByJobId(jobId); // Keep job detail for now since we may have multiple jobheaders using it.
+			// System.err.println("Row Count is " + rowCount);
+			if (isAdding) {
+				deleteJobDetailsByJobId(jobId);
+			}
+			// multiple jobheaders using it.
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -211,7 +214,6 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		}
 
 	}
-
 
 	private void deleteJobDetailsByJobId(String jobId) throws DatabaseException {
 		System.err.println("Detail JobId 1 is " + jobId);
@@ -219,21 +221,44 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 				.prepareStatement("Delete From JobDetail where JobDetail.JobId = ?")) {
 			jobId = StringUtils.removeEnd(jobId, "-LH");
 			jobId = StringUtils.removeEnd(jobId, "-RH");
+			if (!isAdding) {
+				int jobHeadersCount = getJobHeadersLike(jobId); // Delete if last JOBID-?H
+				if (jobHeadersCount > 0) {
+					return;
+				}
+			}
 			psDelJobDetailByJobId.setString(1, jobId);
 			System.err.println("Detail JobId 2 is " + jobId);
-			int rowCount =
-					psDelJobDetailByJobId.executeUpdate();
+			int rowCount = psDelJobDetailByJobId.executeUpdate();
 			System.err.println("Detail Row Count is " + rowCount);
-//			if (rowCount == 0) {
-//				throw new DataNotFoundException("Error.  JobDetail  " + jobId + " failed");
-//			}
+			// if (rowCount == 0) {
+			// throw new DataNotFoundException("Error. JobDetail " + jobId + " failed");
+			// }
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DatabaseException(e.getMessage());
 		}
 	}
 
+	int getJobHeadersLike(String jobId) throws DatabaseException {
+		try (PreparedStatement psJobHeaders = conn
+				.prepareStatement("Select count(*) as JOBCOUNT From JobHeader where JobHeader.JobId IN (?,?,?")) {
 
+			psJobHeaders.setString(1, jobId);
+			psJobHeaders.setString(2, jobId + "-RH");
+			psJobHeaders.setString(2, jobId + "-LH");
+			ResultSet rs = psJobHeaders.executeQuery();
+			if (rs.next()) {
+				return rs.getInt("JOBCOUNT");
+			} else {
+				return 0;
+			}
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage());
+		}
+
+	}
 
 	@Override
 	public List<JobDetail> getJobDetails(String jobId) throws DatabaseException {
@@ -245,9 +270,9 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			psGetJobDetailByJobId.setString(1, jobId);
 			ResultSet rs = psGetJobDetailByJobId.executeQuery();
 			details = convertJobDetailsFromResultSet(rs);
-//			if (details.isEmpty()) {
-//				throw new DataNotFoundException("2. Job: JobID " + jobId + " is not in DB");
-//			} // This may be legit.  A Job with no details.
+			// if (details.isEmpty()) {
+			// throw new DataNotFoundException("2. Job: JobID " + jobId + " is not in DB");
+			// } // This may be legit. A Job with no details.
 			return details;
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -262,60 +287,63 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
 	@Override
 	public void addJobDetail(JobDetail jobDetail) throws DatabaseException {
-			try(PreparedStatement psAddJobDetail = conn
-					.prepareStatement("INSERT INTO JobDetail " + "(JobId, OpCode, Sequence) " + " values (?,?,?)");
- ) {
-				String jobId = jobDetail.getJobId();
-				jobId = StringUtils.removeEnd(jobId, "-LH");
-				jobId = StringUtils.removeEnd(jobId, "-RH");
-				psAddJobDetail.setString(1, jobId);
-				psAddJobDetail.setString(2, jobDetail.getOpCode());
-				psAddJobDetail.setInt(3, jobDetail.getSequence());
-				int rowsAffected = psAddJobDetail.executeUpdate();
-				if (rowsAffected != 1) {
-					throw new DatabaseException("Detail row not added");
-				}
-			} catch (SQLException e) {
-				System.err.println(e.getMessage());
-				throw new DatabaseException(e.getMessage());
+		try (PreparedStatement psAddJobDetail = conn
+				.prepareStatement("INSERT INTO JobDetail " + "(JobId, OpCode, Sequence) " + " values (?,?,?)");) {
+			String jobId = jobDetail.getJobId();
+			jobId = StringUtils.removeEnd(jobId, "-LH");
+			jobId = StringUtils.removeEnd(jobId, "-RH");
+			psAddJobDetail.setString(1, jobId);
+			psAddJobDetail.setString(2, jobDetail.getOpCode());
+			psAddJobDetail.setInt(3, jobDetail.getSequence());
+			int rowsAffected = psAddJobDetail.executeUpdate();
+			if (rowsAffected != 1) {
+				throw new DatabaseException("Detail row not added");
 			}
-		
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			throw new DatabaseException(e.getMessage());
+		}
+
 	}
 
 	@Override
 	public Job getJob(String jobId) throws DatabaseException {
 		Job job = new Job(getJobHeader(jobId), getJobDetails(jobId));
-		
+
 		return job;
 
 	}
 
 	@Override
 	public Job updateJob(Job job) throws DatabaseException {
-		return addJob(job);
+		Job jobAdded = addJob(job);
+		return jobAdded;
 	}
 
 	@Override
 	public Job addJob(Job job) throws DatabaseException {
 		JobHeader formattedJobHeader = JobFormatter.format(job.getHeader());
-//		String validateMessage = JobValidator.validateAdd(formattedJobHeader, conn);
-//		if (!"".equals(validateMessage)) {
-//			throw new DatabaseException(validateMessage);
-//		}
+		// String validateMessage = JobValidator.validateAdd(formattedJobHeader, conn);
+		// if (!"".equals(validateMessage)) {
+		// throw new DatabaseException(validateMessage);
+		// }
 		String jobId = formattedJobHeader.getJobId();
 		System.err.println("Deleting job");
 		try {
+			isAdding = true;
 			deleteJob(jobId);
+		} catch (DatabaseException ex) {
+			// No concern as this is used for both adds and updates to get rid of the
+			// existing job, if it exists
 		}
-		catch (DatabaseException ex) {
-			// No concern as this is used for both adds and updates to get rid of the existing job, if it exists
-		}
+		isAdding = false;
 		System.err.println("Finished Deleting job");
 		System.err.println("Adding Header");
 		addJobHeader(formattedJobHeader);
 		System.err.println("Finished Adding Header");
 
 		System.err.println("Formatted JobHeader is " + formattedJobHeader);
+		List<JobDetail> jobDetails = getJobDetails(jobId);
 		int sequence = 0;
 		for (JobDetail jobDetail : job.getDetails()) {
 			jobDetail.setSequence(sequence);
@@ -345,7 +373,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 
 		List<JobDetail> details = new ArrayList<JobDetail>();
 		while (rs.next()) {
-			
+
 			String jobId = rs.getString("JobID");
 			String opCode = rs.getString("OpCode");
 			int sequence = rs.getInt("Sequence");
@@ -354,5 +382,4 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		return details;
 	}
 
-	
 }

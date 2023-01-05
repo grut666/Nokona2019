@@ -1,5 +1,6 @@
 package com.nokona.testing;
 
+import java.net.URL;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
@@ -11,66 +12,26 @@ import com.nokona.utilities.BarCodeUtilities;
 public class PrintScratchPad {
 
 	public static void main(String[] args) {
-//		System.out.println(replaceLeadingWithUnderScores(String.format("%06d", 1230)));
-//		System.out.println((int)(Math.ceil(12 / 3.0)));
-//		System.out.println((int)(Math.ceil(13 / 3.0)));
-//		System.out.println((int)(Math.ceil(14 / 3.0)));
-//		System.out.println((int)(Math.ceil(15 / 3.0)));
-		String name = "Mark Waggoner From Texas";
-		System.out.println(name.replace(" ", "_"));
-		System.out.println(String.format("%02d", 4));
-//		System.out.println(BarCodeUtilities.convertBarCode2of5("1234"));
-//		System.out.println(BarCodeUtilities.convertBarCode2of5("12345"));
-//		System.out.println(BarCodeUtilities.convertBarCode2of5("123456"));
-//		System.out.println(BarCodeUtilities.convertBarCode2of5("1234567"));
-//		System.out.println(BarCodeUtilities.convertBarCode2of5("1234567"));
-//		System.out.println(BarCodeUtilities.convertBarCode2of5("01234567"));
-//		BarCodeUtilities.loadStrCodeTable();
-//		String code = BarCodeUtilities.convertBarCode2of5("04098852");
-//		System.out.println("Bar Codes are: ");
-//		for (int i = 0; i < code.length(); i++) { 
-//			System.out.print(code.charAt(i) + "-");					
-//		}
-//		System.out.println();
-//		String strDesc = "____abcdefg____";
-//		strDesc = StringUtils.stripEnd(strDesc, "_");
-//		System.out.println("strDesc is " + strDesc);
-//		
-//		String strDescAll = "aaaa      bbbb               cccc                ";
-//		System.out.println(strDescAll.replaceAll("\\s+", "_"));
-//		System.out.println(strDescAll);
-//		strDescAll = strDescAll.replaceAll("\\s+", "_");
-//		System.out.println(strDescAll);
-//		ReportCategory rc = ReportCategory.EMPLOYEE;
+//You almost certainly have an older version of Apache POI on your classpath. Quite a few runtimes and other packages will ship older version of Apache POI, so this is an easy problem to hit without your realising. Some will ship just one old jar, some may ship a full set of old POI jars.
 
-//		System.out.println(rc.getCategory());
-//		
-//		String code = "CS";
-//		if (JobType.contains(code)) {
-//			System.out.println("Yes");
-//		} else
-//		{ System.out.println("No");
-//		}
-		System.out.println("Formatted string is " + 52913 + "" + String.format("%02d", 9));
-	}
+//The best way to identify the offending earlier jar files is with a few lines of java. These will load a Core POI class, an OOXML class and a Scratchpad class, and report where they all came from.
 
-	public static String replaceLeadingWithUnderScores(String input) {
+//ClassLoader classloader =
+//   org.apache.poi.poifs.filesystem.POIFSFileSystem.class.getClassLoader();
+//URL res = classloader.getResource(
+//             "org/apache/poi/poifs/filesystem/POIFSFileSystem.class");
+//String path = res.getPath();
+//System.out.println("POI Core came from " + path);
 
-		boolean stillReplacing = true;
-		String out = "";
-		for (char in : input.toCharArray()) {
-			if (stillReplacing) {
-				if (in == '0') {
-					out += '_';
-				} else {
-					stillReplacing = false;
-					out += in;
-				}
-			} else {
-				out += in;
-			}
-		}
-		return out;
-	}
+//classloader = org.apache.poi.ooxml.POIXMLDocument.class.getClassLoader();
+//res = classloader.getResource("org/apache/poi/ooxml/POIXMLDocument.class");
+//path = res.getPath();
+//System.out.println("POI OOXML came from " + path);
 
+//classloader = org.apache.poi.hslf.usermodel.HSLFSlideShow.class.getClassLoader();
+//res = classloader.getResource("org/apache/poi/hslf/usermodel/HSLFSlideShow.class");
+//path = res.getPath();
+//System.out.println("POI Scratchpad came from " + path);
+
+}
 }

@@ -53,7 +53,7 @@ public class NokonaJobResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/jobheaders/{jobId}")
+	@Path("/jobheaders/{jobId : .+}")
 	public Response getJobHeadersByJobId(@PathParam("jobId") String jobId) {
 		try {
 
@@ -81,7 +81,7 @@ public class NokonaJobResource {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/jobheaders/{jobId}")
+	@Path("/jobheaders/{jobId : .+}")
 	public Response updateJobHeader(@PathParam("jobId") String jobId, JobHeader jobHeaderIn) {
 
 		if (!jobId.equals(jobHeaderIn.getJobId())) {
@@ -124,11 +124,13 @@ public class NokonaJobResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/jobdetails/{jobid}")
-	public Response getJobDetailsByJobId(@PathParam("jobid") String jobId) {
+	@Path("/jobdetails/{jobId : .+}")
+	public Response getJobDetailsByJobId(@PathParam("jobId") String jobId) {
 		try {
 			jobId = StringUtils.removeEnd(jobId, "-LH");
 			jobId = StringUtils.removeEnd(jobId, "-RH");
+			System.out.println("In Get Job Details Resource, jobId is " + jobId);
+			System.out.println("******** JobId is " + jobId);
 			return Response.status(200).entity(db.getJobDetails(jobId)).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
@@ -141,7 +143,7 @@ public class NokonaJobResource {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/jobdetails/{jobId}")
+	@Path("/jobdetails/{jobId : .+}")
 
 	public Response updateJobDetail(@PathParam("jobId") String jobId, JobDetail jobDetailIn) {
 
@@ -185,9 +187,10 @@ public class NokonaJobResource {
 // Job in its entirety
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{jobId}")
+	@Path("/{jobId : .+}")
 	public Response getJobByJobId(@PathParam("jobId") String jobId) {
 		try {
+			System.out.println("In Get Resource, jobId is " + jobId);
 
 			return Response.status(200).entity(db.getJob(jobId)).build();
 		} catch (DatabaseException ex) {
@@ -199,10 +202,11 @@ public class NokonaJobResource {
 	
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{jobId}")
+	@Path("/{jobId : .+}")
 	public Response deleteJob(@PathParam("jobId") String jobId) {
 
 		try {
+			System.out.println("In Delete Resource, jobId is " + jobId);
 			db.deleteJob(jobId);
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DataNotFoundException ex) {

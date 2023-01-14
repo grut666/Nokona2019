@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 //import java.io.OutputStream;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 //import java.util.Date;
 import java.util.HashMap;
@@ -84,34 +85,34 @@ public class NokonaReportsResource {
 	@Inject
 	@BaseDaoQualifier
 	private NokonaDatabase db;
-	private Connection conn;
+//	private Connection conn;
 
 	public NokonaReportsResource() {
 
 		// conn = db.getConn();
 	}
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getEmptyReportProperties() {
-		System.out.println(conn);
-
-		conn = db.getConn();
-		System.out.println(conn);
-		conn = db.getConn();
-
-		OrderBy orderBy = new OrderBy("JobId", true);
-		OrderBy orderBy2 = new OrderBy("StatusDate", false);
-		List<OrderBy> ordersBy = new ArrayList<OrderBy>();
-		ordersBy.add(orderBy);
-		ordersBy.add(orderBy2);
-		Map<String, String> parameters = new HashMap<>();
-		parameters.put("ACTIVE", "Y");
-
-		return Response.ok(new ReportProperties(ReportCategory.EMPLOYEE, parameters, "Dummy Report", "2022-01-01",
-				"2022-01-10", ordersBy, "111", "222", "333", true, true)).build();
-
-	}
+//	@GET
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public Response getEmptyReportProperties() {
+////		System.out.println(conn);
+////
+////		conn = db.getConn();
+//		System.out.println(conn);
+//		conn = db.getConn();
+//
+//		OrderBy orderBy = new OrderBy("JobId", true);
+//		OrderBy orderBy2 = new OrderBy("StatusDate", false);
+//		List<OrderBy> ordersBy = new ArrayList<OrderBy>();
+//		ordersBy.add(orderBy);
+//		ordersBy.add(orderBy2);
+//		Map<String, String> parameters = new HashMap<>();
+//		parameters.put("ACTIVE", "Y");
+//
+//		return Response.ok(new ReportProperties(ReportCategory.EMPLOYEE, parameters, "Dummy Report", "2022-01-01",
+//				"2022-01-10", ordersBy, "111", "222", "333", true, true)).build();
+//
+//	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -199,7 +200,7 @@ public class NokonaReportsResource {
 			dir.mkdir();
 		}
 		String templateFileName;
-		try {
+//		try {
 			ReportCategory rc = properties.getCategory();
 
 			if (rc == null) {
@@ -227,7 +228,7 @@ public class NokonaReportsResource {
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
 				break;
 			}
-
+			try(Connection conn = db.getConn()) {
 			JasperReport jasperReport = JasperCompileManager.compileReport(templateFileName);
 
 			System.out.println("JasperReport");
@@ -238,7 +239,7 @@ public class NokonaReportsResource {
 			// parms.put("ACTIVE2", 1);
 
 			// End Practice
-			conn = db.getConn();
+//			conn = db.getConn();
 
 			System.out.println("Conn");
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parms, conn);
@@ -266,7 +267,7 @@ public class NokonaReportsResource {
 				JasperExportManager.exportReportToHtmlFile(jasperPrint, fileName);
 				System.out.println("Finished with HTML export");
 				
-
+//
 //				JRCsvExporter exporter = new JRCsvExporter(new SimpleJasperReportsContext());
 //				CsvExporterConfiguration configuration = new SimpleCsvMetadataExporterConfiguration();
 //				configuration.isWriteBOM();
@@ -284,6 +285,9 @@ public class NokonaReportsResource {
 
 		} catch (JRException e) {
 			System.out.println(e.getMessage());
+			throw new PDFException(e.getMessage());
+		}
+		catch (SQLException e) {
 			throw new PDFException(e.getMessage());
 		}
 

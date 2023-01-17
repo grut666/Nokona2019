@@ -1,0 +1,40 @@
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `nokona`.`ticketdetailview` AS
+    SELECT 
+        CONCAT(`td`.`Key`,
+                LPAD(`td`.`Sequence`, 2, '0')) AS `Ticket`,
+        `td`.`OpCode` AS `Operation`,
+        `td`.`StatusDate` AS `StatusDate`,
+        `td`.`Status` AS `Status`,
+        `td`.`StandardQuantity` AS `StdQty`,
+        `td`.`HourlyRateSAH` AS `SAH`,
+        `td`.`LaborRate` AS `laborRate`,
+        `td`.`UpdatedSequence` AS `updatedSequence`,
+        `td`.`OperationDescription` AS `OperationDescription`,
+        `td`.`LaborDescription` AS `LaborDescription`,
+        `td`.`LaborCode` AS `laborCode`,
+        `td`.`BarCodeID1` AS `BarCode`,
+        `td`.`ActualQuantity1` AS `Qty`
+    FROM
+        `nokona`.`ticketdetail` `td` 
+    UNION SELECT 
+        CONCAT(`td`.`Key`, `td`.`Sequence`) AS `Ticket`,
+        `td`.`OpCode` AS `Operation`,
+        `td`.`StatusDate` AS `StatusDate`,
+        `td`.`Status` AS `Status`,
+        `td`.`StandardQuantity` AS `StdQty`,
+        `td`.`HourlyRateSAH` AS `SAH`,
+        `td`.`LaborRate` AS `laborRate`,
+        `td`.`UpdatedSequence` AS `updatedSequence`,
+        `td`.`OperationDescription` AS `OperationDescription`,
+        `td`.`LaborDescription` AS `LaborDescription`,
+        `td`.`LaborCode` AS `laborCode`,
+        `td`.`BarCodeID2` AS `BarCode`,
+        `td`.`ActualQuantity2` AS `Qty`
+    FROM
+        `nokona`.`ticketdetail` `td`
+    WHERE
+        (`td`.`ActualQuantity2` > 0)

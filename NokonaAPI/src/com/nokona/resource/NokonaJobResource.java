@@ -245,8 +245,7 @@ public class NokonaJobResource {
 			System.err.println(jobIn.getHeader().getJobType());
 //			System.err.println("Job Type is " + jobIn.getHeader().getJobType().getJobType());
 			job = db.addJob(jobIn);
-//			TransferToAccess.transfer("JOBHEADER_C");
-//			TransferToAccess.transfer("JOBDETAIL_C");
+
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {

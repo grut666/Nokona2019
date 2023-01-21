@@ -72,6 +72,26 @@ public class NokonaTicketResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/byjob/{jobId}/{status}")
+	public Response getTicketsByJob(@PathParam("jobId") String jobId, @PathParam("status") String status) {
+
+		List<Ticket> tickets = new ArrayList<>();;
+
+		try {
+			tickets = db.getTicketsByJob(jobId, status);
+
+		} 
+		catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		}
+
+		return Response.status(200).entity(tickets).build();
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/")
 	public Response getTickets(@DefaultValue("0") @QueryParam("offset") int offset,
 			@DefaultValue("A") @QueryParam("status") String status) {

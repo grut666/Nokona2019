@@ -75,13 +75,13 @@ public class NokonaTicketResource {
 	@Path("/byjob/{jobId}/{status}")
 	public Response getTicketsByJob(@PathParam("jobId") String jobId, @PathParam("status") String status) {
 
-		List<Ticket> tickets = new ArrayList<>();;
+		List<Ticket> tickets = new ArrayList<>();
+		;
 
 		try {
 			tickets = db.getTicketsByJob(jobId, status);
 
-		} 
-		catch (DatabaseException ex) {
+		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		} catch (Exception ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
@@ -246,6 +246,29 @@ public class NokonaTicketResource {
 		} catch (DatabaseException ex) {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
 		}
+	}
+
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/ticketheaders/{ticketkey}") // Probably just completion status for now
+	public Response updateTicketHeader(@PathParam("ticketkey") long ticketKey, TicketHeader ticketHeader) {
+		try {
+			System.out.println("TicketKey is " + ticketKey);
+			System.out.println("TicketKey is " + ticketHeader.getKey());
+			if (ticketKey != ticketHeader.getKey()) {
+				return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
+			}
+			db.updateTicketHeader(ticketHeader);
+			return Response.status(200).entity("{\"Success\":\"200\"}").build();
+		}
+
+		catch (DatabaseException ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();
+		} catch (Exception ex) {
+			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
+		}
+
 	}
 
 	@PUT

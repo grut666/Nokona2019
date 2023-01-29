@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InProductionCostDetail" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="749d5516-35c9-45d2-b374-52dc88c817a6">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Nokona Data Adapter"/>
+	<queryString language="SQL">
+		<![CDATA[select th.key, th.jobId, th.description, th.quantity, ocv.cost, ocv.completedcount, tov.totalcount,
+ocv.completedcount / tov.totalcount as "pct_complete" from ticketheader th
+join ticketdetailview tdv on th.key = tdv.key
+join operationscompletedview ocv on th.key = ocv.key
+join totaloperationsview tov on th.key = tov.key
+where  tdv.qty > 0 and th.status = 'P'
+group by th.key
+order by jobId, pct_complete desc]]>
+	</queryString>
+	<field name="key" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="key"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="jobId" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="jobId"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="description" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="description"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="quantity" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="quantity"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="cost" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="cost"/>
+	</field>
+	<field name="completedcount" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="completedcount"/>
+	</field>
+	<field name="totalcount" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="totalcount"/>
+	</field>
+	<field name="pct_complete" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pct_complete"/>
+	</field>
+	<variable name="cost1" class="java.lang.Double" resetType="Group" resetGroup="Job" calculation="Sum">
+		<variableExpression><![CDATA[$F{cost}]]></variableExpression>
+	</variable>
+	<group name="jobId">
+		<groupExpression><![CDATA[$F{jobId}]]></groupExpression>
+	</group>
+	<group name="Job">
+		<groupExpression><![CDATA[$F{jobId}]]></groupExpression>
+		<groupHeader>
+			<band height="27">
+				<staticText>
+					<reportElement x="0" y="0" width="53" height="20" uuid="9253b5d8-cb48-48a9-a6b5-ffc749a2cc5c"/>
+					<textElement>
+						<font fontName="Arial" size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Job:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="80" y="0" width="100" height="20" uuid="e857906f-43cc-4a99-874b-985553b1faf9"/>
+					<textElement>
+						<font fontName="Arial" size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{jobId}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="190" y="0" width="290" height="20" uuid="12813951-40eb-4ace-b5fa-bc8b0e668cb6"/>
+					<textElement>
+						<font fontName="Arial" size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField pattern="¤#,##0.##;¤-#,##0.##">
+					<reportElement x="480" y="0" width="59" height="20" uuid="246a04e2-9d5b-4076-9f47-e3d3a018c4df"/>
+					<textElement>
+						<font fontName="Arial" size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{cost1}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="0" y="14" width="560" height="1" uuid="744505af-2c8c-4414-a977-a8c9bde9cfd5"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="36" splitType="Stretch">
+			<staticText>
+				<reportElement x="140" y="10" width="230" height="20" uuid="94ea201f-2c9d-4f19-8900-22625f8f48dd"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[In Production Cost Detail]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="430" y="10" width="130" height="20" uuid="6bb993ab-0595-4bf8-9a34-331cd98d5748"/>
+				<textElement>
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="1" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="62" height="15" uuid="2293d1ba-9277-4dc4-b975-d4c8498f0fd9"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="0" width="62" height="21" uuid="fdfc5103-d6a0-4a05-b6de-f0df680a48bf"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ticket]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="228" y="0" width="62" height="21" uuid="d152072f-f992-4226-ac37-e4da8471e09b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pct Complete]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="0" width="72" height="21" uuid="eae6e2c9-22e6-41ec-915f-1eaf00219192"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Labor Cost]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="0" width="62" height="21" uuid="a2787372-cb7b-42fe-be95-a1d1b8a45c99"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="60" height="20" uuid="064f913d-4e2c-46b4-a9f1-da5ce376a4ab">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bf8cbfaa-2ce3-4ea3-a637-02069e6335aa"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="82" height="20" uuid="43f7dff4-54c7-40a1-a7f3-305a2a912c44">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a6e8969f-1b83-4693-a108-72a2034892b7"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{key}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0%">
+				<reportElement x="220" y="0" width="70" height="20" uuid="4c669ba1-d359-4940-a8c2-6937548d93c1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="def7126c-0657-4b20-9370-0d583b348862"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pct_complete}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.##;¤-#,##0.##" isBlankWhenNull="false">
+				<reportElement x="350" y="0" width="60" height="20" uuid="02541a65-b836-4c11-86f5-6d981194f65c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5bd52850-4e24-484c-a0d3-289234d32d94"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cost}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

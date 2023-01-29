@@ -33,6 +33,7 @@ import com.nokona.enums.ReportCategory;
 import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.PDFException;
 import com.nokona.qualifiers.BaseDaoQualifier;
+import com.nokona.reports.JobReports;
 import com.nokona.reports.LaborReports;
 import com.nokona.reports.OrderBy;
 //import com.nokona.reports.ReportProcesser;
@@ -214,7 +215,7 @@ public class NokonaReportsResource {
 				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
 				break;
 			case "JOB":
-				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
+				templateFileName = JobReports.construct(context, properties, parms);
 				break;
 			case "LABOR":
 				templateFileName = LaborReports.construct(context, properties, parms);

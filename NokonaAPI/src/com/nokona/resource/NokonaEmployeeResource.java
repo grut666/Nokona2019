@@ -238,7 +238,8 @@ public class NokonaEmployeeResource {
 			return Response.status(503).entity("{\"error\":\"" + ex.getMessage() + db + "\"}").build();
 		}
 
-		return Response.status(200).entity(labels).build();
+//		return Response.status(200).entity(labels).build();
+		return Response.status(200).entity("Success").build();
 	}
 
 	@GET

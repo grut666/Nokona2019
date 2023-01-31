@@ -7,8 +7,9 @@ import javax.servlet.ServletContext;
 public class TicketReports {
 	public static String construct(ServletContext context, ReportProperties properties, Map<String, Object> parms) {
 		String templateFileName;
-		if ("TicketByDateRange".equals(properties.getReportName())) {
-			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/TicketByDateRange.jrxml");
+		String reportName = properties.getReportName();
+		if (reportName.startsWith("TicketByDateRange")) {
+			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/" + reportName + ".jrxml");
 			parms.put("START_DATE", properties.getStartDate());
 			parms.put("END_DATE", properties.getEndDate());
 			parms.put("STATUS", properties.getParameters().get("STATUS"));

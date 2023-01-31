@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a360a7aa-75a7-4b74-9f95-e3ddf60d17cc">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Nokona Data Adapter"/>
+	<parameter name="START_DATE" class="java.lang.String"/>
+	<parameter name="END_DATE" class="java.lang.String"/>
+	<parameter name="STATUS" class="java.lang.String">
+		<defaultValueExpression><![CDATA['C']]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[select nokona.ticketheader.`Key`,
+   nokona.ticketheader.`JobID`,
+     nokona.ticketheader.`CreatedDate`, 
+     nokona.ticketheader.`Status`, 
+     nokona.ticketheader.`StatusDate`, 
+     nokona.ticketheader.`Quantity`  
+     from nokona.ticketHeader  
+     Where nokona.ticketheader.`CreatedDate` between $P{START_DATE} and $P{END_DATE} and 
+     nokona.ticketheader.`Status` = $P{STATUS} 
+      order by nokona.ticketheader.`key`]]>
+	</queryString>
+	<field name="Key" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="Key"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="JobID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="JobID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="CreatedDate" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="CreatedDate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="Status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="StatusDate" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="StatusDate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="Quantity" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="Quantity"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<textField pattern="MM/dd/yyyy">
+				<reportElement x="379" y="-1" width="100" height="20" uuid="d9785d81-3078-4f7a-a834-0472ab663d65">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f9e3d23d-f1cc-4e45-aca0-0ceb0df5f6e3"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{StatusDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="-1" width="59" height="20" uuid="497c6146-3fff-48c8-b387-df20685b9222">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="755338fc-34e9-4471-84c2-efa157fd632f"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Quantity}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-1" y="-1" width="61" height="20" uuid="503fe75f-631d-4e18-82b3-79e2f16a72f4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6160e5ca-4619-4af9-921e-3bdb7043a1fc"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Key}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="-1" width="129" height="20" uuid="77cb506b-ec52-4945-8fcc-e2b4d4bcb779">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="aa6eebe5-b025-48c2-9d76-161210956eda"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{JobID}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement x="209" y="-1" width="100" height="20" uuid="285056e4-17b8-4352-a48e-a317fdd61b15">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a8ba3fd5-a383-40e2-bb41-a45a914ee6a6"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CreatedDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="319" y="-1" width="50" height="20" uuid="ba804233-8dae-4c60-82b7-9233d5675c52">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c05dd193-3906-4902-84bf-874b7e23fc71"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Status}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

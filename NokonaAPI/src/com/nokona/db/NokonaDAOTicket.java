@@ -243,7 +243,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 					throw new SQLException("Creating user failed, no ID obtained.");
 				}
 				List<JobDetail> jobDetails = jobDAO.getJobDetails(formattedTicketHeader.getJobId());
-				List<TicketDetail> newTicketDetails = new ArrayList<TicketDetail>();
+				jobDetails.add(new JobDetail( formattedTicketHeader.getJobId(),"ZZZ", 98)); // Will result in seq 99
+						List<TicketDetail> newTicketDetails = new ArrayList<TicketDetail>();
 				Operation op;
 				LaborCode laborCode;
 				long key = formattedTicketHeader.getKey();

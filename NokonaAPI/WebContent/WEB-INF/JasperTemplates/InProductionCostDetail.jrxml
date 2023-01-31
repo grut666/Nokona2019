@@ -3,13 +3,16 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InProductionCostDetail" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="749d5516-35c9-45d2-b374-52dc88c817a6">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Nokona Data Adapter"/>
+	<parameter name="Category" class="java.lang.String"/>
+	<parameter name="All" class="java.lang.String"/>
 	<queryString language="SQL">
-		<![CDATA[select th.key, th.jobId, th.description, th.quantity, ocv.cost, ocv.completedcount, tov.totalcount,
+		<![CDATA[select th.key, th.jobId, th.description, th.quantity, ocv.cost, ocv.completedcount, tov.totalcount, jh.jobtype,
 ocv.completedcount / tov.totalcount as "pct_complete" from ticketheader th
 join ticketdetailview tdv on th.key = tdv.key
 join operationscompletedview ocv on th.key = ocv.key
 join totaloperationsview tov on th.key = tov.key
-where  tdv.qty > 0 and th.status = 'P'
+join jobheader jh on jh.jobID = th.jobId
+where  tdv.qty > 0 and th.status = 'P' and (jobtype =  $P{Category} or 'All' =  $P{All} )
 group by th.key
 order by jobId, pct_complete desc]]>
 	</queryString>
@@ -41,6 +44,10 @@ order by jobId, pct_complete desc]]>
 	<field name="pct_complete" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="pct_complete"/>
 	</field>
+	<field name="jobtype" class="java.lang.String">
+		<property name="net.sf.jasperreports.sql.field.column.name" value="jobtype"/>
+		<property name="net.sf.jasperreports.sql.field.column.label" value="jobtype"/>
+	</field>
 	<variable name="cost1" class="java.lang.Double" resetType="Group" resetGroup="Job" calculation="Sum">
 		<variableExpression><![CDATA[$F{cost}]]></variableExpression>
 	</variable>
@@ -50,7 +57,7 @@ order by jobId, pct_complete desc]]>
 	<group name="Job">
 		<groupExpression><![CDATA[$F{jobId}]]></groupExpression>
 		<groupHeader>
-			<band height="27">
+			<band height="41">
 				<staticText>
 					<reportElement x="0" y="0" width="53" height="20" uuid="9253b5d8-cb48-48a9-a6b5-ffc749a2cc5c"/>
 					<textElement>
@@ -59,18 +66,32 @@ order by jobId, pct_complete desc]]>
 					<text><![CDATA[Job:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="80" y="0" width="100" height="20" uuid="e857906f-43cc-4a99-874b-985553b1faf9"/>
+					<reportElement x="61" y="0" width="100" height="20" uuid="e857906f-43cc-4a99-874b-985553b1faf9"/>
 					<textElement>
 						<font fontName="Arial" size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{jobId}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="190" y="0" width="290" height="20" uuid="12813951-40eb-4ace-b5fa-bc8b0e668cb6"/>
+					<reportElement x="172" y="0" width="250" height="20" uuid="12813951-40eb-4ace-b5fa-bc8b0e668cb6"/>
 					<textElement>
 						<font fontName="Arial" size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="430" y="0" width="70" height="20" uuid="3bb794e2-1fda-42e3-8881-dd6bca03ab96"/>
+					<textElement>
+						<font fontName="Arial" size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Category:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="520" y="0" width="40" height="20" uuid="67b0ba86-7671-496d-87d7-632f238b6df6"/>
+					<textElement>
+						<font fontName="Arial" size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{jobtype}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>

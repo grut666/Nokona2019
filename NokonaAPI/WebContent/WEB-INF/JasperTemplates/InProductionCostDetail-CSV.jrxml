@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InProductionCostDetail" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="749d5516-35c9-45d2-b374-52dc88c817a6">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Nokona Data Adapter"/>
+	<parameter name="Category" class="java.lang.String"/>
+	<parameter name="All" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select th.key, th.jobId, th.description, th.quantity, ocv.cost, ocv.completedcount, tov.totalcount, jh.jobtype,
+ocv.completedcount / tov.totalcount as "pct_complete" from ticketheader th
+join ticketdetailview tdv on th.key = tdv.key
+join operationscompletedview ocv on th.key = ocv.key
+join totaloperationsview tov on th.key = tov.key
+join jobheader jh on jh.jobID = th.jobId
+where  tdv.qty > 0 and th.status = 'P' and (jobtype =  $P{Category} or 'All' =  $P{All} )
+group by th.key
+order by jobId, pct_complete desc]]>
+	</queryString>
+	<field name="key" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="key"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="jobId" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="jobId"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="description" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="description"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="quantity" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="quantity"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="cost" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="cost"/>
+	</field>
+	<field name="completedcount" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="completedcount"/>
+	</field>
+	<field name="totalcount" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="totalcount"/>
+	</field>
+	<field name="pct_complete" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pct_complete"/>
+	</field>
+	<field name="jobtype" class="java.lang.String">
+		<property name="net.sf.jasperreports.sql.field.column.name" value="jobtype"/>
+		<property name="net.sf.jasperreports.sql.field.column.label" value="jobtype"/>
+	</field>
+	<variable name="cost1" class="java.lang.Double" resetType="Group" resetGroup="Job" calculation="Sum">
+		<variableExpression><![CDATA[$F{cost}]]></variableExpression>
+	</variable>
+	<group name="jobId">
+		<groupExpression><![CDATA[$F{jobId}]]></groupExpression>
+	</group>
+	<group name="Job">
+		<groupExpression><![CDATA[$F{jobId}]]></groupExpression>
+		<groupHeader>
+			<band height="1"/>
+		</groupHeader>
+		<groupFooter>
+			<band height="3"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="130" y="1" width="50" height="20" uuid="064f913d-4e2c-46b4-a9f1-da5ce376a4ab">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bf8cbfaa-2ce3-4ea3-a637-02069e6335aa"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="200" y="1" width="82" height="20" uuid="43f7dff4-54c7-40a1-a7f3-305a2a912c44">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a6e8969f-1b83-4693-a108-72a2034892b7"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{key}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0%">
+				<reportElement x="340" y="1" width="70" height="20" uuid="4c669ba1-d359-4940-a8c2-6937548d93c1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="def7126c-0657-4b20-9370-0d583b348862"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pct_complete}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.##;¤-#,##0.##" isBlankWhenNull="false">
+				<reportElement x="470" y="1" width="60" height="20" uuid="02541a65-b836-4c11-86f5-6d981194f65c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5bd52850-4e24-484c-a0d3-289234d32d94"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cost}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="1" width="120" height="20" uuid="e857906f-43cc-4a99-874b-985553b1faf9"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{jobId}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

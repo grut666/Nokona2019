@@ -7,12 +7,16 @@ import javax.servlet.ServletContext;
 public class LaborReports {
 	public static String construct(ServletContext context, ReportProperties properties, Map<String, Object> parms) {
 		String templateFileName;
-		if ("LaborDetailByDate".equals(properties.getReportName())) {
-			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/LaborDetailByDate.jrxml");
+
+		String reportName = properties.getReportName();
+		if (reportName.startsWith("LaborDetailByDate")) {
+			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/" + reportName + ".jrxml");
 			parms.put("START_DATE", properties.getStartDate());
 			parms.put("END_DATE", properties.getEndDate());
 		} else {
-			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/TicketWIP.jrxml");
+			parms.put("START_DATE", properties.getStartDate());
+			parms.put("END_DATE", properties.getEndDate());
+			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/LaborDetailByDate.jrxml");
 		}
 		return templateFileName;
 	}

@@ -6,21 +6,21 @@
 	<parameter name="START_DATE" class="java.lang.String"/>
 	<parameter name="END_DATE" class="java.lang.String"/>
 	<queryString language="SQL">
-		<![CDATA[Select Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN')  as 'Name',
+		<![CDATA[Select Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN')  as "Name",
 TD.Ticket,
 TD.LaborCode,
 TD.BarCode,
-Concat(TD.Operation, " - ", TD.OperationDescription) as 'Operation',
+Concat(TD.Operation, ' - ', TD.OperationDescription) as "Operation",
 TD.Qty,
 TD.SAH,
-FORMAT(TD.LaborRate, 2) as 'LbrRt',
-TD.StatusDate as 'Completed',
-FORMAT(TD.Qty * TD.SAH, 4) as 'Amt',
-FORMAT(TD.Qty * TD.SAH * TD.LaborRate, 2) as 'Total'
+FORMAT(TD.LaborRate, 2) as "LbrRt",
+TD.StatusDate as "Completed",
+FORMAT(TD.Qty * TD.SAH, 4) as "Amt",
+FORMAT(TD.Qty * TD.SAH * TD.LaborRate, 3) as "Total"
 FROM TicketDetailView TD left Join Employee EM on TD.BarCode = EM.BarCodeID
 WHERE TD.Status = 'C' and
 TD.StatusDate between $P{START_DATE} and $P{END_DATE}
-Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCode, TD.LaborCode, TD.StatusDate;]]>
+Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCode, TD.LaborCode, TD.StatusDate;]]>
 	</queryString>
 	<field name="Name" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="Name"/>
@@ -65,10 +65,21 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 	<variable name="EmployeeTotal" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
 	</variable>
+	<variable name="Total1" class="java.lang.Double" resetType="Group" resetGroup="LaborCodeGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
+	</variable>
 	<group name="LaborCodeGroup">
 		<groupExpression><![CDATA[$F{LaborCode}]]></groupExpression>
 		<groupFooter>
-			<band height="35"/>
+			<band height="20">
+				<textField pattern="¤#,##0.00;¤-#,##0.00">
+					<reportElement x="730" y="0" width="40" height="14" uuid="202e161b-850d-4c6a-89ae-952f3263c84b"/>
+					<textElement textAlignment="Right">
+						<font fontName="Arial" size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{Total1}]]></textFieldExpression>
+				</textField>
+			</band>
 		</groupFooter>
 	</group>
 	<background>
@@ -114,9 +125,9 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 		</band>
 	</title>
 	<pageHeader>
-		<band height="37" splitType="Stretch">
+		<band height="26" splitType="Stretch">
 			<staticText>
-				<reportElement x="710" y="2" width="40" height="20" uuid="f43b9697-56e1-439a-99a6-cedb5f4af79c">
+				<reportElement x="740" y="0" width="30" height="20" uuid="f43b9697-56e1-439a-99a6-cedb5f4af79c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="38d13760-f0c0-4dea-9065-d0afe2bb1dc6"/>
 				</reportElement>
 				<textElement>
@@ -125,7 +136,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<text><![CDATA[Total]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="640" y="2" width="50" height="20" uuid="45a2c695-54a6-4f3f-ac2d-d5f42c1bc764">
+				<reportElement x="680" y="0" width="40" height="20" uuid="45a2c695-54a6-4f3f-ac2d-d5f42c1bc764">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0a7df5bb-ddaf-424b-acf6-a43fadc14f2f"/>
 				</reportElement>
 				<textElement>
@@ -134,7 +145,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<text><![CDATA[Amt]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="560" y="2" width="70" height="20" uuid="f4495d2e-362e-4e8e-842f-270ff7aa00ef">
+				<reportElement x="600" y="0" width="70" height="20" uuid="f4495d2e-362e-4e8e-842f-270ff7aa00ef">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="143c8917-5385-437f-ad13-1f37adec1a19"/>
 				</reportElement>
 				<textElement>
@@ -143,7 +154,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<text><![CDATA[Completed]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="510" y="2" width="40" height="20" uuid="f9f30001-ccd0-46cf-a263-e7ba58674603">
+				<reportElement x="560" y="0" width="40" height="20" uuid="f9f30001-ccd0-46cf-a263-e7ba58674603">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3b10c032-f351-438b-bbf6-25547db03b0b"/>
 				</reportElement>
 				<textElement>
@@ -152,7 +163,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<text><![CDATA[LbrRt]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="450" y="2" width="50" height="20" uuid="efa94aab-1329-4ec5-8c8a-008a37fce742">
+				<reportElement x="515" y="0" width="35" height="20" uuid="efa94aab-1329-4ec5-8c8a-008a37fce742">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2d7484a4-028b-4038-b5c5-90164ad65750"/>
 				</reportElement>
 				<textElement>
@@ -161,7 +172,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<text><![CDATA[SAH]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="410" y="2" width="30" height="20" uuid="b011fe02-155d-49f1-ba3c-f22784bdaa98">
+				<reportElement x="480" y="0" width="30" height="20" uuid="b011fe02-155d-49f1-ba3c-f22784bdaa98">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="92556182-28ac-437d-b315-aca9cac6406f"/>
 				</reportElement>
 				<textElement>
@@ -170,7 +181,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<text><![CDATA[Qty]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="380" y="2" width="30" height="20" uuid="8587dfa5-abdc-44aa-b9df-6b7706448c0d">
+				<reportElement x="450" y="0" width="30" height="20" uuid="8587dfa5-abdc-44aa-b9df-6b7706448c0d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6dc40c21-5fdb-4aac-9203-2bedae2bec48"/>
 				</reportElement>
 				<textElement>
@@ -179,7 +190,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<text><![CDATA[Lbr]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="320" y="2" width="41" height="20" uuid="4b27ac90-692d-4dea-9a00-b4f429f156bc">
+				<reportElement x="399" y="0" width="41" height="20" uuid="4b27ac90-692d-4dea-9a00-b4f429f156bc">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bd45c438-50cc-4333-8324-90f9d12b8353"/>
 				</reportElement>
 				<textElement>
@@ -188,7 +199,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<text><![CDATA[Ticket]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="120" y="2" width="100" height="20" uuid="dc00bb0c-8e9d-4df6-a8bd-8cba22cca6b1">
+				<reportElement x="200" y="0" width="100" height="20" uuid="dc00bb0c-8e9d-4df6-a8bd-8cba22cca6b1">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="22b04ccb-f618-44b5-ba9b-72db7afe8eb7"/>
 				</reportElement>
 				<textElement>
@@ -206,7 +217,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<text><![CDATA[Name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="87" y="0" width="26" height="20" uuid="7ba758a1-3d37-4c04-bece-333f076f5ce5">
+				<reportElement x="160" y="0" width="26" height="20" uuid="7ba758a1-3d37-4c04-bece-333f076f5ce5">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="22b04ccb-f618-44b5-ba9b-72db7afe8eb7"/>
 				</reportElement>
 				<textElement>
@@ -236,21 +247,18 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				</reportElement>
 				<text><![CDATA[BarCode]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="47" y="0" width="100" height="3" uuid="2189a19a-3f4a-4f77-9f8c-5db9a99a7399">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b5f3d14a-f07b-4972-a331-58a89f1d5a90"/>
+				</reportElement>
+				<text><![CDATA[Name]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="30" splitType="Stretch">
+		<band height="25" splitType="Stretch">
 			<textField>
-				<reportElement x="-10" y="-2" width="97" height="30" uuid="54e85193-846a-48a9-a5f2-b68f6cccfbc2">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="48d6b967-bb6a-4e3c-8bba-c21e16924456"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Arial" size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{Name}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="120" y="0" width="190" height="30" uuid="8146b123-a75b-425e-b1d6-f8a1faf578e2">
+				<reportElement x="201" y="0" width="190" height="15" uuid="8146b123-a75b-425e-b1d6-f8a1faf578e2">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="22b04ccb-f618-44b5-ba9b-72db7afe8eb7"/>
 				</reportElement>
 				<textElement markup="html">
@@ -259,7 +267,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<textFieldExpression><![CDATA[$F{Operation}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="410" y="0" width="30" height="30" uuid="0deafd0e-cdd3-42c7-95e3-a516f4454fc8">
+				<reportElement x="480" y="0" width="30" height="15" uuid="0deafd0e-cdd3-42c7-95e3-a516f4454fc8">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="92556182-28ac-437d-b315-aca9cac6406f"/>
 				</reportElement>
 				<textElement>
@@ -268,7 +276,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<textFieldExpression><![CDATA[$F{Qty}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="450" y="0" width="50" height="30" uuid="45ed072f-d19a-432b-ac58-18002d514dc4">
+				<reportElement x="512" y="0" width="40" height="15" uuid="45ed072f-d19a-432b-ac58-18002d514dc4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2d7484a4-028b-4038-b5c5-90164ad65750"/>
 				</reportElement>
 				<textElement>
@@ -277,7 +285,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<textFieldExpression><![CDATA[$F{SAH}]]></textFieldExpression>
 			</textField>
 			<textField pattern="MM/dd/yyyy">
-				<reportElement x="560" y="0" width="70" height="30" uuid="c64aa74f-2740-46c7-9c3a-2969c8209311">
+				<reportElement x="600" y="0" width="70" height="15" uuid="c64aa74f-2740-46c7-9c3a-2969c8209311">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="143c8917-5385-437f-ad13-1f37adec1a19"/>
 				</reportElement>
 				<textElement>
@@ -286,7 +294,7 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<textFieldExpression><![CDATA[$F{Completed}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00#;(#,##0.00#-)">
-				<reportElement x="510" y="0" width="40" height="30" uuid="2d0027de-296a-4806-b9f7-a848e2c91334">
+				<reportElement x="560" y="0" width="40" height="15" uuid="2d0027de-296a-4806-b9f7-a848e2c91334">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3b10c032-f351-438b-bbf6-25547db03b0b"/>
 				</reportElement>
 				<textElement>
@@ -294,17 +302,17 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				</textElement>
 				<textFieldExpression><![CDATA[$F{LbrRt}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="640" y="0" width="50" height="30" uuid="3eaf04c6-a145-4b34-8514-0a5f7ed32190">
+			<textField pattern="#,##0.000">
+				<reportElement x="670" y="0" width="50" height="15" uuid="3eaf04c6-a145-4b34-8514-0a5f7ed32190">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0a7df5bb-ddaf-424b-acf6-a43fadc14f2f"/>
 				</reportElement>
-				<textElement>
+				<textElement textAlignment="Right">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{Amt}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,###.00#;(#,###.00#-)">
-				<reportElement x="710" y="0" width="50" height="30" uuid="28fe6992-1a3a-4a5f-968f-b120f2eb317b">
+				<reportElement x="730" y="0" width="40" height="15" uuid="28fe6992-1a3a-4a5f-968f-b120f2eb317b">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="38d13760-f0c0-4dea-9065-d0afe2bb1dc6"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -313,16 +321,16 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<textFieldExpression><![CDATA[$F{Total}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="380" y="0" width="30" height="30" uuid="4f5c502a-563f-46cb-8cb2-9b6843ee2aa8">
+				<reportElement x="450" y="0" width="20" height="15" uuid="4f5c502a-563f-46cb-8cb2-9b6843ee2aa8">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6dc40c21-5fdb-4aac-9203-2bedae2bec48"/>
 				</reportElement>
-				<textElement>
+				<textElement textAlignment="Right">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{LaborCode}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="320" y="0" width="41" height="21" uuid="e884bb95-b270-40e7-a3ea-fd787266e67a">
+				<reportElement x="399" y="0" width="41" height="15" uuid="e884bb95-b270-40e7-a3ea-fd787266e67a">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bd45c438-50cc-4333-8324-90f9d12b8353"/>
 				</reportElement>
 				<textElement>
@@ -331,13 +339,22 @@ Order By Coalesce(Concat(EM.LastName, ", ", EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<textFieldExpression><![CDATA[$F{Ticket}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="87" y="0" width="29" height="30" uuid="2b165e4a-8e27-40dd-859a-296d3eb7f8d2">
+				<reportElement x="160" y="0" width="29" height="15" uuid="2b165e4a-8e27-40dd-859a-296d3eb7f8d2">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c61655c6-4727-4f44-af51-0ffe9269e084"/>
 				</reportElement>
 				<textElement>
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{BarCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-10" y="0" width="170" height="15" uuid="d8b70518-9354-463d-9b7b-cfa53b261110">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b5f3d14a-f07b-4972-a331-58a89f1d5a90"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Name}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

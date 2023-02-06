@@ -567,7 +567,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		int updatedSequence = rs.getInt("UpdatedSequence");
 		Date statusDate = DateUtilities.convertSQLDateToUtilDate(rs.getDate("StatusDate"));
 		String operationStatusString = rs.getString("td.Status");
-		System.out.println("Op Status is " +operationStatusString);
+//		System.out.println("Op Status is " +operationStatusString);
 		String operationDescription = rs.getString("operationDescription");
 		int laborCode = rs.getInt("LaborCode");
 		double laborRate = rs.getDouble("LaborRate");

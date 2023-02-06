@@ -80,8 +80,9 @@ public class BarCodeUtilities {
 		PrintService barCodePrinter = null;
 		if (services != null) {
 			for (PrintService service : services) {
+				System.out.println("Service is : " + service.getName());
 				if (service.getName().contains("P3010") || service.getName().contains("P3015")) {
-					System.out.println(service.getName() + "********************************");
+					System.out.println("**************Found it: " +  service.getName() + "********************************");
 					barCodePrinter = service;
 					break;
 				}
@@ -372,7 +373,7 @@ public class BarCodeUtilities {
 						.append(strCvtBarCode1);
 				sb.append(ESC).append("&a2.5C").append(ESC).append("&a").append(intRowCount + 0.6).append("R")
 						.append(strCvtBarCode2);
-				System.out.println("Count is " + intRowCount);
+//				System.out.println("Count is " + intRowCount);
 				intRowCount++;
 				if (intRowCount >= 10) {
 					sb.append(PAGE_EJECT);

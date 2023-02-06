@@ -31,7 +31,7 @@ public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 	public List<Employee> getEmployees() throws DatabaseException {
 		List<Employee> employees = new ArrayList<Employee>();
 
-		try (PreparedStatement psGetEmployees = getConn().prepareStatement("Select * from Employee order by EmpID");) {
+		try (PreparedStatement psGetEmployees = getConn().prepareStatement("Select * from Employee order by active desc, empId");) {
 			try (ResultSet rs = psGetEmployees.executeQuery();) {
 
 				while (rs.next()) {

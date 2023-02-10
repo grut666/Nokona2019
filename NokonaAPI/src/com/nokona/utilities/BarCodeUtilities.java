@@ -38,15 +38,16 @@ public class BarCodeUtilities {
 	}
 
 	public static String convertBarCode2of5(String strIn) {
-		// System.out.println("strIn is " + "X" + strIn + "X");
+//		System.out.println("strIn is " + "X" + strIn + "X");
 		StringBuilder strBarCode = new StringBuilder("");
 		for (int i = 0; i < strIn.length(); i += 2) {
 			String subStr = strIn.substring(i, i + 2);
-			// System.out.println("substr is " + subStr);
+			System.out.println("substr is " + subStr);
 			int index = Integer.parseInt(subStr);
 			strBarCode.append(strCodeTable[index]);
+			System.out.println("Translation: " + strCodeTable[index]);
 		}
-
+		System.out.println("Final is " + strBarCode);
 		strBarCode.insert(0, (char) 171);
 		strBarCode.append((char) 172);
 		// System.out.println("Final is " + strBarCode.toString());
@@ -337,6 +338,7 @@ public class BarCodeUtilities {
 				// System.out.println("*****Length of fBarCode2 is " + fBarCode2.length() + ":
 				// Value is " + fBarCode2);
 				strCvtBarCode0 = convertBarCode2of5(BarCodeUtilities.formatBarCode(fBarCode0));
+				System.out.println("***********************" + strCvtBarCode0);
 				strCvtBarCode1 = convertBarCode2of5(BarCodeUtilities.formatBarCode(fBarCode1));
 				strCvtBarCode2 = convertBarCode2of5(BarCodeUtilities.formatBarCode(fBarCode2));
 				// Line 3 - Description part 1
@@ -409,8 +411,8 @@ public class BarCodeUtilities {
 				.append("&a2.1C").append(star44);
 
 		String output = sb.toString();
-		return output.replaceAll("\"", "\\\\\""); // What the hell is this?
-//		return output; 
+//		return output.replaceAll("\"", "\\\\\""); // What the hell is this?
+		return output; 
 
 	}
 

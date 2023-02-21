@@ -1,1 +1,9 @@
 "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe" --defaults-file="C:\ProgramData\MySQL\MySQL Server 8.0\my.ini" MYSQL80
+
+CREATE TABLE `levelcode` (
+  `LevelCode` int(11) DEFAULT NULL,
+  `LevelRate` double DEFAULT NULL,
+  `Key` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`Key`),
+  UNIQUE KEY `LevelCode_UNIQUE` (`LevelCode`)
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

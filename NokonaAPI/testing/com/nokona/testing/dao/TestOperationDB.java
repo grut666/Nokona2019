@@ -42,11 +42,9 @@ class TestOperationDB {
 		assertEquals("", op.getDescription());
 		assertEquals(0, op.getHourlyRateSAH());
 		assertEquals(-1, op.getKey());
-		assertEquals(0, op.getLaborCode());
+		assertEquals(0, op.getLevelCode());
 		assertEquals(0, op.getLastStudyYear());
 		assertEquals("", op.getOpCode());
-//		assertEquals("Operation(opCode=, description=, hourlyRateSAH=0.0, laborCode=0, key=-1, lastStudyYear=0)",
-//				op.toString());
 	}
 
 	@Test
@@ -55,7 +53,7 @@ class TestOperationDB {
 		assertEquals("INSTALL RUBBER IN POCKET", op.getDescription());
 		assertEquals(.0225, op.getHourlyRateSAH());
 		assertEquals(9693, op.getKey());
-		assertEquals(3, op.getLaborCode());
+		assertEquals(3, op.getLevelCode());
 		assertEquals(2020, op.getLastStudyYear());
 		assertEquals("A55", op.getOpCode());
 //		assertEquals("Operation(opCode=A55, description=INSTALL RUBBER IN POCKET, hourlyRateSAH=0.0225, laborCode=3, key=9693, lastStudyYear=2020)",
@@ -69,7 +67,7 @@ class TestOperationDB {
 		op = db.getOperation("ZZZ");
 		assertEquals("INSTALL RUBBER IN POCKET", op.getDescription());
 		assertEquals(.0225, op.getHourlyRateSAH());
-		assertEquals(3, op.getLaborCode());
+		assertEquals(3, op.getLevelCode());
 		assertEquals(2020, op.getLastStudyYear());
 		assertEquals("ZZZ", op.getOpCode());
 	}
@@ -79,7 +77,7 @@ class TestOperationDB {
 		Operation op = db.getOperation("A55");
 		assertEquals(.0225, op.getHourlyRateSAH());
 		assertEquals(9693, op.getKey());
-		assertEquals(3, op.getLaborCode());
+		assertEquals(3, op.getLevelCode());
 		assertEquals(0, op.getLastStudyYear());
 		assertEquals("A55", op.getOpCode());
 //		assertEquals("Operation(opCode=A55, description=INSTALL RUBBER IN POCKET, hourlyRateSAH=0.0225, laborCode=3, key=9693, lastStudyYear=0)",
@@ -91,7 +89,7 @@ class TestOperationDB {
 		Operation op = db.getOperationByKey(9693);
 		assertEquals(.0225, op.getHourlyRateSAH());
 		assertEquals(9693, op.getKey());
-		assertEquals(3, op.getLaborCode());
+		assertEquals(3, op.getLevelCode());
 		assertEquals(0, op.getLastStudyYear());
 		assertEquals("A55", op.getOpCode());
 	}
@@ -121,13 +119,13 @@ class TestOperationDB {
 	void testUpdateOperation() throws DatabaseException {
 		Operation op = db.getOperationByKey(9693);
 		op.setHourlyRateSAH(.0666);
-		op.setLaborCode(12);
+		op.setLevelCode(12);
 		op.setLastStudyYear(2020);
 		op.setOpCode("ZZZ");
 
 		Operation newOp = db.updateOperation(op);
 		assertEquals(.0666, newOp.getHourlyRateSAH());
-		assertEquals(12, newOp.getLaborCode());
+		assertEquals(12, newOp.getLevelCode());
 		assertEquals(2020, newOp.getLastStudyYear());
 		assertEquals("ZZZ", newOp.getOpCode());
 		assertEquals(9693, newOp.getKey());

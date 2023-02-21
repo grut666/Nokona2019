@@ -733,13 +733,13 @@ public class MySqlToAccess {
 			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
 		}
 
-		query = "Update OPERATION Set  OpCode = ?, Description = ?, LaborCode = ?, HourlyRateSAH = ?, "
+		query = "Update OPERATION Set  OpCode = ?, Description = ?, LevelCode = ?, HourlyRateSAH = ?, "
 				+ "LastStudyYear = ? where EMPLOYEE.KEY = ?";
 		try (PreparedStatement psUpdate = accessConn.prepareStatement(query)) {
 			for (Operation operation : recordsIn) {
 				psUpdate.setString(1, operation.getOpCode());
 				psUpdate.setString(2, operation.getDescription());
-				psUpdate.setInt(3, operation.getLaborCode());
+				psUpdate.setInt(3, operation.getLevelCode());
 				psUpdate.setDouble(4, operation.getHourlyRateSAH());
 				psUpdate.setInt(5, operation.getLastStudyYear());
 				psUpdate.setLong(6, operation.getKey());
@@ -786,13 +786,13 @@ public class MySqlToAccess {
 			logger.log(Level.SEVERE, "MySQL Error: " + query + ":" + ex.getMessage());
 		}
 
-		query = "Insert INTO Operation (OpCode, Description, LaborCode, HourlyRateSAH, "
+		query = "Insert INTO Operation (OpCode, Description, LevelCode, HourlyRateSAH, "
 				+ "LastStudyYear, Level) values (?,?,?,?,?)";
 		try (PreparedStatement psInsert = accessConn.prepareStatement(query)) {
 			for (Operation operation : recordsIn) {
 				psInsert.setString(1, operation.getOpCode());
 				psInsert.setString(2, operation.getDescription());
-				psInsert.setInt(3, operation.getLaborCode());
+				psInsert.setInt(3, operation.getLevelCode());
 				psInsert.setDouble(4, operation.getHourlyRateSAH());
 				psInsert.setInt(5, operation.getLastStudyYear());
 

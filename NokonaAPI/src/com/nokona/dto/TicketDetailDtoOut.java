@@ -26,9 +26,8 @@ public class TicketDetailDtoOut {
 	private Date statusDate;
 	private int standardQuantity;
 	private double hourlyRateSAH;
-	private int laborCode;
-	private String laborDescription;
-	private double laborRate;
+	private int levelCode;
+	private double levelRate;
 	private int employeeBarCodeID1;
 	private int actualQuantity1;
 	private int employeeBarCodeID2;
@@ -48,9 +47,8 @@ public class TicketDetailDtoOut {
 		statusDate = ticketDetail.getStatusDate();
 		standardQuantity = ticketDetail.getStandardQuantity();
 		hourlyRateSAH = ticketDetail.getHourlyRateSAH();
-		laborCode = ticketDetail.getLaborCode();
-		laborDescription = ticketDetail.getLaborDescription();
-		laborRate = ticketDetail.getLaborRate();
+		levelCode = ticketDetail.getLevelCode();
+		levelRate = ticketDetail.getLevelRate();
 		employeeBarCodeID1 = ticketDetail.getEmployeeBarCodeID1();
 		actualQuantity1 = ticketDetail.getActualQuantity1();
 		employeeBarCodeID2 = ticketDetail.getEmployeeBarCodeID2();

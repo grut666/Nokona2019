@@ -20,7 +20,7 @@ import com.nokona.formatter.JobFormatter;
 import com.nokona.model.Job;
 import com.nokona.model.JobDetail;
 import com.nokona.model.JobHeader;
-// import com.nokona.validator.JobValidator;
+
 
 public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	private boolean isAdding = false; // always delete and re-add detail
@@ -323,12 +323,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	@Override
 	public Job addJob(Job job) throws DatabaseException {
 		JobHeader formattedJobHeader = JobFormatter.format(job.getHeader());
-		// String validateMessage = JobValidator.validateAdd(formattedJobHeader, conn);
-		// if (!"".equals(validateMessage)) {
-		// throw new DatabaseException(validateMessage);
-		// }
 		String jobId = formattedJobHeader.getJobId();
-		System.err.println("Deleting job");
 		try {
 			isAdding = true;
 			deleteJob(jobId);
@@ -337,13 +332,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			// existing job, if it exists
 		}
 		isAdding = false;
-		System.err.println("Finished Deleting job");
-		System.err.println("Adding Header");
 		addJobHeader(formattedJobHeader);
-		System.err.println("Finished Adding Header");
-
-		System.err.println("Formatted JobHeader is " + formattedJobHeader);
-		List<JobDetail> jobDetails = getJobDetails(jobId);
 		int sequence = 0;
 		for (JobDetail jobDetail : job.getDetails()) {
 			jobDetail.setSequence(sequence);

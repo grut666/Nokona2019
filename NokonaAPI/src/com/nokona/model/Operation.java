@@ -11,7 +11,7 @@ public class Operation {
 	private long key;
 	private String opCode;
 	private String description;
-	private int laborCode;
+	private int levelCode;
 	private double hourlyRateSAH;
 	private int lastStudyYear;
 	

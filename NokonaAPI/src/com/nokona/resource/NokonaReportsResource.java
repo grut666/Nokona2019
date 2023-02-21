@@ -1,17 +1,9 @@
 package com.nokona.resource;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-//import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-//import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,58 +22,32 @@ import javax.servlet.ServletContext;
 
 import com.nokona.data.NokonaDatabase;
 import com.nokona.enums.ReportCategory;
-import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.PDFException;
 import com.nokona.qualifiers.BaseDaoQualifier;
 import com.nokona.reports.JobReports;
 import com.nokona.reports.LaborReports;
-import com.nokona.reports.OrderBy;
-//import com.nokona.reports.ReportProcesser;
 import com.nokona.reports.ReportProperties;
 import com.nokona.reports.TicketReports;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporterParameter;
 //import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperReportsContext;
-import net.sf.jasperreports.engine.ReportContext;
 import net.sf.jasperreports.engine.SimpleJasperReportsContext;
-import net.sf.jasperreports.engine.SimpleReportContext;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
-import net.sf.jasperreports.engine.export.JRCsvExporterParameter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
-import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.CsvExporterConfiguration;
-import net.sf.jasperreports.export.CsvReportConfiguration;
-import net.sf.jasperreports.export.SimpleCsvExporterConfiguration;
 import net.sf.jasperreports.export.SimpleCsvMetadataExporterConfiguration;
-import net.sf.jasperreports.export.SimpleCsvReportConfiguration;
-//import net.sf.jasperreports.engine.export.JRXlsExporter;
-//import net.sf.jasperreports.export.SimpleExporterInput;
-//import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-//import net.sf.jasperreports.engine.export.ExporterFilter;
-//import net.sf.jasperreports.engine.export.JRCsvExporter;
-//import net.sf.jasperreports.engine.export.JRExportProgressMonitor;
-//import net.sf.jasperreports.engine.export.JRHyperlinkProducerFactory;
-//import net.sf.jasperreports.export.CsvReportConfiguration;
-//import net.sf.jasperreports.export.SimpleCsvReportConfiguration;
-//import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
-import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
-import net.sf.jasperreports.export.WriterExporterOutput;
+
 
 @Path("/reports")
 public class NokonaReportsResource {
 	@Context
 	private ServletContext context;
-	private static final String PDF_DIRECTORY = "/tmpPDF";
 	private static final String CSV_DIRECTORY = "/tmpCSV";
 	private static final String HTML_DIRECTORY = "/tmpHTML";
 	@Inject
@@ -90,39 +56,15 @@ public class NokonaReportsResource {
 //	private Connection conn;
 
 	public NokonaReportsResource() {
-
-		// conn = db.getConn();
+		super();
 	}
 
-//	@GET
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public Response getEmptyReportProperties() {
-////		System.out.println(conn);
-////
-////		conn = db.getConn();
-//		System.out.println(conn);
-//		conn = db.getConn();
-//
-//		OrderBy orderBy = new OrderBy("JobId", true);
-//		OrderBy orderBy2 = new OrderBy("StatusDate", false);
-//		List<OrderBy> ordersBy = new ArrayList<OrderBy>();
-//		ordersBy.add(orderBy);
-//		ordersBy.add(orderBy2);
-//		Map<String, String> parameters = new HashMap<>();
-//		parameters.put("ACTIVE", "Y");
-//
-//		return Response.ok(new ReportProperties(ReportCategory.EMPLOYEE, parameters, "Dummy Report", "2022-01-01",
-//				"2022-01-10", ordersBy, "111", "222", "333", true, true)).build();
-//
-//	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	// @Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@Produces("application/pdf")
 	@Path("/pdf")
 	public Response getPdfReport(ReportProperties properties) {
-		// new ReportProcesser(properties);
 		File file = null;
 		try {
 			file = getJasperReport(properties);
@@ -135,8 +77,6 @@ public class NokonaReportsResource {
 				return Response.ok("CSV file is " + file.getAbsoluteFile()).build();
 			}
 			return Response.ok((Object) file)
-					// .header("Content-Disposition", "attachment; filename=" +
-					// file.getAbsolutePath()).build();
 					.header("Content-Disposition", returnString).build();
 		} catch (PDFException e) {
 			return Response.status(500).entity(e.getMessage()).build();
@@ -168,20 +108,14 @@ public class NokonaReportsResource {
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@Path("/pdftest")
 	public Response getPdfReportTest() {
-		// ReportProperties properties = new ReportProperties();
 		return getPdfReport(null);
 	}
 
 	private String generateHTMLName() {
-		// return "Nokona_" + UUID.randomUUID().toString() + ".pdf"; // This will be the
-		// real file after test
 		return "Nokona_" + UUID.randomUUID().toString() + ".html";
 	}
 
 	private String generateCSVName() {
-		// return "Nokona_" + UUID.randomUUID().toString() + ".pdf"; // This will be
-		// the
-		// real file after test
 		return "Nokona_" + UUID.randomUUID().toString() + ".csv";
 	}
 
@@ -241,7 +175,6 @@ public class NokonaReportsResource {
 			// parms.put("ACTIVE2", 1);
 
 			// End Practice
-//			conn = db.getConn();
 
 			System.out.println("Conn");
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parms, conn);
@@ -250,7 +183,7 @@ public class NokonaReportsResource {
 			System.out.println("JasperPrint");
 			if (csvFormat) {
 				System.out.println("Starting CSV export");
-//				JasperExportManager.exportReportToPdfFile(jasperPrint, fileName);
+
 				JRCsvExporter exporter = new JRCsvExporter(new SimpleJasperReportsContext());
 				CsvExporterConfiguration configuration = new SimpleCsvMetadataExporterConfiguration();
 				configuration.isWriteBOM();
@@ -268,20 +201,6 @@ public class NokonaReportsResource {
 				System.out.println("Starting HTML export");
 				JasperExportManager.exportReportToHtmlFile(jasperPrint, fileName);
 				System.out.println("Finished with HTML export");
-				
-//
-//				JRCsvExporter exporter = new JRCsvExporter(new SimpleJasperReportsContext());
-//				CsvExporterConfiguration configuration = new SimpleCsvMetadataExporterConfiguration();
-//				configuration.isWriteBOM();
-//				exporter.setConfiguration(configuration);
-//
-//				exporter.setExporterOutput(new SimpleWriterExporterOutput(fileName));
-//				exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-//				exporter.setConfiguration(configuration);
-//				
-//				exporter.exportReport();
-
-
 			}
 			return new File(fileName);
 
@@ -310,12 +229,6 @@ public class NokonaReportsResource {
 		return response.build();
 
 	}
-	// private void exportToCsv(JasperPrint jasperPrint, OutputStream os) throws
-	// JRException{
-	// JRCsvExporter exporter = new JRCsvExporter();
-	// CsvReportConfiguration configuration = new SimpleCsvReportConfiguration();
-	// exporter.setConfiguration(configuration);
-	// exporter.exportReport();
-	// }
+
 
 }

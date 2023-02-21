@@ -22,9 +22,8 @@ public class TicketDetail {
 	private Date statusDate;
 	private int standardQuantity;
 	private double hourlyRateSAH;
-	private int laborCode;
-	private String laborDescription;
-	private double laborRate;
+	private int levelCode;
+	private double levelRate;
 	private int employeeBarCodeID1;
 	private int actualQuantity1;
 	private int employeeBarCodeID2;
@@ -39,7 +38,6 @@ public class TicketDetail {
 		this.sequenceOriginal = 99;
 		this.sequenceUpdated = 99;
 		this.statusDate = new Date();
-		this.laborDescription = "None";
 	}
 		
 	}

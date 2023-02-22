@@ -3,24 +3,26 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LaborDetailByDate" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3254aaab-dbf6-4930-aa49-594cd667792e">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Nokona Data Adapter"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="186"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="805"/>
 	<parameter name="START_DATE" class="java.lang.String"/>
 	<parameter name="END_DATE" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[Select Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN')  as "Name",
 TD.Ticket,
-TD.LaborCode,
+TD.LevelCode,
 TD.BarCode,
 Concat(TD.Operation, ' - ', TD.OperationDescription) as "Operation",
 TD.Qty,
 TD.SAH,
-FORMAT(TD.LaborRate, 2) as "LbrRt",
+FORMAT(TD.LevelRate, 2) as "LvlRt",
 TD.StatusDate as "Completed",
 FORMAT(TD.Qty * TD.SAH, 4) as "Amt",
-FORMAT(TD.Qty * TD.SAH * TD.LaborRate, 2) as "Total"
+FORMAT(TD.Qty * TD.SAH * TD.LevelRate, 2) as "Total"
 FROM TicketDetailView TD left Join Employee EM on TD.BarCode = EM.BarCodeID
 WHERE TD.Status = 'C' and
 TD.StatusDate between $P{START_DATE} and $P{END_DATE}
-Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCode, TD.LaborCode, TD.StatusDate;]]>
+Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCode, TD.LevelCode, TD.StatusDate;]]>
 	</queryString>
 	<field name="Name" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="Name"/>
@@ -28,8 +30,8 @@ Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCod
 	<field name="Ticket" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="Ticket"/>
 	</field>
-	<field name="LaborCode" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.label" value="LaborCode"/>
+	<field name="LevelCode" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="LevelCode"/>
 	</field>
 	<field name="BarCode" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="BarCode"/>
@@ -43,8 +45,8 @@ Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCod
 	<field name="SAH" class="java.lang.Double">
 		<property name="com.jaspersoft.studio.field.label" value="SAH"/>
 	</field>
-	<field name="LbrRt" class="java.lang.Double">
-		<property name="com.jaspersoft.studio.field.label" value="LbrRt"/>
+	<field name="LvlRt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="LvlRt"/>
 	</field>
 	<field name="Completed" class="java.sql.Date">
 		<property name="com.jaspersoft.studio.field.label" value="Completed"/>
@@ -60,7 +62,7 @@ Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCod
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<variable name="RateTotal" class="java.lang.Double" incrementType="Group" incrementGroup="LaborCodeGroup" calculation="Sum">
-		<variableExpression><![CDATA[$F{LbrRt}]]></variableExpression>
+		<variableExpression><![CDATA[$F{LvlRt}]]></variableExpression>
 	</variable>
 	<variable name="EmployeeTotal" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
@@ -69,7 +71,7 @@ Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCod
 		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
 	</variable>
 	<group name="LaborCodeGroup">
-		<groupExpression><![CDATA[$F{LaborCode}]]></groupExpression>
+		<groupExpression><![CDATA[$F{LevelCode}]]></groupExpression>
 		<groupFooter>
 			<band height="46"/>
 		</groupFooter>
@@ -156,7 +158,7 @@ Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<textElement>
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{LbrRt}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{LvlRt}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.000">
 				<reportElement x="670" y="0" width="50" height="15" uuid="3eaf04c6-a145-4b34-8514-0a5f7ed32190">
@@ -183,7 +185,7 @@ Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{LaborCode}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{LevelCode}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="399" y="0" width="41" height="15" uuid="e884bb95-b270-40e7-a3ea-fd787266e67a">

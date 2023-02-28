@@ -108,7 +108,6 @@ public class NokonaOperationResource {
 		}
 		try {
 			Operation operation = db.updateOperation(opIn);
-			TransferToAccess.transfer("OPERATION_U");
 			return Response.status(200).entity(operation).build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
@@ -128,7 +127,6 @@ public class NokonaOperationResource {
 		Operation op;
 		try {
 			op = db.addOperation(opIn);
-			TransferToAccess.transfer("OPERATION_C");
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -145,7 +143,7 @@ public class NokonaOperationResource {
 	public Response deleteOperation(@PathParam("operation") String operation) {
 		try {
 			db.deleteOperation(operation);
-			TransferToAccess.transfer("OPERATION_D");
+
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + operation + " not found\"}").build();
 		} catch (DatabaseConnectionException ex) {
@@ -165,7 +163,6 @@ public class NokonaOperationResource {
 		try {
 
 			db.deleteOperationByKey(key);
-			TransferToAccess.transfer("OPERATION_D");
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();
 		} catch (DatabaseConnectionException ex) {

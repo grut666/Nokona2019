@@ -140,7 +140,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 		}
 
 		try (PreparedStatement psAddOperation = conn.prepareStatement(
-				"Insert into Operation (OpCode, Description, HourlyRateSAH, Level, LastStudyYear) values (?,?,?,?,?)",
+				"Insert into Operation (OpCode, Description, HourlyRateSAH, LevelCode, LastStudyYear) values (?,?,?,?,?)",
 				PreparedStatement.RETURN_GENERATED_KEYS)) {
 			Operation formattedOperation = OperationFormatter.format(operationIn);
 			String validateMessage = OperationValidator.validateAdd(operationIn, conn);

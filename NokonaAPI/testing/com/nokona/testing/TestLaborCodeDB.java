@@ -15,6 +15,7 @@ import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.data.NokonaDatabaseLaborCode;
 import com.nokona.db.NokonaDAOEmployee;
 import com.nokona.db.NokonaDAOLaborCode;
+import com.nokona.enums.LaborType;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
@@ -49,7 +50,7 @@ class TestLaborCodeDB {
 	}
 	@Test
 	void testGetEmployeeFullArguments() throws DatabaseException {
-		LaborCode laborCode = new LaborCode(10, 50, "Testing Labor Code", 5.16 );
+		LaborCode laborCode = new LaborCode(10, 50, "Testing Labor Code", 5.16, LaborType.UNKNOWN );
 		assertEquals(50, laborCode.getLaborCode());
 		assertEquals("Testing Labor Code", laborCode.getDescription());
 		assertEquals(10, laborCode.getKey());

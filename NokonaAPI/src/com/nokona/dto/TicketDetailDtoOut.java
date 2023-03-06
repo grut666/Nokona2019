@@ -28,6 +28,8 @@ public class TicketDetailDtoOut {
 	private double hourlyRateSAH;
 	private int levelCode;
 	private double levelRate;
+	private int laborCode;
+	private double laborRate;
 	private int employeeBarCodeID1;
 	private int actualQuantity1;
 	private int employeeBarCodeID2;
@@ -49,6 +51,8 @@ public class TicketDetailDtoOut {
 		hourlyRateSAH = ticketDetail.getHourlyRateSAH();
 		levelCode = ticketDetail.getLevelCode();
 		levelRate = ticketDetail.getLevelRate();
+		laborCode = ticketDetail.getLaborCode();
+		laborRate = ticketDetail.getLaborRate();
 		employeeBarCodeID1 = ticketDetail.getEmployeeBarCodeID1();
 		actualQuantity1 = ticketDetail.getActualQuantity1();
 		employeeBarCodeID2 = ticketDetail.getEmployeeBarCodeID2();

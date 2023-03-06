@@ -12,11 +12,12 @@ public class Operation {
 	private String opCode;
 	private String description;
 	private int levelCode;
+	private int laborCode;
 	private double hourlyRateSAH;
 	private int lastStudyYear;
 	
 	public Operation() {
-		this(-1, "", "", 0, 0, 0);
+		this(-1, "", "", 0, 0, 0, 0);
 	}
 	
 }

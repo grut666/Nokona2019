@@ -1,13 +1,15 @@
 package com.nokona.reports;
 
 public class ReportProcesser {
-	private ReportProperties rp;
-
-	public ReportProcesser(ReportProperties rp) {
-		super();
-		this.rp = rp;
+//	private ReportProperties rp;
+//
+//	public ReportProcesser(ReportProperties rp) {
+//		super();
+//		this.rp = rp;
+//	}
+	private ReportProcesser() {
+		
 	}
-
 	
 	
 	public static String EmployeeReports(ReportProperties rp) {

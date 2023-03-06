@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.nokona.constants.Constants;
+import com.nokona.enums.LaborType;
 import com.nokona.model.Employee;
 import com.nokona.model.LaborCode;
 import com.nokona.model.Operation;
@@ -525,7 +526,7 @@ public class MySqlToAccess {
 
 			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
 				LaborCode laborCode = new LaborCode(rs.getInt("TheKey"), rs.getInt("LaborCode"),
-						rs.getString("Description"), rs.getDouble("LaborRate"));
+						rs.getString("Description"), rs.getDouble("LaborRate"), LaborType.valueOf(rs.getString("LaborType")));
 				recordsIn.add(laborCode);
 			}
 		} catch (SQLException ex) {
@@ -565,7 +566,7 @@ public class MySqlToAccess {
 
 			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
 				LaborCode laborCode = new LaborCode(rs.getInt("TheKey"), rs.getInt("LaborCode"),
-						rs.getString("Description"), rs.getDouble("LaborRate"));
+						rs.getString("Description"), rs.getDouble("LaborRate"), LaborType.valueOf(rs.getString("LaborType")));
 				recordsIn.add(laborCode);
 			}
 		} catch (SQLException ex) {
@@ -612,7 +613,7 @@ public class MySqlToAccess {
 
 			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
 				LaborCode laborCode = new LaborCode(rs.getInt("TheKey"), rs.getInt("LaborCode"),
-						rs.getString("Description"), rs.getDouble("LaborRate"));
+						rs.getString("Description"), rs.getDouble("LaborRate"), LaborType.valueOf(rs.getString("LaborType")));
 				recordsIn.add(laborCode);
 			}
 		} catch (SQLException ex) {
@@ -684,7 +685,7 @@ public class MySqlToAccess {
 
 			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
 				Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"),
-						rs.getString("Description"), rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),
+						rs.getString("Description"), rs.getInt("LevelCode"), rs.getInt("LaborCode"),rs.getDouble("HourlyRateSAH"),
 						rs.getInt("LastStudyYear"));
 				recordsIn.add(operation);
 			}
@@ -725,7 +726,7 @@ public class MySqlToAccess {
 
 			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
 				Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"),
-						rs.getString("Description"), rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),
+						rs.getString("Description"), rs.getInt("LevelCode"), rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),
 						rs.getInt("LastStudyYear"));
 				recordsIn.add(operation);
 			}
@@ -776,7 +777,7 @@ public class MySqlToAccess {
 
 			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
 				Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"),
-						rs.getString("Description"), rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),
+						rs.getString("Description"), rs.getInt("LevelCode"), rs.getInt("LaborCode"),rs.getDouble("HourlyRateSAH"),
 						rs.getInt("LastStudyYear"));
 				recordsIn.add(operation);
 			}

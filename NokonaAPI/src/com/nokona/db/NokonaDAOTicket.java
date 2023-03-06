@@ -10,6 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.nokona.data.NokonaDatabaseJob;
+import com.nokona.data.NokonaDatabaseLaborCode;
 import com.nokona.data.NokonaDatabaseLevelCode;
 import com.nokona.data.NokonaDatabaseOperation;
 import com.nokona.data.NokonaDatabaseTicket;
@@ -22,6 +23,7 @@ import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.TicketFormatter;
 import com.nokona.formatter.TicketHeaderFormatter;
 import com.nokona.model.JobDetail;
+import com.nokona.model.LaborCode;
 import com.nokona.model.LevelCode;
 import com.nokona.model.Operation;
 import com.nokona.model.Ticket;
@@ -36,7 +38,9 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	private NokonaDatabaseOperation operationDAO;
 	@Inject
 	private NokonaDatabaseLevelCode levelCodeDAO;
-
+	@Inject
+	private NokonaDatabaseLaborCode laborCodeDAO;
+	
 	public NokonaDAOTicket() throws DatabaseException {
 		super();
 
@@ -162,31 +166,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		} catch (SQLException ex) {
 			throw new DatabaseException(ex.getMessage(), ex);
 		}
-		// if (thisKey != lastKey) {
-		// if (lastKey != -1) {
-		// tickets.add(ticket);
-		// }
-		// ticket = new Ticket(new TicketHeader(), new ArrayList<TicketDetail>());
-		// lastKey = thisKey;
-		// ticket.getTicketHeader().setJobId(rs.getString("JobID"));
-		// ticket.getTicketHeader().setDateCreated(DateUtilities.convertSQLDateToUtilDate(rs.getDate("CreatedDate")));
-		// ticket.getTicketHeader().setTicketStatus(TicketStatus.valueOf(rs.getString("jobId")));
-		// ticket.getTicketHeader().setDateStatus(DateUtilities.convertSQLDateToUtilDate(rs.getDate("StatusDate")));
-		// ticket.getTicketHeader().setQuantity(rs.getInt("Quantity"));
-		// ticket.getTicketHeader().setKey(thisKey);
-		//
-		// }
-		//
-		// TicketDetail detail = new TicketDetail();
-		// detail.setOperationStatus(rs.getString("));
-		// detail.setOperationDescription();
-		// detail.setSequenceOriginal(sequenceOriginal);
-		//
-		//
-		// ticket.getTicketDetails().add(detail);
-		// // Just do the ticketdetail and add it to ticket
-		//
-		// }
+		
 		return tickets;
 	}
 
@@ -213,9 +193,9 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 				PreparedStatement.RETURN_GENERATED_KEYS);
 				PreparedStatement psAddTicketDetail = conn.prepareStatement(
 						"Insert into TicketDetail (TicketDetail.Key, OpCode, Sequence, StatusDate, Status, "
-								+ "StandardQuantity, HourlyRateSAH, LevelRate, UpdatedSequence, "
+								+ "StandardQuantity, HourlyRateSAH, LevelCode, LevelRate, LaborCode, LaborRate, UpdatedSequence, "
 								+ " OperationDescription, BarCodeID1, ActualQuantity1, BarCodeID2, ActualQuantity2 )  "
-								+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
+								+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
 			psAddTicketHeader.setString(1, formattedTicketHeader.getJobId());
 			psAddTicketHeader.setString(2, formattedTicketHeader.getDescription());
 			psAddTicketHeader.setDate(3,
@@ -244,6 +224,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 				List<TicketDetail> newTicketDetails = new ArrayList<TicketDetail>();
 				Operation op;
 				LevelCode levelCode;
+				LaborCode laborCode;
 				long key = formattedTicketHeader.getKey();
 				for (JobDetail jobDetail : jobDetails) {
 					op = operationDAO.getOperation(jobDetail.getOpCode());
@@ -261,11 +242,13 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 						sah *= 1 + (ticketHeader.getPremiumPercent() / 100.0);
 					} // Will not do this on update so we don't get a compounding increase in premium
 					String opDescription = op.getDescription();
+					int opLaborCode = op.getLaborCode();
+					double opLaborRate = laborCodeDAO.getLaborCode(op.getLaborCode()).getRate();
 					levelCode = levelCodeDAO.getLevelCode(op.getLevelCode());
-					// String levelDescription = levelCode.getDescription();
+					laborCode = laborCodeDAO.getLaborCode(op.getLaborCode());
 
 					TicketDetail td = new TicketDetail(key, opCode, opDesc, status, sequence, sequence, null, quantity,
-							sah, levelCode.getLevelCode(), levelCode.getRate(), 0, 0, 0, 0);
+							sah, levelCode.getLevelCode(), levelCode.getRate(), laborCode.getLaborCode(), laborCode.getRate(),0, 0, 0, 0);
 
 					newTicketDetails.add(td);
 					psAddTicketDetail.setLong(1, key);
@@ -275,13 +258,16 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 					psAddTicketDetail.setString(5, status.getOperationStatus());
 					psAddTicketDetail.setLong(6, quantity);
 					psAddTicketDetail.setDouble(7, sah);
-					psAddTicketDetail.setLong(8, 0);
-					psAddTicketDetail.setLong(9, sequence);
-					psAddTicketDetail.setString(10, opDescription);
-					psAddTicketDetail.setLong(11, 0);
-					psAddTicketDetail.setLong(12, 0);
-					psAddTicketDetail.setLong(13, 0);
+					psAddTicketDetail.setLong(8, levelCode.getLevelCode());
+					psAddTicketDetail.setDouble(9, levelCode.getRate());
+					psAddTicketDetail.setLong(10, opLaborCode);
+					psAddTicketDetail.setDouble(11, opLaborRate);
+					psAddTicketDetail.setLong(12, sequence);
+					psAddTicketDetail.setString(13, opDescription);
 					psAddTicketDetail.setLong(14, 0);
+					psAddTicketDetail.setLong(15, 0);
+					psAddTicketDetail.setLong(16, 0);
+					psAddTicketDetail.setLong(17, 0);
 					psAddTicketDetail.addBatch();
 					System.out.println("Ticket Detail is " + td);
 				}
@@ -332,25 +318,26 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 
 		try (PreparedStatement psUpdateTicketDetail = conn
 				.prepareStatement("Update TicketDetail Set Status = ?, StatusDate = ?, StandardQuantity = ?, "
-						+ "HourlyRateSAH = ?, LevelRate = ?, "
+						+ "HourlyRateSAH = ?, LevelCode = ?, LevelRate = ?, "
 						+ "UpdatedSequence = ?, BarCodeID1 = ?, ActualQuantity1 = ?, BarCodeID2 = ?, ActualQuantity2 = ?, OperationDescription = ?, "
-						+ "LevelCode = ? " + "WHERE ticketDetail.Key = ? and sequence = ?")) {
+						+ "LaborCode = ?, LaborRate = ? " + "WHERE ticketDetail.Key = ? and sequence = ?")) {
 			psUpdateTicketDetail.setString(1, ticketDetail.getOperationStatus().getOperationStatus());
 			psUpdateTicketDetail.setDate(2, DateUtilities.convertUtilDateToSQLDate(ticketDetail.getStatusDate()));
 			psUpdateTicketDetail.setInt(3, ticketDetail.getStandardQuantity());
 			psUpdateTicketDetail.setDouble(4, ticketDetail.getHourlyRateSAH());
 
-			psUpdateTicketDetail.setDouble(5, ticketDetail.getLevelRate());
-			psUpdateTicketDetail.setInt(6, ticketDetail.getSequenceUpdated());
-			psUpdateTicketDetail.setInt(7, ticketDetail.getEmployeeBarCodeID1());
-			psUpdateTicketDetail.setInt(8, ticketDetail.getActualQuantity1());
-			psUpdateTicketDetail.setInt(9, ticketDetail.getEmployeeBarCodeID2());
-			psUpdateTicketDetail.setInt(10, ticketDetail.getActualQuantity2());
-			psUpdateTicketDetail.setString(11, ticketDetail.getOperationDescription());
-
-			psUpdateTicketDetail.setInt(12, ticketDetail.getLevelCode());
-			psUpdateTicketDetail.setLong(13, ticketDetail.getKey());
-			psUpdateTicketDetail.setInt(14, ticketDetail.getSequenceOriginal());
+			psUpdateTicketDetail.setDouble(5, ticketDetail.getLevelCode());
+			psUpdateTicketDetail.setDouble(6, ticketDetail.getLevelRate());
+			psUpdateTicketDetail.setInt(7, ticketDetail.getSequenceUpdated());
+			psUpdateTicketDetail.setInt(8, ticketDetail.getEmployeeBarCodeID1());
+			psUpdateTicketDetail.setInt(9, ticketDetail.getActualQuantity1());
+			psUpdateTicketDetail.setInt(10, ticketDetail.getEmployeeBarCodeID2());
+			psUpdateTicketDetail.setInt(11, ticketDetail.getActualQuantity2());
+			psUpdateTicketDetail.setString(12, ticketDetail.getOperationDescription());
+			psUpdateTicketDetail.setInt(13, ticketDetail.getLaborCode());
+			psUpdateTicketDetail.setDouble(14, ticketDetail.getLaborRate());
+			psUpdateTicketDetail.setLong(15, ticketDetail.getKey());
+			psUpdateTicketDetail.setInt(16, ticketDetail.getSequenceOriginal());
 
 			int rowCount = psUpdateTicketDetail.executeUpdate();
 			if (rowCount != 1) {
@@ -555,6 +542,8 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		String operationDescription = rs.getString("operationDescription");
 		int levelCode = rs.getInt("LevelCode");
 		double levelRate = rs.getDouble("LevelRate");
+		int laborCode = rs.getInt("LaborCode");
+		double laborRate = rs.getDouble("LaborRate");
 		OperationStatus operationStatus = OperationStatus.I;
 		if ("C".equals(operationStatusString)) {
 			operationStatus = OperationStatus.valueOf(operationStatusString);
@@ -566,7 +555,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		int actualQuantity2 = rs.getInt("ActualQuantity2");
 		double hourlyRateSAH = rs.getDouble("HourlyRateSAH");
 		TicketDetail td = new TicketDetail(key, opCode, operationDescription, operationStatus, sequence,
-				updatedSequence, statusDate, standardQuantity, hourlyRateSAH, levelCode, levelRate, barCodeID1,
+				updatedSequence, statusDate, standardQuantity, hourlyRateSAH, levelCode, levelRate, laborCode, laborRate, barCodeID1,
 				actualQuantity1, barCodeID2, actualQuantity2);
 
 		return td;

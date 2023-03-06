@@ -198,7 +198,7 @@ public class BarCodeUtilitiesOld {
 		sb.append(ESC).append("&a").append(intRowCount + .81).append("R"); // Set Vertical Coordinate
 		sb.append(ESC).append("(0U").append(ESC).append("(s1p6v0s0b16602T"); // Set 6 pitch arial
 		sb.append(ESC).append("&k330H").append(ESC).append("&l48C");
-		int intKounter = 1;
+
 		int numberOfLabelRows;
 		// ------------------
 		int detailIndex = 0;

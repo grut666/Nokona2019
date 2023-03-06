@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import com.nokona.constants.Constants;
 import com.nokona.data.NokonaDatabaseLaborCode;
 import com.nokona.db.NokonaDAOLaborCode;
+import com.nokona.enums.LaborType;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
@@ -49,24 +50,25 @@ public class TestLaborCodeDB {
 
 	@Test
 	public void testGetLaborCodeFullArguments() throws DatabaseException {
-		LaborCode lc = new LaborCode(1234, 22, "DOING STUFF", .12);
+		LaborCode lc = new LaborCode(1234, 22, "DOING STUFF", .12, LaborType.UNKNOWN );
 		assertEquals("DOING STUFF", lc.getDescription());
 		assertEquals(1234, lc.getKey());
 		assertEquals(22, lc.getLaborCode());
 		assertEquals(.12, lc.getRate());
+		assertEquals( LaborType.UNKNOWN , lc.getLaborType());
 		assertEquals("LaborCode(key=1234, laborCode=22, description=DOING STUFF, rate=0.12)",
 				lc.toString());
 	}
 ////
 	@Test
 	public void testGetLaborCodeFullArgumentsLowerCase() throws DatabaseException {
-		LaborCode lc = new LaborCode(1234, 22, "doing stuff", .12);
+		LaborCode lc = new LaborCode(1234, 22, "doing stuff", .12, LaborType.UNKNOWN );
 		db.addLaborCode(lc);
 		lc = db.getLaborCode(22);
 		assertEquals("DOING STUFF", lc.getDescription());
 		assertEquals(22, lc.getLaborCode());
 		assertEquals(.12, lc.getRate());
-		
+		assertEquals( LaborType.UNKNOWN , lc.getLaborType());
 	}
 //
 	@Test
@@ -147,7 +149,7 @@ public class TestLaborCodeDB {
 
 	@Test
 	void testAddLaborCode() throws DatabaseException {
-		LaborCode op = new LaborCode(0, 75, "Something Cool", .66);
+		LaborCode op = new LaborCode(0, 75, "Something Cool", .66, LaborType.UNKNOWN);
 		List<LaborCode> LaborCodes = db.getLaborCodes();
 		int startingCount = LaborCodes.size();
 		db.addLaborCode(op);
@@ -157,7 +159,7 @@ public class TestLaborCodeDB {
 
 	@Test
 	void testAddLaborCodeDupeOpCodeException() throws DatabaseException {
-		LaborCode op = new LaborCode(0, 6, "New Record", .66);
+		LaborCode op = new LaborCode(0, 6, "New Record", .66, LaborType.UNKNOWN);
 		Assertions.assertThrows(DuplicateDataException.class, () -> {
 			db.addLaborCode(op);
 		});

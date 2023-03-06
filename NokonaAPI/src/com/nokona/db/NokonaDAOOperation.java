@@ -107,7 +107,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 	@Override
 	public Operation updateOperation(Operation operationIn) throws DatabaseException {
 		try (PreparedStatement psUpdateOperation = conn.prepareStatement(
-				"Update Operation Set OpCode = ?, Description = ?, HourlyRateSAH = ?, LevelCode = ?, LastStudyYear = ? "
+				"Update Operation Set OpCode = ?, Description = ?, HourlyRateSAH = ?, LevelCode = ?, LaborCode = ?, LastStudyYear = ? "
 						+ " WHERE Operation.Key = ?")) {
 
 			Operation formattedOperation = OperationFormatter.format(operationIn);
@@ -119,8 +119,9 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			psUpdateOperation.setString(2, formattedOperation.getDescription());
 			psUpdateOperation.setDouble(3, formattedOperation.getHourlyRateSAH());
 			psUpdateOperation.setInt(4, formattedOperation.getLevelCode());
-			psUpdateOperation.setInt(5, formattedOperation.getLastStudyYear());
-			psUpdateOperation.setLong(6, formattedOperation.getKey());
+			psUpdateOperation.setInt(5, formattedOperation.getLaborCode());
+			psUpdateOperation.setInt(6, formattedOperation.getLastStudyYear());
+			psUpdateOperation.setLong(7, formattedOperation.getKey());
 			int rowCount = psUpdateOperation.executeUpdate();
 
 			if (rowCount != 1) {
@@ -140,7 +141,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 		}
 
 		try (PreparedStatement psAddOperation = conn.prepareStatement(
-				"Insert into Operation (OpCode, Description, HourlyRateSAH, LevelCode, LastStudyYear) values (?,?,?,?,?)",
+				"Insert into Operation (OpCode, Description, HourlyRateSAH, LevelCode, LaborCode, LastStudyYear) values (?,?,?,?,?,?)",
 				PreparedStatement.RETURN_GENERATED_KEYS)) {
 			Operation formattedOperation = OperationFormatter.format(operationIn);
 			String validateMessage = OperationValidator.validateAdd(operationIn, conn);
@@ -151,7 +152,8 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			psAddOperation.setString(2, formattedOperation.getDescription());
 			psAddOperation.setDouble(3, formattedOperation.getHourlyRateSAH());
 			psAddOperation.setInt(4, formattedOperation.getLevelCode());
-			psAddOperation.setInt(5, formattedOperation.getLastStudyYear());
+			psAddOperation.setInt(5, formattedOperation.getLaborCode());
+			psAddOperation.setInt(6, formattedOperation.getLastStudyYear());
 			int rowCount = psAddOperation.executeUpdate();
 
 			if (rowCount != 1) {
@@ -213,9 +215,10 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 		String description = rs.getString("Description");
 		double hourlyRateSAH = rs.getDouble("HourlyRateSAH");
 		int levelCode = rs.getInt("LevelCode");
+		int laborCode = rs.getInt("LaborCode");
 		int lastStudyYear = rs.getInt("LastStudyYear");
 
-		return new Operation(key, opCode, description, levelCode, hourlyRateSAH, lastStudyYear);
+		return new Operation(key, opCode, description, levelCode, laborCode, hourlyRateSAH, lastStudyYear);
 	}
 
 }

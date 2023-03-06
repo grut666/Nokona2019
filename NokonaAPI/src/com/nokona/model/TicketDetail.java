@@ -24,6 +24,8 @@ public class TicketDetail {
 	private double hourlyRateSAH;
 	private int levelCode;
 	private double levelRate;
+	private int laborCode;
+	private double laborRate;
 	private int employeeBarCodeID1;
 	private int actualQuantity1;
 	private int employeeBarCodeID2;

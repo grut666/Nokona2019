@@ -19,7 +19,6 @@ import com.nokona.exceptions.DatabaseConnectionException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.model.Operation;
-import com.nokona.utilities.TransferToAccess;
 
 @Path("/operations")
 @ApplicationScoped

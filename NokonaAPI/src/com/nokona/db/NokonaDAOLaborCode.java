@@ -95,8 +95,9 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			psUpdateLaborCode.setInt(1, formattedLaborCode.getLaborCode());
 			psUpdateLaborCode.setString(2, formattedLaborCode.getDescription());
 			psUpdateLaborCode.setDouble(3, formattedLaborCode.getRate());
-			psUpdateLaborCode.setLong(4, formattedLaborCode.getKey());
-			psUpdateLaborCode.setString(5, formattedLaborCode.getLaborType().toString());
+			psUpdateLaborCode.setString(4, formattedLaborCode.getLaborType().toString());
+			psUpdateLaborCode.setLong(5, formattedLaborCode.getKey());
+
 			int rowCount = psUpdateLaborCode.executeUpdate();
 
 			if (rowCount != 1) {

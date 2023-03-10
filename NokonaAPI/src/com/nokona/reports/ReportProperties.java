@@ -14,7 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Data
 public class ReportProperties {
-	private ReportCategory category;  // EMPLOYEE, JOB, LABEL, OPERATION, TICKET
+	private ReportCategory reportCategory;  // EMPLOYEE, JOB, LABEL, OPERATION, TICKET
 	private Map<String, String> parameters;
 	private String reportName;
 	private String startDate;

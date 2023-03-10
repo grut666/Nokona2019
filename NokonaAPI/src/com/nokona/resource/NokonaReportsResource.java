@@ -9,10 +9,12 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -58,13 +60,55 @@ public class NokonaReportsResource {
 	public NokonaReportsResource() {
 		super();
 	}
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces("application/pdf")
+	@Path("/pdf")
+	public Response getPdfReport(
+			@DefaultValue("") @QueryParam ("startDate") String startDate,
+			@DefaultValue("") @QueryParam ("endDate") String endDate,
+			@DefaultValue("") @QueryParam ("reportName") String reportName,
+			@DefaultValue("") @QueryParam ("reportCategory") String reportCategory,
+			@DefaultValue("") @QueryParam ("status") String status,
+			@DefaultValue("") @QueryParam ("category") String category,
+			@DefaultValue("") @QueryParam ("all") String all
+			) {
+		ReportProperties properties = new ReportProperties();
+		
+		properties.setParameters(new HashMap<String, String>());
+		properties.setStartDate(startDate);
+		properties.setEndDate(endDate);
+		properties.setReportName(reportName);
+		properties.setReportCategory(ReportCategory.valueOf(reportCategory));
+		properties.getParameters().put("STATUS", status);
+		properties.getParameters().put("CATEGORY", category);
+		properties.getParameters().put("ALL", all);
+		System.out.println("*******" + properties);
+		// Load properties with QueryParameter values"
+		File file = null;
+		try {
+			file = getJasperReport(properties);
+			if (file == null) {
+				return Response.status(Status.BAD_REQUEST).build();
+			}
+			String returnString = "attachment; filename=" + file.getAbsolutePath();
+			System.out.println(returnString);
+			if (properties.isCsvNotHtml() ) {
+				return Response.ok("CSV file is " + file.getAbsoluteFile()).build();
+			}
+			return Response.ok((Object) file)
+					.header("Content-Disposition", returnString).build();
+		} catch (PDFException e) {
+			return Response.status(500).entity(e.getMessage()).build();
+		}
+	}
 
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces("application/pdf")
 	@Path("/pdf")
-	public Response getPdfReport(ReportProperties properties) {
+	public Response postPdfReport(ReportProperties properties) {
 		File file = null;
 		try {
 			file = getJasperReport(properties);
@@ -108,7 +152,7 @@ public class NokonaReportsResource {
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@Path("/pdftest")
 	public Response getPdfReportTest() {
-		return getPdfReport(null);
+		return postPdfReport(null);
 	}
 
 	private String generateHTMLName() {
@@ -137,7 +181,7 @@ public class NokonaReportsResource {
 		}
 		String templateFileName;
 //		try {
-			ReportCategory rc = properties.getCategory();
+			ReportCategory rc = properties.getReportCategory();
 
 			if (rc == null) {
 				return null;
@@ -202,6 +246,7 @@ public class NokonaReportsResource {
 				JasperExportManager.exportReportToHtmlFile(jasperPrint, fileName);
 				System.out.println("Finished with HTML export");
 			}
+			
 			return new File(fileName);
 
 		} catch (JRException e) {

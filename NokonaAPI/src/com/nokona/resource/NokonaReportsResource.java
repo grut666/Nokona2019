@@ -53,7 +53,7 @@ public class NokonaReportsResource {
 	@Inject
 	@BaseDaoQualifier
 	private NokonaDatabase db;
-//	private Connection conn;
+
 
 	public NokonaReportsResource() {
 		super();

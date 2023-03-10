@@ -38,7 +38,7 @@ public class TicketDetailDtoOut {
 	public TicketDetailDtoOut(TicketHeader ticketHeader, TicketDetail ticketDetail) {
 		System.out.println("Ticket Header is " + ticketHeader);
 		System.out.println("Ticket Detail is " + ticketDetail);
-		key = ticketHeader.getKey() * 100 + ticketDetail.getSequenceOriginal();
+		key = ticketHeader.getKey(); // * 100 + ticketDetail.getSequenceOriginal();
 		jobId = ticketHeader.getJobId();
 		jobDescription = ticketHeader.getDescription();
 		opCode = ticketDetail.getOpCode();

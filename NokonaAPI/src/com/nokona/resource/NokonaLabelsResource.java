@@ -1,5 +1,6 @@
 package com.nokona.resource;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -21,6 +22,7 @@ import com.nokona.printer.PrintJobWatcher;
 import com.nokona.utilities.BarCodeUtilities;
 
 @Path("/labels")
+@ApplicationScoped
 public class NokonaLabelsResource {
 //	@Inject
 //		private NokonaDatabaseTicket db;

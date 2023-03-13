@@ -10,9 +10,11 @@ public class TicketReports {
 		String reportName = properties.getReportName();
 		if (reportName.startsWith("TicketByDateRange")) {
 			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/" + reportName + ".jrxml");
+			
 			parms.put("START_DATE", properties.getStartDate());
 			parms.put("END_DATE", properties.getEndDate());
 			parms.put("STATUS", properties.getParameters().get("STATUS"));
+			
 		} else {
 			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/TicketWIP.jrxml");
 		}

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -45,8 +47,8 @@ import net.sf.jasperreports.export.SimpleCsvMetadataExporterConfiguration;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 
-
 @Path("/reports")
+@RequestScoped()
 public class NokonaReportsResource {
 	@Context
 	private ServletContext context;
@@ -56,25 +58,23 @@ public class NokonaReportsResource {
 	@BaseDaoQualifier
 	private NokonaDatabase db;
 
-
 	public NokonaReportsResource() {
 		super();
 	}
+
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces("application/pdf")
 	@Path("/pdf")
-	public Response getPdfReport(
-			@DefaultValue("") @QueryParam ("startDate") String startDate,
-			@DefaultValue("") @QueryParam ("endDate") String endDate,
-			@DefaultValue("") @QueryParam ("reportName") String reportName,
-			@DefaultValue("") @QueryParam ("reportCategory") String reportCategory,
-			@DefaultValue("") @QueryParam ("status") String status,
-			@DefaultValue("") @QueryParam ("category") String category,
-			@DefaultValue("") @QueryParam ("all") String all
-			) {
+	public Response getPdfReport(@DefaultValue("") @QueryParam("startDate") String startDate,
+			@DefaultValue("") @QueryParam("endDate") String endDate,
+			@DefaultValue("") @QueryParam("reportName") String reportName,
+			@DefaultValue("") @QueryParam("reportCategory") String reportCategory,
+			@DefaultValue("") @QueryParam("status") String status,
+			@DefaultValue("") @QueryParam("category") String category,
+			@DefaultValue("") @QueryParam("all") String all) {
 		ReportProperties properties = new ReportProperties();
-		
+
 		properties.setParameters(new HashMap<String, String>());
 		properties.setStartDate(startDate);
 		properties.setEndDate(endDate);
@@ -93,16 +93,14 @@ public class NokonaReportsResource {
 			}
 			String returnString = "attachment; filename=" + file.getAbsolutePath();
 			System.out.println(returnString);
-			if (properties.isCsvNotHtml() ) {
+			if (properties.isCsvNotHtml()) {
 				return Response.ok("CSV file is " + file.getAbsoluteFile()).build();
 			}
-			return Response.ok((Object) file)
-					.header("Content-Disposition", returnString).build();
+			return Response.ok((Object) file).header("Content-Disposition", returnString).build();
 		} catch (PDFException e) {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
 	}
-
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -117,11 +115,10 @@ public class NokonaReportsResource {
 			}
 			String returnString = "attachment; filename=" + file.getAbsolutePath();
 			System.out.println(returnString);
-			if (properties.isCsvNotHtml() ) {
+			if (properties.isCsvNotHtml()) {
 				return Response.ok("CSV file is " + file.getAbsoluteFile()).build();
 			}
-			return Response.ok((Object) file)
-					.header("Content-Disposition", returnString).build();
+			return Response.ok((Object) file).header("Content-Disposition", returnString).build();
 		} catch (PDFException e) {
 			return Response.status(500).entity(e.getMessage()).build();
 		}
@@ -167,7 +164,7 @@ public class NokonaReportsResource {
 		String fileName;
 		File dir;
 		boolean csvFormat = properties.isCsvNotHtml();
-	System.out.println("******** csvFormat is " + csvFormat + "*******");
+		System.out.println("******** csvFormat is " + csvFormat + "*******");
 		if (csvFormat) {
 			fileName = CSV_DIRECTORY + "/" + generateCSVName();
 			dir = new File(CSV_DIRECTORY);
@@ -180,35 +177,35 @@ public class NokonaReportsResource {
 			dir.mkdir();
 		}
 		String templateFileName;
-//		try {
-			ReportCategory rc = properties.getReportCategory();
+		// try {
+		ReportCategory rc = properties.getReportCategory();
 
-			if (rc == null) {
-				return null;
-			}
-			Map<String, Object> parms = new HashMap<String, Object>();
-//			String reportName = properties.getReportName();
-			switch (rc.getCategory().toUpperCase()) {
-			case "EMPLOYEE":
-				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
-				break;
-			case "JOB":
-				templateFileName = JobReports.construct(context, properties, parms);
-				break;
-			case "LABOR":
-				templateFileName = LaborReports.construct(context, properties, parms);
-				break;
-			case "OPERATION":
-				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
-				break;
-			case "TICKET":
-				templateFileName = TicketReports.construct(context, properties, parms);
-				break;
-			default:
-				templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
-				break;
-			}
-			try(Connection conn = db.getConn()) {
+		if (rc == null) {
+			return null;
+		}
+		Map<String, Object> parms = new HashMap<String, Object>();
+		// String reportName = properties.getReportName();
+		switch (rc.getCategory().toUpperCase()) {
+		case "EMPLOYEE":
+			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
+			break;
+		case "JOB":
+			templateFileName = JobReports.construct(context, properties, parms);
+			break;
+		case "LABOR":
+			templateFileName = LaborReports.construct(context, properties, parms);
+			break;
+		case "OPERATION":
+			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
+			break;
+		case "TICKET":
+			templateFileName = TicketReports.construct(context, properties, parms);
+			break;
+		default:
+			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
+			break;
+		}
+		try (Connection conn = db.getConn()) {
 			JasperReport jasperReport = JasperCompileManager.compileReport(templateFileName);
 
 			System.out.println("JasperReport");
@@ -224,39 +221,37 @@ public class NokonaReportsResource {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parms, conn);
 			// JasperPrint jasperPrint =
 			// (JasperPrint)JRLoader.loadObjectFromFile(templateFileName);
-			System.out.println("JasperPrint");
+			System.out.println("JasperPrint after connection");
 			if (csvFormat) {
 				System.out.println("Starting CSV export");
 
 				JRCsvExporter exporter = new JRCsvExporter(new SimpleJasperReportsContext());
 				CsvExporterConfiguration configuration = new SimpleCsvMetadataExporterConfiguration();
 				configuration.isWriteBOM();
-				
+
 				exporter.setConfiguration(configuration);
 
 				exporter.setExporterOutput(new SimpleWriterExporterOutput(fileName));
 				exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 				exporter.setConfiguration(configuration);
-				
+
 				exporter.exportReport();
-				
+
 				System.out.println("Finished with CSV export");
 			} else {
 				System.out.println("Starting HTML export");
 				JasperExportManager.exportReportToHtmlFile(jasperPrint, fileName);
 				System.out.println("Finished with HTML export");
 			}
-			
+
 			return new File(fileName);
 
 		} catch (JRException e) {
-			System.out.println(e.getMessage());
+			System.out.println("JRException is " + e.getMessage());
 			throw new PDFException(e.getMessage());
+		} catch (SQLException e) {
+			throw new PDFException("SQLException is " + e.getMessage());
 		}
-		catch (SQLException e) {
-			throw new PDFException(e.getMessage());
-		}
-
 
 	}
 
@@ -274,6 +269,5 @@ public class NokonaReportsResource {
 		return response.build();
 
 	}
-
 
 }

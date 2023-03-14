@@ -72,7 +72,8 @@ public class NokonaReportsResource {
 			@DefaultValue("") @QueryParam("reportCategory") String reportCategory,
 			@DefaultValue("") @QueryParam("status") String status,
 			@DefaultValue("") @QueryParam("category") String category,
-			@DefaultValue("") @QueryParam("all") String all) {
+			@DefaultValue("") @QueryParam("all") String all,
+			@DefaultValue("") @QueryParam("csv") String csv) {
 		ReportProperties properties = new ReportProperties();
 
 		properties.setParameters(new HashMap<String, String>());
@@ -83,6 +84,7 @@ public class NokonaReportsResource {
 		properties.getParameters().put("STATUS", status);
 		properties.getParameters().put("CATEGORY", category);
 		properties.getParameters().put("ALL", all);
+		properties.setCsvNotHtml("True".equals(csv) ? true : false);
 		System.out.println("*******" + properties);
 		// Load properties with QueryParameter values"
 		File file = null;

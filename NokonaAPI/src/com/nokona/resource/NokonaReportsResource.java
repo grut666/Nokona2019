@@ -48,7 +48,7 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 
 @Path("/reports")
-@RequestScoped()
+@ApplicationScoped()
 public class NokonaReportsResource {
 	@Context
 	private ServletContext context;
@@ -207,7 +207,8 @@ public class NokonaReportsResource {
 			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");
 			break;
 		}
-		try (Connection conn = db.getConn()) {
+		try  {
+			Connection conn = db.getConn();
 			JasperReport jasperReport = JasperCompileManager.compileReport(templateFileName);
 
 			System.out.println("JasperReport");
@@ -251,9 +252,10 @@ public class NokonaReportsResource {
 		} catch (JRException e) {
 			System.out.println("JRException is " + e.getMessage());
 			throw new PDFException(e.getMessage());
-		} catch (SQLException e) {
-			throw new PDFException("SQLException is " + e.getMessage());
-		}
+		} 
+//		catch (SQLException e) {
+//			throw new PDFException("SQLException is " + e.getMessage());
+//		}
 
 	}
 

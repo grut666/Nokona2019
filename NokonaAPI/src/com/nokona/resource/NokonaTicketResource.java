@@ -254,7 +254,7 @@ public class NokonaTicketResource {
 	@Path("/ticketheaders/{ticketkey}") // Probably just completion status for now
 	public Response updateTicketHeader(@PathParam("ticketkey") long ticketKey, TicketHeader ticketHeader) {
 		try {
-			System.out.println("TicketKey is " + ticketKey);
+//			System.out.println("TicketKey is " + ticketKey);
 			System.out.println("TicketKey is " + ticketHeader.getKey());
 			if (ticketKey != ticketHeader.getKey()) {
 				return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();

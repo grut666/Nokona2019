@@ -241,7 +241,8 @@ public class BarCodeUtilities {
 			if (td0 != null) {
 				String strDescAll = td0.getOperationDescription();
 				strDescAll = strDescAll.replaceAll("\\s+", "_");
-				double rate = isRH ? td0.getHourlyRateSAH() * 1.1 : td0.getHourlyRateSAH();
+//				double rate = isRH ? td0.getHourlyRateSAH() * 1.1 : td0.getHourlyRateSAH();
+				double rate =  td0.getHourlyRateSAH();
 				int quantity = td0.getStandardQuantity();
 				strSequence[0] = String.format("%02d", td0.getSequenceOriginal());
 				strRate[0] = String.format("%7.4f", rate);
@@ -258,7 +259,8 @@ public class BarCodeUtilities {
 			if (td1 != null) {
 				String strDescAll = td1.getOperationDescription();
 				strDescAll = strDescAll.replaceAll("\\s+", "_");
-				double rate = isRH ? td1.getHourlyRateSAH() * 1.1 : td1.getHourlyRateSAH();
+//				double rate = isRH ? td1.getHourlyRateSAH() * 1.1 : td1.getHourlyRateSAH();
+				double rate = td1.getHourlyRateSAH();
 				int quantity = td1.getStandardQuantity();
 				strSequence[1] = String.format("%02d", td1.getSequenceOriginal());
 				strRate[1] = String.format("%7.4f", rate);
@@ -274,7 +276,8 @@ public class BarCodeUtilities {
 			if (td2 != null) {
 				String strDescAll = td2.getOperationDescription();
 				strDescAll = strDescAll.replaceAll("\\s+", "_");
-				double rate = isRH ? td2.getHourlyRateSAH() * 1.1 : td2.getHourlyRateSAH();
+//				double rate = isRH ? td2.getHourlyRateSAH() * 1.1 : td2.getHourlyRateSAH();
+				double rate = td2.getHourlyRateSAH();
 				int quantity = td2.getStandardQuantity();
 				strSequence[2] = String.format("%02d", td2.getSequenceOriginal());
 				strRate[2] = String.format("%7.4f", rate);

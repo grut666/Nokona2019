@@ -1,6 +1,7 @@
 package com.nokona.utilities;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
@@ -42,12 +43,12 @@ public class BarCodeUtilities {
 		StringBuilder strBarCode = new StringBuilder("");
 		for (int i = 0; i < strIn.length(); i += 2) {
 			String subStr = strIn.substring(i, i + 2);
-			System.out.println("substr is " + subStr);
+//			System.out.println("substr is " + subStr);
 			int index = Integer.parseInt(subStr);
 			strBarCode.append(strCodeTable[index]);
-			System.out.println("Translation: " + strCodeTable[index]);
+//			System.out.println("Translation: " + strCodeTable[index]);
 		}
-		System.out.println("Final is " + strBarCode);
+//		System.out.println("Final is " + strBarCode);
 		strBarCode.insert(0, (char) 171);
 		strBarCode.append((char) 172);
 		// System.out.println("Final is " + strBarCode.toString());
@@ -79,6 +80,7 @@ public class BarCodeUtilities {
 		// ***********************");
 		PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
 		PrintService barCodePrinter = null;
+		System.out.println("Time Stamp is " + new Date());
 		if (services != null) {
 			for (PrintService service : services) {
 				System.out.println("Service is : " + service.getName());

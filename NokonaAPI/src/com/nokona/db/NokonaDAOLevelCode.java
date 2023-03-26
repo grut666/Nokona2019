@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import com.nokona.data.NokonaDatabaseLevelCode;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
@@ -14,7 +16,7 @@ import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.LevelCodeFormatter;
 import com.nokona.model.LevelCode;
 import com.nokona.validator.LevelCodeValidator;
-
+@ApplicationScoped
 public class NokonaDAOLevelCode extends NokonaDAO implements NokonaDatabaseLevelCode {
 	
 

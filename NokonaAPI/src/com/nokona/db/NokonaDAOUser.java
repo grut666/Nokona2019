@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import com.nokona.data.NokonaDatabaseUser;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
@@ -15,7 +17,7 @@ import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.UserFormatter;
 import com.nokona.model.User;
 import com.nokona.validator.UserValidator;
-
+@ApplicationScoped
 public class NokonaDAOUser extends NokonaDAO implements NokonaDatabaseUser {
 	private PreparedStatement psGetUserByKey;
 	private PreparedStatement psGetUserByUserId;

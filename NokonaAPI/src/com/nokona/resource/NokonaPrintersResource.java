@@ -1,5 +1,6 @@
 package com.nokona.resource;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.ws.rs.GET;
@@ -11,6 +12,7 @@ import javax.ws.rs.core.Response;
 import com.nokona.utilities.BarCodeUtilities;
 
 @Path("/printers")
+@ApplicationScoped
 public class NokonaPrintersResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

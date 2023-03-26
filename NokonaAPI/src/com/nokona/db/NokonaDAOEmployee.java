@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import com.nokona.data.NokonaDatabaseEmp;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
@@ -14,7 +16,7 @@ import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.EmployeeFormatter;
 import com.nokona.model.Employee;
-
+@ApplicationScoped
 public class NokonaDAOEmployee extends NokonaDAO implements NokonaDatabaseEmp {
 
 	public NokonaDAOEmployee() throws DatabaseException {

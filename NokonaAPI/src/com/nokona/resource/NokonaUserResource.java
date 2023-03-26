@@ -21,7 +21,6 @@ import com.nokona.exceptions.DuplicateDataException;
 import com.nokona.model.User;
 
 @Path("/users")
-
 @ApplicationScoped
 public class NokonaUserResource {
 

@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import com.nokona.data.NokonaDatabaseLaborCode;
 import com.nokona.enums.LaborType;
 import com.nokona.exceptions.DataNotFoundException;
@@ -15,7 +17,7 @@ import com.nokona.exceptions.NullInputDataException;
 import com.nokona.formatter.LaborCodeFormatter;
 import com.nokona.model.LaborCode;
 import com.nokona.validator.LaborCodeValidator;
-
+@ApplicationScoped
 public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLaborCode {
 	
 

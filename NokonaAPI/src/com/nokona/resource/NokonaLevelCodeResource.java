@@ -83,7 +83,6 @@ public class NokonaLevelCodeResource {
 	@Path("/")
 	public Response getLevelCodes() {
 		try {
-			System.out.println("Starting");
 			return Response.status(200).entity(db.getLevelCodes()).build();
 		} catch (DatabaseException ex) {
 			return Response.status(404).entity("{\"error\":\"" + ex.getMessage() + "\"}").build();

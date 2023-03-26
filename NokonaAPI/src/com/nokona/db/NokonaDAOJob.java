@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.nokona.data.NokonaDatabaseJob;
@@ -21,7 +23,7 @@ import com.nokona.model.Job;
 import com.nokona.model.JobDetail;
 import com.nokona.model.JobHeader;
 
-
+@ApplicationScoped
 public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 	private boolean isAdding = false; // always delete and re-add detail
 

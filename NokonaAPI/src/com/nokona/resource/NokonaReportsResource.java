@@ -25,7 +25,10 @@ import javax.ws.rs.core.Response.Status;
 import javax.servlet.ServletContext;
 
 import com.nokona.data.NokonaDatabase;
+import com.nokona.db.NokonaDAO;
 import com.nokona.enums.ReportCategory;
+import com.nokona.exceptions.DatabaseConnectionException;
+import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.PDFException;
 import com.nokona.qualifiers.BaseDaoQualifier;
 import com.nokona.reports.JobReports;
@@ -49,7 +52,7 @@ import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 
 @Path("/reports")
 @ApplicationScoped()
-public class NokonaReportsResource {
+public class NokonaReportsResource extends NokonaDAO {
 	@Context
 	private ServletContext context;
 	private static final String CSV_DIRECTORY = "/tmpCSV";
@@ -58,8 +61,12 @@ public class NokonaReportsResource {
 	@BaseDaoQualifier
 	private NokonaDatabase db;
 
-	public NokonaReportsResource() {
+	public NokonaReportsResource() throws DatabaseConnectionException {
 		super();
+	}
+	public NokonaReportsResource(String userName, String password) throws DatabaseException {
+		super(userName, password);
+
 	}
 
 	@GET
@@ -208,7 +215,7 @@ public class NokonaReportsResource {
 			break;
 		}
 		try  {
-			Connection conn = db.getConn();
+			// Connection conn = db.getConn();
 			JasperReport jasperReport = JasperCompileManager.compileReport(templateFileName);
 
 			System.out.println("JasperReport");
@@ -220,7 +227,7 @@ public class NokonaReportsResource {
 
 			// End Practice
 
-			System.out.println("Conn");
+			System.out.println("****** Report Resource Conn is: " + conn);
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parms, conn);
 			// JasperPrint jasperPrint =
 			// (JasperPrint)JRLoader.loadObjectFromFile(templateFileName);

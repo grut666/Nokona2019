@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.nokona.data.NokonaDatabaseJob;
@@ -30,7 +31,7 @@ import com.nokona.model.Ticket;
 import com.nokona.model.TicketDetail;
 import com.nokona.model.TicketHeader;
 import com.nokona.utilities.DateUtilities;
-
+@ApplicationScoped
 public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 	@Inject
 	private NokonaDatabaseJob jobDAO;

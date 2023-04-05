@@ -235,6 +235,7 @@ public class NokonaTicketResource {
 		Ticket ticket;
 		try {
 			ticket = db.addTicket(ticketHeader);
+			
 			if (yesPrint) {
 				getTicketLabels(ticket);
 			}

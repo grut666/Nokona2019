@@ -6,10 +6,10 @@
 	<parameter name="Category" class="java.lang.String"/>
 	<parameter name="All" class="java.lang.String"/>
 	<queryString language="SQL">
-		<![CDATA[select th.key, th.jobId, th.description, th.quantity, ocv.cost, ocv.completedcount, tov.totalcount, jh.jobtype,
-ocv.completedcount / tov.totalcount as "pct_complete" from ticketheader th
+		<![CDATA[select th.key, th.jobId, th.description, th.quantity, COALESCE(ocv.cost, 0) as "cost" , COALESCE(ocv.completedcount, 0) as "completedcount" , COALESCE(tov.totalcount, 0) as "totalcount" , jh.jobtype,
+COALESCE(ocv.completedcount, 0) / COALESCE(tov.totalcount, 0) as "pct_complete" from ticketheader th
 join ticketdetailview tdv on th.key = tdv.key
-join operationscompletedview ocv on th.key = ocv.key
+left join operationscompletedview ocv on th.key = ocv.key
 join totaloperationsview tov on th.key = tov.key
 join jobheader jh on jh.jobID = th.jobId
 where  th.status = 'P' and (jobtype =  $P{Category} or 'All' =  $P{All} )

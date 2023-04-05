@@ -12,7 +12,7 @@ join ticketdetailview tdv on th.key = tdv.key
 join operationscompletedview ocv on th.key = ocv.key
 join totaloperationsview tov on th.key = tov.key
 join jobheader jh on jh.jobID = th.jobId
-where  tdv.qty > 0 and th.status = 'P' and (jobtype =  $P{Category} or 'All' =  $P{All} )
+where  th.status = 'P' and (jobtype =  $P{Category} or 'All' =  $P{All} )
 group by th.key
 order by jobId, pct_complete desc]]>
 	</queryString>

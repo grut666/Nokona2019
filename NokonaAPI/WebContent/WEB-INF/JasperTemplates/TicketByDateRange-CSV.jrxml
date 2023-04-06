@@ -15,7 +15,7 @@
      nokona.ticketheader.`Status`, 
      nokona.ticketheader.`StatusDate`, 
      nokona.ticketheader.`Quantity`  
-     from nokona.ticketHeader  
+     from nokona.ticketHeader 
      Where nokona.ticketheader.`CreatedDate` between $P{START_DATE} and $P{END_DATE} and 
      nokona.ticketheader.`Status` = $P{STATUS} 
       order by nokona.ticketheader.`key`]]>
@@ -59,7 +59,7 @@
 	<detail>
 		<band height="24" splitType="Stretch">
 			<textField pattern="MM/dd/yyyy">
-				<reportElement x="379" y="-1" width="100" height="20" uuid="d9785d81-3078-4f7a-a834-0472ab663d65">
+				<reportElement x="400" y="-1" width="100" height="20" uuid="d9785d81-3078-4f7a-a834-0472ab663d65">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f9e3d23d-f1cc-4e45-aca0-0ceb0df5f6e3"/>
 				</reportElement>
 				<textElement>
@@ -68,7 +68,7 @@
 				<textFieldExpression><![CDATA[$F{StatusDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="480" y="-1" width="59" height="20" uuid="497c6146-3fff-48c8-b387-df20685b9222">
+				<reportElement x="510" y="-1" width="40" height="20" uuid="497c6146-3fff-48c8-b387-df20685b9222">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="755338fc-34e9-4471-84c2-efa157fd632f"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -77,7 +77,7 @@
 				<textFieldExpression><![CDATA[$F{Quantity}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="-1" y="-1" width="61" height="20" uuid="503fe75f-631d-4e18-82b3-79e2f16a72f4">
+				<reportElement x="-1" y="-1" width="51" height="20" uuid="503fe75f-631d-4e18-82b3-79e2f16a72f4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6160e5ca-4619-4af9-921e-3bdb7043a1fc"/>
 				</reportElement>
 				<textElement>
@@ -86,7 +86,7 @@
 				<textFieldExpression><![CDATA[$F{Key}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="70" y="-1" width="129" height="20" uuid="77cb506b-ec52-4945-8fcc-e2b4d4bcb779">
+				<reportElement x="60" y="-1" width="170" height="20" uuid="77cb506b-ec52-4945-8fcc-e2b4d4bcb779">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="aa6eebe5-b025-48c2-9d76-161210956eda"/>
 				</reportElement>
 				<textElement>
@@ -95,7 +95,7 @@
 				<textFieldExpression><![CDATA[$F{JobID}]]></textFieldExpression>
 			</textField>
 			<textField pattern="MM/dd/yyyy">
-				<reportElement x="209" y="-1" width="100" height="20" uuid="285056e4-17b8-4352-a48e-a317fdd61b15">
+				<reportElement x="240" y="-1" width="100" height="20" uuid="285056e4-17b8-4352-a48e-a317fdd61b15">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a8ba3fd5-a383-40e2-bb41-a45a914ee6a6"/>
 				</reportElement>
 				<textElement>
@@ -104,7 +104,7 @@
 				<textFieldExpression><![CDATA[$F{CreatedDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="319" y="-1" width="50" height="20" uuid="ba804233-8dae-4c60-82b7-9233d5675c52">
+				<reportElement x="350" y="-1" width="50" height="20" uuid="ba804233-8dae-4c60-82b7-9233d5675c52">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c05dd193-3906-4902-84bf-874b7e23fc71"/>
 				</reportElement>
 				<textElement>

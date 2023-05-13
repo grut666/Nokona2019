@@ -9,10 +9,15 @@ public class LaborReports {
 		String templateFileName;
 
 		String reportName = properties.getReportName();
+		System.out.println("Report name is *********" + reportName);
 		if (reportName.startsWith("LaborDetailByDate")) {
-			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/" + reportName + ".jrxml");
 			parms.put("START_DATE", properties.getStartDate());
 			parms.put("END_DATE", properties.getEndDate());
+			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/" + reportName + ".jrxml");
+		} else if (reportName.startsWith("LaborCostDetail")) {
+			System.out.println("Job is ********: "+ properties.getJobId());
+			parms.put("JOB_ID", properties.getJobId());
+			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/" + reportName + ".jrxml");
 		} else {
 			parms.put("START_DATE", properties.getStartDate());
 			parms.put("END_DATE", properties.getEndDate());

@@ -80,12 +80,14 @@ public class NokonaReportsResource extends NokonaDAO {
 			@DefaultValue("") @QueryParam("status") String status,
 			@DefaultValue("") @QueryParam("category") String category,
 			@DefaultValue("") @QueryParam("all") String all,
-			@DefaultValue("") @QueryParam("csv") String csv) {
+			@DefaultValue("") @QueryParam("csv") String csv,
+			@DefaultValue("") @QueryParam("jobId") String jobId) {
 		ReportProperties properties = new ReportProperties();
 
 		properties.setParameters(new HashMap<String, String>());
 		properties.setStartDate(startDate);
 		properties.setEndDate(endDate);
+		properties.setJobId(jobId);
 		properties.setReportName(reportName);
 		properties.setReportCategory(ReportCategory.valueOf(reportCategory));
 		properties.getParameters().put("STATUS", status);
@@ -111,55 +113,56 @@ public class NokonaReportsResource extends NokonaDAO {
 		}
 	}
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces("application/pdf")
-	@Path("/pdf")
-	public Response postPdfReport(ReportProperties properties) {
-		File file = null;
-		try {
-			file = getJasperReport(properties);
-			if (file == null) {
-				return Response.status(Status.BAD_REQUEST).build();
-			}
-			String returnString = "attachment; filename=" + file.getAbsolutePath();
-			System.out.println(returnString);
-			if (properties.isCsvNotHtml()) {
-				return Response.ok("CSV file is " + file.getAbsoluteFile()).build();
-			}
-			return Response.ok((Object) file).header("Content-Disposition", returnString).build();
-		} catch (PDFException e) {
-			return Response.status(500).entity(e.getMessage()).build();
-		}
-	}
+//	@POST
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@Produces("application/pdf")
+//	@Path("/pdf")
+//	public Response postPdfReport(ReportProperties properties) {
+//		System.out.println("Job is*************** " + properties.getJobId());
+//		File file = null;
+//		try {
+//			file = getJasperReport(properties);
+//			if (file == null) {
+//				return Response.status(Status.BAD_REQUEST).build();
+//			}
+//			String returnString = "attachment; filename=" + file.getAbsolutePath();
+//			System.out.println(returnString);
+//			if (properties.isCsvNotHtml()) {
+//				return Response.ok("CSV file is " + file.getAbsoluteFile()).build();
+//			}
+//			return Response.ok((Object) file).header("Content-Disposition", returnString).build();
+//		} catch (PDFException e) {
+//			return Response.status(500).entity(e.getMessage()).build();
+//		}
+//	}
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_HTML)
-	@Path("/csv")
-	public Response getCsvReport(ReportProperties properties) {
-		System.out.println("**************************" + properties.getReportName());
-		File file = null;
-		try {
-			file = getJasperReport(properties);
-			if (file == null) {
-				return Response.status(Status.BAD_REQUEST).build();
-			}
-			return Response.ok((Object) file)
-					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()).build();
+//	@POST
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@Produces(MediaType.TEXT_HTML)
+//	@Path("/csv")
+//	public Response getCsvReport(ReportProperties properties) {
+//		System.out.println("**************************" + properties.getReportName());
+//		File file = null;
+//		try {
+//			file = getJasperReport(properties);
+//			if (file == null) {
+//				return Response.status(Status.BAD_REQUEST).build();
+//			}
+//			return Response.ok((Object) file)
+//					.header("Content-Disposition", "attachment; filename=\"" + file.getAbsolutePath()).build();
+//
+//		} catch (PDFException e) {
+//			return Response.status(500).entity(e.getMessage()).build();
+//		}
+//	}
 
-		} catch (PDFException e) {
-			return Response.status(500).entity(e.getMessage()).build();
-		}
-	}
-
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	@Path("/pdftest")
-	public Response getPdfReportTest() {
-		return postPdfReport(null);
-	}
+//	@POST
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+//	@Path("/pdftest")
+//	public Response getPdfReportTest() {
+//		return postPdfReport(null);
+//	}
 
 	private String generateHTMLName() {
 		return "Nokona_" + UUID.randomUUID().toString() + ".html";
@@ -202,7 +205,9 @@ public class NokonaReportsResource extends NokonaDAO {
 			templateFileName = JobReports.construct(context, properties, parms);
 			break;
 		case "LABOR":
+				System.out.println("Labor************************");
 			templateFileName = LaborReports.construct(context, properties, parms);
+			System.out.println("templateFileName ************************ " + templateFileName);
 			break;
 		case "OPERATION":
 			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/EmployeesByName.jrxml");

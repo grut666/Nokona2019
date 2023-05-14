@@ -37,6 +37,7 @@ import com.nokona.reports.ReportProperties;
 import com.nokona.reports.TicketReports;
 
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
 //import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -195,7 +196,11 @@ public class NokonaReportsResource extends NokonaDAO {
 		if (rc == null) {
 			return null;
 		}
+		
 		Map<String, Object> parms = new HashMap<String, Object>();
+		if (csvFormat) {
+			parms.put(JRParameter.IS_IGNORE_PAGINATION, true);
+		}
 		// String reportName = properties.getReportName();
 		switch (rc.getCategory().toUpperCase()) {
 		case "EMPLOYEE":
@@ -229,7 +234,6 @@ public class NokonaReportsResource extends NokonaDAO {
 			// parms.put("FIRST_LETTER", "F");
 			// parms.put("ACTIVE1", 0);
 			// parms.put("ACTIVE2", 1);
-
 			// End Practice
 
 			System.out.println("****** Report Resource Conn is: " + conn);

@@ -13,13 +13,13 @@
 		 where  lcv.JobID =  $P{JOB_ID}		
 		 order by sequence]]>
 	</queryString>
-	<field name="Job ID" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="Job ID"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="jobheader"/>
-	</field>
 	<field name="Op Code" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="Op Code"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="jobdetail"/>
+	</field>
+	<field name="Job ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Job ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="jobheader"/>
 	</field>
 	<field name="Sequence" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="Sequence"/>
@@ -36,12 +36,9 @@
 	<variable name="Total" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
 	</variable>
-	<group name="Group1">
-		<groupExpression><![CDATA[$F{Job ID}]]></groupExpression>
-		<groupFooter>
-			<band/>
-		</groupFooter>
-	</group>
+	<variable name="Job_Total" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -49,13 +46,30 @@
 		<band splitType="Stretch"/>
 	</title>
 	<pageHeader>
-		<band splitType="Stretch"/>
+		<band height="40" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="12" width="58" height="18" uuid="dc413526-7179-4c5a-9680-b316c0e2d98a"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Job ID]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="12" width="100" height="18" uuid="83f9872d-3d39-495c-a3e7-eacf6b9c616c"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Job ID}]]></textFieldExpression>
+				<patternExpression><![CDATA[$F{Job ID}]]></patternExpression>
+			</textField>
+		</band>
 	</pageHeader>
 	<columnHeader>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="19" splitType="Stretch">
+		<band height="21" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="70" height="16" uuid="810961e4-77c6-4559-9feb-1cd581f83030">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="65c0b0c8-8d5b-4ce3-93f1-8c0fd2dfa4a4"/>
@@ -112,10 +126,23 @@
 			</textField>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="6" splitType="Stretch"/>
-	</columnFooter>
 	<summary>
-		<band splitType="Stretch"/>
+		<band height="34" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="500" y="10" width="49" height="16" uuid="cc9e6b43-deec-41ac-ae27-5a28d8aef979"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Job_Total}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="382" y="10" width="49" height="16" uuid="1a9b6438-76a1-47e4-bddd-a486e6efac9d"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
 	</summary>
 </jasperReport>

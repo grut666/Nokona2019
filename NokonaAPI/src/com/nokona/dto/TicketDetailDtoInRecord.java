@@ -15,5 +15,6 @@ public class TicketDetailDtoInRecord {
 	private int barCodeID1;
 	private int quantity2;
 	private int barCodeID2;
+	private double hourlyRateSAH;
 	
 }

@@ -326,6 +326,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			psUpdateTicketDetail.setDate(2, DateUtilities.convertUtilDateToSQLDate(ticketDetail.getStatusDate()));
 			psUpdateTicketDetail.setInt(3, ticketDetail.getStandardQuantity());
 			psUpdateTicketDetail.setDouble(4, ticketDetail.getHourlyRateSAH());
+			System.out.println("Updating rate is " + ticketDetail.getHourlyRateSAH());
 
 			psUpdateTicketDetail.setDouble(5, ticketDetail.getLevelCode());
 			psUpdateTicketDetail.setDouble(6, ticketDetail.getLevelRate());

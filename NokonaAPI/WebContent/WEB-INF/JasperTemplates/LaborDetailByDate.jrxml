@@ -94,7 +94,7 @@ Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="16" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Labor Detail By Date]]></text>
+				<text><![CDATA[Labor Detail By Date v2]]></text>
 			</staticText>
 			<textField pattern="MM/dd/yyyy">
 				<reportElement x="640" y="10" width="100" height="30" uuid="f6b0402d-97c7-41ce-8481-d1c99334509b"/>

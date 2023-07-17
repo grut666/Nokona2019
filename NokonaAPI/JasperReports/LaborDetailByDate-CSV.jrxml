@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LaborDetailByDate" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3254aaab-dbf6-4930-aa49-594cd667792e">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Nokona Data Adapter"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="186"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="805"/>
+	<parameter name="START_DATE" class="java.lang.String"/>
+	<parameter name="END_DATE" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[Select Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN')  as "Name",
+TD.Ticket,
+TD.LevelCode,
+TD.BarCode,
+Concat(TD.Operation, ' - ', TD.OperationDescription) as "Operation",
+TD.Qty,
+TD.SAH,
+FORMAT(TD.LevelRate, 2) as "LvlRt",
+TD.StatusDate as "Completed",
+FORMAT(TD.Qty * TD.SAH, 4) as "Amt",
+FORMAT(TD.Qty * TD.SAH * TD.LevelRate, 2) as "Total"
+FROM TicketDetailView TD left Join Employee EM on TD.BarCode = EM.BarCodeID
+WHERE TD.Status = 'C' and
+TD.StatusDate between $P{START_DATE} and $P{END_DATE}
+Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCode, TD.LevelCode, TD.StatusDate;]]>
+	</queryString>
+	<field name="Name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Name"/>
+	</field>
+	<field name="Ticket" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Ticket"/>
+	</field>
+	<field name="LevelCode" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="LevelCode"/>
+	</field>
+	<field name="BarCode" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="BarCode"/>
+	</field>
+	<field name="Operation" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Operation"/>
+	</field>
+	<field name="Qty" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="Qty"/>
+	</field>
+	<field name="SAH" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="SAH"/>
+	</field>
+	<field name="LvlRt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="LvlRt"/>
+	</field>
+	<field name="Completed" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="Completed"/>
+	</field>
+	<field name="Amt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="Amt"/>
+	</field>
+	<field name="Total" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="Total"/>
+	</field>
+	<variable name="LaborSubTotal" class="java.lang.Double" resetType="Group" resetGroup="LaborCodeGroup" incrementType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="RateTotal" class="java.lang.Double" incrementType="Group" incrementGroup="LaborCodeGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{LvlRt}]]></variableExpression>
+	</variable>
+	<variable name="EmployeeTotal" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
+	</variable>
+	<variable name="Total1" class="java.lang.Double" resetType="Group" resetGroup="LaborCodeGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
+	</variable>
+	<group name="LaborCodeGroup">
+		<groupExpression><![CDATA[$F{LevelCode}]]></groupExpression>
+		<groupFooter>
+			<band height="46"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="26" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="3" splitType="Stretch">
+			<staticText>
+				<reportElement x="106" y="0" width="100" height="3" uuid="ad2c3be4-1d5c-43c0-8ee9-47301c946a01">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2d7ca154-7dd5-4458-aa2c-92e3d51ac59d"/>
+				</reportElement>
+				<text><![CDATA[BarCode]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="119" y="0" width="100" height="3" uuid="7baed7b2-ac51-4da1-b6e3-8cac9230d981">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8946128b-427d-4760-8f7d-6480afa1ded9"/>
+				</reportElement>
+				<text><![CDATA[BarCode]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="101" y="0" width="100" height="3" uuid="2abfa0ba-45d4-42b7-9370-6aed74665732">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c61655c6-4727-4f44-af51-0ffe9269e084"/>
+				</reportElement>
+				<text><![CDATA[BarCode]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="47" y="0" width="100" height="3" uuid="2189a19a-3f4a-4f77-9f8c-5db9a99a7399">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b5f3d14a-f07b-4972-a331-58a89f1d5a90"/>
+				</reportElement>
+				<text><![CDATA[Name]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="201" y="0" width="190" height="15" uuid="8146b123-a75b-425e-b1d6-f8a1faf578e2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="22b04ccb-f618-44b5-ba9b-72db7afe8eb7"/>
+				</reportElement>
+				<textElement markup="html">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Operation}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="0" width="30" height="15" uuid="0deafd0e-cdd3-42c7-95e3-a516f4454fc8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="92556182-28ac-437d-b315-aca9cac6406f"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Qty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="520" y="0" width="40" height="15" uuid="45ed072f-d19a-432b-ac58-18002d514dc4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2d7484a4-028b-4038-b5c5-90164ad65750"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SAH}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement x="600" y="0" width="70" height="15" uuid="c64aa74f-2740-46c7-9c3a-2969c8209311">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="143c8917-5385-437f-ad13-1f37adec1a19"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Completed}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#;(#,##0.00#-)">
+				<reportElement x="560" y="0" width="40" height="15" uuid="2d0027de-296a-4806-b9f7-a848e2c91334">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3b10c032-f351-438b-bbf6-25547db03b0b"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LvlRt}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000">
+				<reportElement x="670" y="0" width="50" height="15" uuid="3eaf04c6-a145-4b34-8514-0a5f7ed32190">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0a7df5bb-ddaf-424b-acf6-a43fadc14f2f"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Amt}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00">
+				<reportElement x="730" y="0" width="40" height="15" uuid="28fe6992-1a3a-4a5f-968f-b120f2eb317b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="38d13760-f0c0-4dea-9065-d0afe2bb1dc6"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="450" y="0" width="20" height="15" uuid="4f5c502a-563f-46cb-8cb2-9b6843ee2aa8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6dc40c21-5fdb-4aac-9203-2bedae2bec48"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LevelCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="399" y="0" width="41" height="15" uuid="e884bb95-b270-40e7-a3ea-fd787266e67a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bd45c438-50cc-4333-8324-90f9d12b8353"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Ticket}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="160" y="0" width="29" height="15" uuid="2b165e4a-8e27-40dd-859a-296d3eb7f8d2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c61655c6-4727-4f44-af51-0ffe9269e084"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BarCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-10" y="0" width="170" height="15" uuid="d8b70518-9354-463d-9b7b-cfa53b261110">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b5f3d14a-f07b-4972-a331-58a89f1d5a90"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="106" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

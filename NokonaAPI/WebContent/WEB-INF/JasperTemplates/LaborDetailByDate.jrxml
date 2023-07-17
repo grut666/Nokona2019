@@ -330,7 +330,7 @@ Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<textFieldExpression><![CDATA[$F{LevelCode}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="399" y="0" width="41" height="15" uuid="e884bb95-b270-40e7-a3ea-fd787266e67a">
+				<reportElement x="399" y="0" width="51" height="15" uuid="e884bb95-b270-40e7-a3ea-fd787266e67a">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bd45c438-50cc-4333-8324-90f9d12b8353"/>
 				</reportElement>
 				<textElement>

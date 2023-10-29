@@ -9,7 +9,7 @@ public interface NokonaDatabaseLevelCode extends NokonaDatabase {
 
 	LevelCode getLevelCodeByKey(long key) throws DatabaseException;
 
-	LevelCode getLevelCode(int code) throws DatabaseException;
+	LevelCode getLevelCode(String code) throws DatabaseException;
 
 	LevelCode updateLevelCode(LevelCode laborCode) throws DatabaseException;
 
@@ -17,7 +17,7 @@ public interface NokonaDatabaseLevelCode extends NokonaDatabase {
 
 	void deleteLevelCodeByKey(long key) throws DatabaseException;
 
-	void deleteLevelCode(int code) throws DatabaseException;
+	void deleteLevelCode(String code) throws DatabaseException;
 
 	List<LevelCode> getLevelCodes() throws DatabaseException;
 }

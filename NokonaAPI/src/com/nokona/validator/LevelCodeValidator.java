@@ -27,7 +27,7 @@ public class LevelCodeValidator {
 			}	
 		} else {
 				try {
-					addPS.setInt(1, levelCodeIn.getLevelCode());
+					addPS.setString(1, levelCodeIn.getLevelCode());
 					ResultSet rs = addPS.executeQuery();
 					if (rs.next()) {
 						errors += "Add: Level Code ID already in use\n";
@@ -52,7 +52,7 @@ public class LevelCodeValidator {
 		} else {
 				try {
 					updatePS.setLong(1, levelCodeIn.getKey());
-					updatePS.setInt(2, levelCodeIn.getLevelCode());
+					updatePS.setString(2, levelCodeIn.getLevelCode());
 					ResultSet rs = updatePS.executeQuery();
 					if (rs.next()) {
 						errors += "Update:LevelCode already in use\n";

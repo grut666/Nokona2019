@@ -35,7 +35,7 @@ public class NokonaLevelCodeResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{levelcode}")
-	public Response getLevelCode(@PathParam("levelcode") int levelCodeIn) {
+	public Response getLevelCode(@PathParam("levelcode") String levelCodeIn) {
 
 		LevelCode levelCode;
 
@@ -95,7 +95,7 @@ public class NokonaLevelCodeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	// @Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{levelCode}")
-	public Response updateLevelCode(@PathParam("levelCode") int levelCode, LevelCode levelCodeIn) {
+	public Response updateLevelCode(@PathParam("levelCode") String levelCode, LevelCode levelCodeIn) {
 
 		if (levelCode != levelCodeIn.getLevelCode()) {
 			return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
@@ -136,7 +136,7 @@ public class NokonaLevelCodeResource {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{levelCode}")
-	public Response deleteLevelCode(@PathParam("levelCode") int levelCode) {
+	public Response deleteLevelCode(@PathParam("levelCode") String levelCode) {
 
 		try {
 			// getDB();

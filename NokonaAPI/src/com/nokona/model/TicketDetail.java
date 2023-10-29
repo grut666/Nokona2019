@@ -22,7 +22,7 @@ public class TicketDetail {
 	private Date statusDate;
 	private int standardQuantity;
 	private double hourlyRateSAH;
-	private int levelCode;
+	private String levelCode;
 	private double levelRate;
 	private int laborCode;
 	private double laborRate;

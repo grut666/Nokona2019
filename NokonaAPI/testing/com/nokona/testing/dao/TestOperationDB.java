@@ -49,7 +49,7 @@ class TestOperationDB {
 
 	@Test
 	void testGetOperationFullArguments() throws DatabaseException {
-		Operation op = new Operation( 9693,"A55", "INSTALL RUBBER IN POCKET", 3, 4, .0225, 2020);
+		Operation op = new Operation( 9693,"A55", "INSTALL RUBBER IN POCKET", "P3", 4, .0225, 2020);
 		assertEquals("INSTALL RUBBER IN POCKET", op.getDescription());
 		assertEquals(.0225, op.getHourlyRateSAH());
 		assertEquals(9693, op.getKey());
@@ -62,7 +62,7 @@ class TestOperationDB {
 //
 	@Test
 	void testGetOperationFullArgumentsLowerCase() throws DatabaseException {
-		Operation op = new Operation(987654, "zzz", "install rubber in pocket",3,4,.0225, 2020);
+		Operation op = new Operation(987654, "zzz", "install rubber in pocket","P3" ,4,.0225, 2020);
 		db.addOperation(op);
 		op = db.getOperation("ZZZ");
 		assertEquals("INSTALL RUBBER IN POCKET", op.getDescription());
@@ -119,13 +119,13 @@ class TestOperationDB {
 	void testUpdateOperation() throws DatabaseException {
 		Operation op = db.getOperationByKey(9693);
 		op.setHourlyRateSAH(.0666);
-		op.setLevelCode(12);
+		op.setLevelCode("P3");
 		op.setLastStudyYear(2020);
 		op.setOpCode("ZZZ");
 
 		Operation newOp = db.updateOperation(op);
 		assertEquals(.0666, newOp.getHourlyRateSAH());
-		assertEquals(12, newOp.getLevelCode());
+		assertEquals("P3", newOp.getLevelCode());
 		assertEquals(2020, newOp.getLastStudyYear());
 		assertEquals("ZZZ", newOp.getOpCode());
 		assertEquals(9693, newOp.getKey());
@@ -158,7 +158,7 @@ class TestOperationDB {
 //
 	@Test
 	void testAddOperation() throws DatabaseException {
-		Operation op = new Operation(555,"yyy", "Do something cool",4, 5, .0678,2010);
+		Operation op = new Operation(555,"yyy", "Do something cool","P4", 5, .0678,2010);
 		List<Operation> operations = db.getOperations();
 		int startingCount = operations.size();
 		db.addOperation(op);
@@ -168,7 +168,7 @@ class TestOperationDB {
 //
 	@Test
 	void testAddOperationDupeOpCodeException() throws DatabaseException {
-		Operation op = new Operation(555, "A50", "Do something cool",4, 5, .0678,2010);
+		Operation op = new Operation(555, "A50", "Do something cool","P4", 5, .0678,2010);
 		Assertions.assertThrows(DuplicateDataException.class, () -> {
 			db.addOperation(op);
 		});

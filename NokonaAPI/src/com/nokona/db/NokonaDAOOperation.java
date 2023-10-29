@@ -120,7 +120,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			psUpdateOperation.setString(1, formattedOperation.getOpCode());
 			psUpdateOperation.setString(2, formattedOperation.getDescription());
 			psUpdateOperation.setDouble(3, formattedOperation.getHourlyRateSAH());
-			psUpdateOperation.setInt(4, formattedOperation.getLevelCode());
+			psUpdateOperation.setString(4, formattedOperation.getLevelCode());
 			psUpdateOperation.setInt(5, formattedOperation.getLaborCode());
 			psUpdateOperation.setInt(6, formattedOperation.getLastStudyYear());
 			psUpdateOperation.setLong(7, formattedOperation.getKey());
@@ -153,7 +153,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 			psAddOperation.setString(1, formattedOperation.getOpCode());
 			psAddOperation.setString(2, formattedOperation.getDescription());
 			psAddOperation.setDouble(3, formattedOperation.getHourlyRateSAH());
-			psAddOperation.setInt(4, formattedOperation.getLevelCode());
+			psAddOperation.setString(4, formattedOperation.getLevelCode());
 			psAddOperation.setInt(5, formattedOperation.getLaborCode());
 			psAddOperation.setInt(6, formattedOperation.getLastStudyYear());
 			int rowCount = psAddOperation.executeUpdate();
@@ -216,7 +216,7 @@ public class NokonaDAOOperation extends NokonaDAO implements NokonaDatabaseOpera
 		String opCode = rs.getString("OpCode");
 		String description = rs.getString("Description");
 		double hourlyRateSAH = rs.getDouble("HourlyRateSAH");
-		int levelCode = rs.getInt("LevelCode");
+		String levelCode = rs.getString("LevelCode");
 		int laborCode = rs.getInt("LaborCode");
 		int lastStudyYear = rs.getInt("LastStudyYear");
 

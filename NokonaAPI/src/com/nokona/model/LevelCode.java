@@ -9,11 +9,11 @@ import lombok.ToString;
 @Data
 public class LevelCode {
 	private long key;
-	private int levelCode;
+	private String levelCode;
 	private double rate;
 	
 	public LevelCode() {
-		this(-1, 0, 0);
+		this(-1, "", 0);
 	}
 
 }

@@ -9,7 +9,7 @@ public class LevelCodeFormatter {
 		return levelCode;
 	}
 
-	public static int formatLevelCode(int levelCode) {
+	public static String formatLevelCode(String levelCode) {
 		return levelCode;
 	}
 

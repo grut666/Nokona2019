@@ -259,7 +259,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 					psAddTicketDetail.setString(5, status.getOperationStatus());
 					psAddTicketDetail.setLong(6, quantity);
 					psAddTicketDetail.setDouble(7, sah);
-					psAddTicketDetail.setLong(8, levelCode.getLevelCode());
+					psAddTicketDetail.setString(8, levelCode.getLevelCode());
 					psAddTicketDetail.setDouble(9, levelCode.getRate());
 					psAddTicketDetail.setLong(10, opLaborCode);
 					psAddTicketDetail.setDouble(11, opLaborRate);
@@ -328,7 +328,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 			psUpdateTicketDetail.setDouble(4, ticketDetail.getHourlyRateSAH());
 			System.out.println("Updating rate is " + ticketDetail.getHourlyRateSAH());
 
-			psUpdateTicketDetail.setDouble(5, ticketDetail.getLevelCode());
+			psUpdateTicketDetail.setString(5, ticketDetail.getLevelCode());
 			psUpdateTicketDetail.setDouble(6, ticketDetail.getLevelRate());
 			psUpdateTicketDetail.setInt(7, ticketDetail.getSequenceUpdated());
 			psUpdateTicketDetail.setInt(8, ticketDetail.getEmployeeBarCodeID1());
@@ -542,7 +542,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		String operationStatusString = rs.getString("td.Status");
 		// System.out.println("Op Status is " +operationStatusString);
 		String operationDescription = rs.getString("operationDescription");
-		int levelCode = rs.getInt("LevelCode");
+		String levelCode = rs.getString("LevelCode");
 		double levelRate = rs.getDouble("LevelRate");
 		int laborCode = rs.getInt("LaborCode");
 		double laborRate = rs.getDouble("LaborRate");

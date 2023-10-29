@@ -50,10 +50,10 @@ public class NokonaDAOLevelCode extends NokonaDAO implements NokonaDatabaseLevel
 	}
 
 	@Override
-	public LevelCode getLevelCode(int code) throws DataNotFoundException {
+	public LevelCode getLevelCode(String code) throws DataNotFoundException {
 		LevelCode levelCode = null;
 		try (PreparedStatement psGetLevelCode = conn.prepareStatement("Select * from LevelCode where LevelCode = ?");) {
-			psGetLevelCode.setInt(1, code);
+			psGetLevelCode.setString(1, code);
 			try (ResultSet rs = psGetLevelCode.executeQuery()) {
 				if (rs.next()) {
 					levelCode = convertLevelCodeFromResultSet(rs);
@@ -93,7 +93,7 @@ public class NokonaDAOLevelCode extends NokonaDAO implements NokonaDatabaseLevel
 			if (!"".equals(validateMessage)) {
 				throw new DatabaseException(validateMessage);
 			}
-			psUpdateLevelCode.setInt(1, formattedLevelCode.getLevelCode());
+			psUpdateLevelCode.setString(1, formattedLevelCode.getLevelCode());
 			psUpdateLevelCode.setDouble(2, formattedLevelCode.getRate());
 			psUpdateLevelCode.setLong(3, formattedLevelCode.getKey());
 			int rowCount = psUpdateLevelCode.executeUpdate();
@@ -122,7 +122,7 @@ public class NokonaDAOLevelCode extends NokonaDAO implements NokonaDatabaseLevel
 				System.out.println(validateMessage);
 				throw new DuplicateDataException(validateMessage);
 			}
-			psAddLevelCode.setInt(1, formattedLevelCode.getLevelCode());
+			psAddLevelCode.setString(1, formattedLevelCode.getLevelCode());
 			psAddLevelCode.setDouble(2, formattedLevelCode.getRate());
 
 			int rowCount = psAddLevelCode.executeUpdate();
@@ -165,10 +165,10 @@ public class NokonaDAOLevelCode extends NokonaDAO implements NokonaDatabaseLevel
 	}
 
 	@Override
-	public void deleteLevelCode(int levelCode) throws DatabaseException {
+	public void deleteLevelCode(String levelCode) throws DatabaseException {
 
 			try(PreparedStatement psDelLevelCodeByLevelCode = conn.prepareStatement("Delete From LevelCode where LevelCode = ?");) {
-				psDelLevelCodeByLevelCode.setInt(1, levelCode);
+				psDelLevelCodeByLevelCode.setString(1, levelCode);
 				int rowCount = psDelLevelCodeByLevelCode.executeUpdate();
 
 				if (rowCount == 0) {
@@ -182,7 +182,7 @@ public class NokonaDAOLevelCode extends NokonaDAO implements NokonaDatabaseLevel
 
 	private LevelCode convertLevelCodeFromResultSet(ResultSet rs) throws SQLException {
 		long key = rs.getLong("Key");
-		int levelCode = rs.getInt("LevelCode");
+		String levelCode = rs.getString("LevelCode");
 
 		double levelRate = rs.getDouble("LevelRate");
 

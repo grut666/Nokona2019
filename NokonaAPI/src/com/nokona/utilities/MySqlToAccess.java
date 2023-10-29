@@ -685,7 +685,7 @@ public class MySqlToAccess {
 
 			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
 				Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"),
-						rs.getString("Description"), rs.getInt("LevelCode"), rs.getInt("LaborCode"),rs.getDouble("HourlyRateSAH"),
+						rs.getString("Description"), rs.getString("LevelCode"), rs.getInt("LaborCode"),rs.getDouble("HourlyRateSAH"),
 						rs.getInt("LastStudyYear"));
 				recordsIn.add(operation);
 			}
@@ -726,7 +726,7 @@ public class MySqlToAccess {
 
 			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
 				Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"),
-						rs.getString("Description"), rs.getInt("LevelCode"), rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),
+						rs.getString("Description"), rs.getString("LevelCode"), rs.getInt("LaborCode"), rs.getDouble("HourlyRateSAH"),
 						rs.getInt("LastStudyYear"));
 				recordsIn.add(operation);
 			}
@@ -740,7 +740,7 @@ public class MySqlToAccess {
 			for (Operation operation : recordsIn) {
 				psUpdate.setString(1, operation.getOpCode());
 				psUpdate.setString(2, operation.getDescription());
-				psUpdate.setInt(3, operation.getLevelCode());
+				psUpdate.setString(3, operation.getLevelCode());
 				psUpdate.setDouble(4, operation.getHourlyRateSAH());
 				psUpdate.setInt(5, operation.getLastStudyYear());
 				psUpdate.setLong(6, operation.getKey());
@@ -777,7 +777,7 @@ public class MySqlToAccess {
 
 			while (rs.next()) { // Should be only 1, but not sure if that will always be the case
 				Operation operation = new Operation(rs.getLong("TheKey"), rs.getString("OpCode"),
-						rs.getString("Description"), rs.getInt("LevelCode"), rs.getInt("LaborCode"),rs.getDouble("HourlyRateSAH"),
+						rs.getString("Description"), rs.getString("LevelCode"), rs.getInt("LaborCode"),rs.getDouble("HourlyRateSAH"),
 						rs.getInt("LastStudyYear"));
 				recordsIn.add(operation);
 			}
@@ -793,7 +793,7 @@ public class MySqlToAccess {
 			for (Operation operation : recordsIn) {
 				psInsert.setString(1, operation.getOpCode());
 				psInsert.setString(2, operation.getDescription());
-				psInsert.setInt(3, operation.getLevelCode());
+				psInsert.setString(3, operation.getLevelCode());
 				psInsert.setDouble(4, operation.getHourlyRateSAH());
 				psInsert.setInt(5, operation.getLastStudyYear());
 

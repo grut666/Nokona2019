@@ -25,7 +25,7 @@
 		<property name="com.jaspersoft.studio.field.label" value="Sequence"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="jobdetail"/>
 	</field>
-	<field name="Level Code" class="java.lang.Integer">
+	<field name="Level Code" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="Level Code"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="operation"/>
 	</field>

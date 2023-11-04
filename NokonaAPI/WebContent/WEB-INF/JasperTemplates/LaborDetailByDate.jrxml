@@ -30,7 +30,7 @@ Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCod
 	<field name="Ticket" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="Ticket"/>
 	</field>
-	<field name="LevelCode" class="java.lang.Integer">
+	<field name="LevelCode" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="LevelCode"/>
 	</field>
 	<field name="BarCode" class="java.lang.Integer">

@@ -18,6 +18,10 @@ public class LaborReports {
 			System.out.println("Job is ********: "+ properties.getJobId());
 			parms.put("JOB_ID", properties.getJobId());
 			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/" + reportName + ".jrxml");
+		} else if (reportName.startsWith("LaborCostMultiDetail")) {		
+			parms.put("JOB_ARRAY", properties.getJobIds()); 
+			System.out.println("Jobs are ********: "+ properties.getJobIds() + "***" + properties.getJobIds().size());
+			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/" + reportName + ".jrxml");
 		} else {
 			parms.put("START_DATE", properties.getStartDate());
 			parms.put("END_DATE", properties.getEndDate());

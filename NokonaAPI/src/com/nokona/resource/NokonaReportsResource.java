@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -82,13 +83,17 @@ public class NokonaReportsResource extends NokonaDAO {
 			@DefaultValue("") @QueryParam("category") String category,
 			@DefaultValue("") @QueryParam("all") String all,
 			@DefaultValue("") @QueryParam("csv") String csv,
-			@DefaultValue("") @QueryParam("jobId") String jobId) {
+			@DefaultValue("") @QueryParam("jobId") String jobId,
+			@DefaultValue("") @QueryParam("jobIds") List<String> jobIds)
+	{
 		ReportProperties properties = new ReportProperties();
 
 		properties.setParameters(new HashMap<String, String>());
 		properties.setStartDate(startDate);
 		properties.setEndDate(endDate);
 		properties.setJobId(jobId);
+		properties.setJobIds(jobIds);
+		System.out.println("**** JobIDS are " + jobIds + "**********");
 		properties.setReportName(reportName);
 		properties.setReportCategory(ReportCategory.valueOf(reportCategory));
 		properties.getParameters().put("STATUS", status);

@@ -314,16 +314,16 @@ public class BarCodeUtilities {
 				// Line 2 - QTY: and RATE and EXT
 				line2.append(ESC)
 				.append("&a0.1C").append("QTY:").append(strQtyFormatted).append(ESC)
-				.append("&a0.3C").append("LVL:").append(strLevel[0]).append(ESC)
-				.append("&a0.5C").append("RATE:_").append(strRateFormatted[0]).append(ESC)
+				.append("&a0.25C").append("LVL:").append(strLevel[0]).append(ESC)
+				.append("&a0.4C").append("RATE:_").append(strRateFormatted[0]).append(ESC)
 				.append("&a0.7C").append("EXT:").append(strExt[0]).append(ESC)
 				.append("&a1.1C").append("QTY:").append(strQtyFormatted).append(ESC)
-				.append("&a1.3C").append("LVL:").append(strLevel[1]).append(ESC)
-				.append("&a1.5C").append("RATE:_").append(strRateFormatted[1]).append(ESC)
+				.append("&a1.25C").append("LVL:").append(strLevel[1]).append(ESC)
+				.append("&a1.4C").append("RATE:_").append(strRateFormatted[1]).append(ESC)
 				.append("&a1.7C").append("EXT:").append(strExt[1]).append(ESC)
 				.append("&a2.1C").append("QTY:").append(strQtyFormatted).append(ESC)
-				.append("&a2.3C").append("LVL:").append(strLevel[2]).append(ESC)
-				.append("&a2.5C").append("RATE:_").append(strRateFormatted[2]).append(ESC)
+				.append("&a2.25C").append("LVL:").append(strLevel[2]).append(ESC)
+				.append("&a2.4C").append("RATE:_").append(strRateFormatted[2]).append(ESC)
 				.append("&a2.7C").append("EXT:").append(strExt[2]);
 				strDesc0[0] = strDesc0[0] == null ? "" : strDesc0[0].replace(" ", "_");
 				strDesc0[0] = StringUtils.stripEnd(strDesc0[0], "_");

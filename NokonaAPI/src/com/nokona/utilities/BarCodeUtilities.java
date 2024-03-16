@@ -164,7 +164,7 @@ public class BarCodeUtilities {
 
 		String strJobId = String.format("%-20s", th.getJobId());
 		// System.out.println("-" + strJobId + "-");
-		boolean isRH = strJobId.contains("-RH") ? true : false;
+		// boolean isRH = strJobId.contains("-RH") ? true : false;
 		String strJobDesc = th.getDescription();
 		// StringUtils.stripEnd("_", strJobDesc.replace(" ", "_"));
 		strJobDesc = strJobDesc.replace(" ", "_");
@@ -225,6 +225,7 @@ public class BarCodeUtilities {
 			String[] strSequence = { "00", "00", "00" };
 			String[] strRateFormatted = { "", "", "" };
 			String[] strExt = { "", "", "" };
+			String[] strLevel = { "", "", "" };
 			td0 = detailIndex < detailCount ? ticketIn.getTicketDetails().get(detailIndex) : null;
 			td1 = (detailIndex + 1) < detailCount ? ticketIn.getTicketDetails().get(detailIndex + 1) : null;
 			td2 = (detailIndex + 2) < detailCount ? ticketIn.getTicketDetails().get(detailIndex + 2) : null;
@@ -244,11 +245,14 @@ public class BarCodeUtilities {
 //				double rate = isRH ? td0.getHourlyRateSAH() * 1.1 : td0.getHourlyRateSAH();
 				double rate =  td0.getHourlyRateSAH();
 				int quantity = td0.getStandardQuantity();
+				String level = td0.getLevelCode();
 				strSequence[0] = String.format("%02d", td0.getSequenceOriginal());
 				strRate[0] = String.format("%7.4f", rate);
 				strRateFormatted[0] = strRate[0].replaceAll(" ", "_");
 				strExt[0] = String.format("%7.4f", rate * quantity);
 				strExt[0] = strExt[0].replaceAll(" ", "_");
+				strLevel[0] = String.format("%-2s", level);
+				strLevel[0] = strLevel[0].replaceAll(" ", "_");
 				strDesc0[0] = StringUtils.left(strDescAll, 17);
 				strDescAll = StringUtils.mid(strDescAll, 17, 17);
 				strDesc0[1] = StringUtils.left(strDescAll, 17);
@@ -262,11 +266,14 @@ public class BarCodeUtilities {
 //				double rate = isRH ? td1.getHourlyRateSAH() * 1.1 : td1.getHourlyRateSAH();
 				double rate = td1.getHourlyRateSAH();
 				int quantity = td1.getStandardQuantity();
+				String level = td1.getLevelCode();
 				strSequence[1] = String.format("%02d", td1.getSequenceOriginal());
 				strRate[1] = String.format("%7.4f", rate);
 				strRateFormatted[1] = strRate[1].replace(" ", "_");
 				strExt[1] = String.format("%7.4f", rate * quantity);
 				strExt[1] = strExt[1].replaceAll(" ", "_");
+				strLevel[1] = String.format("%-2s", level);
+				strLevel[1] = strLevel[1].replaceAll(" ", "_");
 				strDesc1[0] = StringUtils.left(strDescAll, 17);
 				strDescAll = StringUtils.mid(strDescAll, 17, 17);
 				strDesc1[1] = StringUtils.left(strDescAll, 17);
@@ -279,11 +286,14 @@ public class BarCodeUtilities {
 //				double rate = isRH ? td2.getHourlyRateSAH() * 1.1 : td2.getHourlyRateSAH();
 				double rate = td2.getHourlyRateSAH();
 				int quantity = td2.getStandardQuantity();
+				String level = td2.getLevelCode();
 				strSequence[2] = String.format("%02d", td2.getSequenceOriginal());
 				strRate[2] = String.format("%7.4f", rate);
 				strRateFormatted[2] = strRate[2].replace(" ", "_");
 				strExt[2] = String.format("%7.4f", rate * quantity);
 				strExt[2] = strExt[2].replaceAll(" ", "_");
+				strLevel[2] = String.format("%-2s", level);
+				strLevel[2] = strLevel[2].replaceAll(" ", "_");
 				strDesc2[0] = StringUtils.left(strDescAll, 17);
 				strDescAll = StringUtils.mid(strDescAll, 17, 17);
 				strDesc2[1] = StringUtils.left(strDescAll, 17);
@@ -302,13 +312,19 @@ public class BarCodeUtilities {
 						.append(strSequence[1]).append(ESC).append("&a2.1C").append(strJobId).append(ESC)
 						.append("&a2.5C").append("TKT:").append(strTkt1).append("__").append(strSequence[2]);
 				// Line 2 - QTY: and RATE and EXT
-				line2.append(ESC).append("&a0.1C").append("QTY:").append(strQtyFormatted).append(ESC).append("&a0.4C")
-						.append("RATE:_").append(strRateFormatted[0]).append(ESC).append("&a0.7C").append("EXT:")
-						.append(strExt[0]).append(ESC).append("&a1.1C").append("QTY:").append(strQtyFormatted).append(ESC)
-						.append("&a1.4C").append("RATE:_").append(strRateFormatted[1]).append(ESC).append("&a01.7C")
-						.append("EXT:").append(strExt[1]).append(ESC).append("&a2.1C").append("QTY:").append(strQtyFormatted).append(ESC)
-						.append("&a2.4C").append("RATE:_").append(strRateFormatted[2]).append(ESC).append("&a2.7C")
-						.append("EXT:").append(strExt[2]);
+				line2.append(ESC)
+				.append("&a0.1C").append("QTY:").append(strQtyFormatted).append(ESC)
+				.append("&a0.3C").append("LVL:").append(strLevel[0]).append(ESC)
+				.append("&a0.5C").append("RATE:_").append(strRateFormatted[0]).append(ESC)
+				.append("&a0.7C").append("EXT:").append(strExt[0]).append(ESC)
+				.append("&a1.1C").append("QTY:").append(strQtyFormatted).append(ESC)
+				.append("&a1.3C").append("LVL:").append(strLevel[1]).append(ESC)
+				.append("&a1.5C").append("RATE:_").append(strRateFormatted[1]).append(ESC)
+				.append("&a1.7C").append("EXT:").append(strExt[1]).append(ESC)
+				.append("&a2.1C").append("QTY:").append(strQtyFormatted).append(ESC)
+				.append("&a2.3C").append("LVL:").append(strLevel[2]).append(ESC)
+				.append("&a2.5C").append("RATE:_").append(strRateFormatted[2]).append(ESC)
+				.append("&a2.7C").append("EXT:").append(strExt[2]);
 				strDesc0[0] = strDesc0[0] == null ? "" : strDesc0[0].replace(" ", "_");
 				strDesc0[0] = StringUtils.stripEnd(strDesc0[0], "_");
 				strDesc0[1] = strDesc0[1] == null ? "" : strDesc0[1].replace(" ", "_");

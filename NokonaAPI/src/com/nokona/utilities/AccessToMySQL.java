@@ -19,7 +19,6 @@ import javax.sound.midi.SysexMessage;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.nokona.enums.JobType;
 import com.nokona.enums.OperationStatus;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.model.JobHeader;
@@ -949,11 +948,7 @@ public class AccessToMySQL {
 		String description = rs.getString("Description");
 
 		int standardQuantity = rs.getInt("standardQuantity");
-		String jobTypeString = rs.getString("JobType");
-		JobType jobType = JobType.UNKNOWN;
-		if (JobType.contains(jobTypeString)) {
-			jobType = JobType.valueOf(jobTypeString);
-		}
+		String jobType = rs.getString("JobType");
 
 		return new JobHeader(key, jobId, description, standardQuantity, jobType);
 	}

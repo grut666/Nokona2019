@@ -25,8 +25,6 @@ import com.nokona.exceptions.NullInputDataException;
 import com.nokona.model.Employee;
 import com.nokona.model.Labels;
 import com.nokona.utilities.BarCodeUtilities;
-import com.nokona.utilities.TransferToAccess;
-
 
 @Path("/employees")
 @ApplicationScoped
@@ -146,7 +144,6 @@ public class NokonaEmployeeResource {
 		}
 		try {
 			Employee emp = db.updateEmployee(empIn);
-			TransferToAccess.transfer("EMP_U");
 			return Response.status(200).entity(emp).build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
@@ -166,7 +163,6 @@ public class NokonaEmployeeResource {
 		Employee emp;
 		try {
 			emp = db.addEmployee(empIn);
-			TransferToAccess.transfer("EMP_C");
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -203,7 +199,6 @@ public class NokonaEmployeeResource {
 
 		try {
 			db.deleteEmployeeByKey(key);
-			TransferToAccess.transfer("EMP_D");
 			return Response.status(200).entity("{\"Success\":\"200\"}").build();
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();

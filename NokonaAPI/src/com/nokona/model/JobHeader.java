@@ -1,7 +1,5 @@
 package com.nokona.model;
 
-import com.nokona.enums.JobType;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +13,6 @@ public class JobHeader {
 	private String jobId;
 	private String description;
 	private int standardQuantity;
-	private JobType jobType;
+	private String jobType;
 
 }

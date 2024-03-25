@@ -11,7 +11,6 @@ import javax.enterprise.context.ApplicationScoped;
 import org.apache.commons.lang3.StringUtils;
 
 import com.nokona.data.NokonaDatabaseJob;
-import com.nokona.enums.JobType;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
@@ -108,7 +107,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			psUpdateJobHeader.setString(1, formattedJobHeader.getJobId());
 			psUpdateJobHeader.setString(2, formattedJobHeader.getDescription());
 			psUpdateJobHeader.setInt(3, formattedJobHeader.getStandardQuantity());
-			psUpdateJobHeader.setString(4, formattedJobHeader.getJobType().getJobType());
+			psUpdateJobHeader.setString(4, formattedJobHeader.getJobType());
 			psUpdateJobHeader.setLong(5, formattedJobHeader.getKey());
 			int rowCount = psUpdateJobHeader.executeUpdate();
 
@@ -156,7 +155,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 			psAddJobHeader.setString(1, formattedJobHeader.getJobId());
 			psAddJobHeader.setString(2, formattedJobHeader.getDescription());
 			psAddJobHeader.setInt(3, formattedJobHeader.getStandardQuantity());
-			psAddJobHeader.setString(4, formattedJobHeader.getJobType().getJobType());
+			psAddJobHeader.setString(4, formattedJobHeader.getJobType());
 
 			int rowCount = psAddJobHeader.executeUpdate();
 			System.err.println("Row count = " + rowCount);
@@ -351,12 +350,7 @@ public class NokonaDAOJob extends NokonaDAO implements NokonaDatabaseJob {
 		String description = rs.getString("Description");
 
 		int standardQuantity = rs.getInt("standardQuantity");
-		String jobTypeString = rs.getString("JobType");
-		JobType jobType = JobType.UNKNOWN;
-		if (JobType.contains(jobTypeString)) {
-			jobType = JobType.valueOf(jobTypeString);
-		}
-
+		String jobType = rs.getString("JobType");
 		return new JobHeader(key, jobId, description, standardQuantity, jobType);
 	}
 

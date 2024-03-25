@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.nokona.enums.JobType;
 import com.nokona.enums.ReportCategory;
 import com.nokona.utilities.BarCodeUtilities;
 

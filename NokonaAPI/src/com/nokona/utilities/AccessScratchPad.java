@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.nokona.enums.JobType;
 import com.nokona.exceptions.DataNotFoundException;
 import com.nokona.model.JobHeader;
 
@@ -809,11 +808,7 @@ public class AccessScratchPad {
 		String description = rs.getString("Description");
 
 		int standardQuantity = rs.getInt("standardQuantity");
-		String jobTypeString = rs.getString("JobType");
-		JobType jobType = JobType.UNKNOWN;
-		if (JobType.contains(jobTypeString)) {
-			jobType = JobType.valueOf(jobTypeString);
-		}
+		String jobType = rs.getString("JobType");
 
 		return new JobHeader(key, jobId, description, standardQuantity, jobType);
 	}

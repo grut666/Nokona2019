@@ -160,7 +160,7 @@ public class NokonaDAOLaborCode extends NokonaDAO implements NokonaDatabaseLabor
 			psDelLaborCodeByKey.setLong(1, key);
 			int rowCount = psDelLaborCodeByKey.executeUpdate();
 			if (rowCount == 0) {
-				throw new DataNotFoundException("Error.  Delete Operation Key " + key + " failed");
+				throw new DataNotFoundException("Error.  Delete LaborCode Key " + key + " failed");
 			}
 
 		} catch (SQLException e) {

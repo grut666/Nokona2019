@@ -154,7 +154,7 @@ public class NokonaDAOLevelCode extends NokonaDAO implements NokonaDatabaseLevel
 			psDelLevelCodeByKey.setLong(1, key);
 			int rowCount = psDelLevelCodeByKey.executeUpdate();
 			if (rowCount == 0) {
-				throw new DataNotFoundException("Error.  Delete Operation Key " + key + " failed");
+				throw new DataNotFoundException("Error.  Delete LevelCode Key " + key + " failed");
 			}
 
 		} catch (SQLException e) {

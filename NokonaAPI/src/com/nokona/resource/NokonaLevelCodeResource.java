@@ -19,7 +19,6 @@ import com.nokona.exceptions.DatabaseException;
 import com.nokona.exceptions.DuplicateDataException;
 
 import com.nokona.model.LevelCode;
-import com.nokona.utilities.TransferToAccess;
 
 @Path("/levelcodes")
 @ApplicationScoped
@@ -96,13 +95,14 @@ public class NokonaLevelCodeResource {
 	// @Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{levelCode}")
 	public Response updateLevelCode(@PathParam("levelCode") String levelCode, LevelCode levelCodeIn) {
+		System.out.println("Level Code " + levelCodeIn);
+		System.out.println("Level Code " + levelCode);
 
-		if (levelCode != levelCodeIn.getLevelCode()) {
+		if (! levelCode.equals(levelCodeIn.getLevelCode())) {
 			return Response.status(400).entity("{\"error\":\" Mismatch between body and URL\"}").build();
 		}
 		try {
 			LevelCode fetchedLevelCode = db.updateLevelCode(levelCodeIn);
-			TransferToAccess.transfer("LABOR_U");
 			return Response.status(200).entity(fetchedLevelCode).build();
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
@@ -122,7 +122,6 @@ public class NokonaLevelCodeResource {
 		LevelCode levelCode;
 		try {
 			levelCode = db.addLevelCode(levelCodeIn);
-			TransferToAccess.transfer("LABOR_C");
 		} catch (DuplicateDataException e) {
 			return Response.status(422).entity(e.getMessage()).build();
 		} catch (DatabaseConnectionException ex) {
@@ -141,7 +140,6 @@ public class NokonaLevelCodeResource {
 		try {
 			// getDB();
 			db.deleteLevelCode(levelCode);
-			TransferToAccess.transfer("LABOR_D");
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + levelCode + " not found\"}").build();
 		} catch (DatabaseException ex) {
@@ -161,7 +159,6 @@ public class NokonaLevelCodeResource {
 		try {
 			// getDB();
 			db.deleteLevelCodeByKey(key);
-			TransferToAccess.transfer("LABOR_D");
 
 		} catch (DataNotFoundException ex) {
 			return Response.status(404).entity("{\"error\":\"" + key + " not found\"}").build();

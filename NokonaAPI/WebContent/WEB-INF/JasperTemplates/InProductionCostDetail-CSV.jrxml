@@ -76,9 +76,9 @@ order by jobId, pct_complete desc]]>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="25" splitType="Stretch">
+		<band height="38" splitType="Stretch">
 			<textField>
-				<reportElement x="230" y="2" width="50" height="20" uuid="064f913d-4e2c-46b4-a9f1-da5ce376a4ab">
+				<reportElement x="240" y="2" width="50" height="20" uuid="064f913d-4e2c-46b4-a9f1-da5ce376a4ab">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bf8cbfaa-2ce3-4ea3-a637-02069e6335aa"/>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -87,7 +87,7 @@ order by jobId, pct_complete desc]]>
 				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="300" y="2" width="82" height="20" uuid="43f7dff4-54c7-40a1-a7f3-305a2a912c44">
+				<reportElement x="300" y="2" width="80" height="20" uuid="43f7dff4-54c7-40a1-a7f3-305a2a912c44">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a6e8969f-1b83-4693-a108-72a2034892b7"/>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -114,11 +114,18 @@ order by jobId, pct_complete desc]]>
 				<textFieldExpression><![CDATA[$F{cost}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="2" width="210" height="20" uuid="e857906f-43cc-4a99-874b-985553b1faf9"/>
+				<reportElement x="0" y="2" width="168" height="20" uuid="e857906f-43cc-4a99-874b-985553b1faf9"/>
 				<textElement>
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{jobId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="182" y="2" width="58" height="20" uuid="b8740cd9-bdf2-49c5-90a2-8b7acbefcf12"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{jobtype}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

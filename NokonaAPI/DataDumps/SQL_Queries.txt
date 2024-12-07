@@ -1,0 +1,128 @@
+use nokona;
+select th.key, th.jobId, th.description, th.quantity, ocv.cost, ocv.completedcount, tov.totalcount, jh.jobtype,
+ocv.completedcount / tov.totalcount as "pct_complete" from ticketheader th;
+
+select count(*) from ticketheader th
+join ticketdetailview tdv on th.key = tdv.key
+join operationscompletedview ocv on th.key = ocv.key
+join totaloperationsview tov on th.key = tov.key
+join jobheader jh on jh.jobID = th.jobId
+where  tdv.qty > 0 and th.status = 'P' and (jobtype =  'B' or 'All' = 'All' )
+group by th.key
+order by tticketdetailJobTypeh.jobId, pct_complete desc;
+
+select count(*) from ticketheader th where th.status = 'P';
+select *
+ from levelcode;
+ 
+ select * from categorycode
+ ;
+ 
+ select distinct(jobtype) from jobheader;
+ 
+ use nokona;
+Create view ticketdetailview  as 
+Select concat(td.key, Td.sequence), opcode, statusDate, status, standardquantity, hourlyRateSAH,
+laborRate, updatedSequence, OperationDescription, LaborDescription, laborCode, BarCodeID1 as BarCode, ActualQuantity1 as ActualQuantity 
+from ticketdetail td 
+union
+Select concat(td.key, Td.sequence), opcode, statusDate, status, standardquantity, hourlyRateSAH,
+laborRate, updatedSequence, OperationDescription, LaborDescription, laborCode, BarCodeID2 as BarCode, ActualQuantity2 as ActualQuantity 
+from ticketdetail td where ActualQuantity2 > 0;
+;
+use nokona;
+Select JH.JobId,  TRIM(TRAILING '-RH' FROM JH.JobId) JHIDR, TRIM(TRAILING '-RH' FROM JH.JobId) JHIDL from JobHeader JH
+join jobDetail JD on JH.JobID = JD.JobId or JH.JHIDR = JD.JobID or JH.JHIDL = JD.JobID; 
+
+-- where JH.JobId = 'BS-1300C-RH';
+ 
+select JH.JobID , trim(TRIM(TRAILING '-LH' FROM TRIM(TRAILING '-RH' FROM JH.jobId))) as JobIdTrimmed, JD.OpCode, JD.Sequence,
+op.opcode, op.levelcode, op.hourlyratesah, lc.levelrate from JobHeader as JH 
+join JobDetail as JD on trim(TRIM(TRAILING '-LH' FROM TRIM(TRAILING '-RH' FROM JH.jobId))) = JD.JobId 
+join operation op on jd.opcode = op.opcode join LevelCode lc on op.levelcode = lc.levelcode
+where JH.JobId LIKE 'A%';
+
+select JH.JobID , trim(TRIM(TRAILING '-LH' FROM TRIM(TRAILING '-RH' FROM JH.jobId))) as aaa from JobHeader as JH  where JH.JobId = 'A-1150C-GR-LH';
+
+select * from jobdetail jd join operation op on jd.opcode = op.opcode join LevelCode lc on op.levelcode = lc.levelcode where jobid like 'A%';
+
+select TH.Key, TH.JobID, TH.CreatedDate, TH.Status as "Header Status", TH.statusDate, TH.Quantity, TH.Description,
+TD.Sequence, TD.OpCode, TD.StatusDate, TD.Status as "Detail Status", TD.StandardQuantity, TD.HourlyRateSAH, TD.BarCodeID,
+	TD.LaborRate, TD.UpdatedSequence, TD.ActualQuantity, TD.OperationDescription, TD.LaborDescription, TD.LaborCode
+     from ticketheader TH
+join TicketDetail TD on TH.Key = TD.Key where TD.Key = 49978 order by TD.Key, TD.Sequence;
+
+select TH.Key, TH.JobID, TH.CreatedDate, TH.Status as "Header Status", TH.statusDate, TH.Quantity, TH.Description,
+TD.Sequence, TD.OpCode, TD.StatusDate, TD.Status as "Detail Status", TD.StandardQuantity, TD.HourlyRateSAH, TD.BarCodeID,
+	TD.LaborRate, TD.UpdatedSequence, TD.ActualQuantity, TD.OperationDescription, TD.LaborDescription, TD.LaborCode,
+    EM.LastName, EM.FirstName, EM.LaborCode, EM.EmpId
+     from ticketheader TH
+join TicketDetail TD on TH.Key = TD.Key 
+join Employee EM on TD.BarCodeID = EM.BarCodeID order by TD.Key, TD.Sequence;
+truncate laborcode_log;
+select * from ticketheaderdetail where detail_status_date > '2021-05-27' and detail_status_date < '2021-05-30' and Header_Status = 'C';
+
+CREATE VIEW `ticketheaderdetail` AS
+select TH.Key, TH.JobID, TH.CreatedDate, TH.Status as "Header_Status", TH.statusDate as "Header_Status_Date", TH.Quantity, TH.Description,
+TD.Sequence, TD.OpCode, TD.StatusDate as "Detail_Status_Date", TD.Status as "Detail_Status", TD.StandardQuantity, TD.HourlyRateSAH, TD.BarCodeID,
+	TD.LaborRate, TD.UpdatedSequence, TD.ActualQuantity, TD.OperationDescription, TD.LaborDescription, TD.LaborCode,
+    EM.LastName, EM.FirstName, EM.EmpId
+     from ticketheader TH
+join TicketDetail TD on TH.Key = TD.Key 
+join Employee EM on TD.BarCodeID = EM.BarCodeID order by TD.Key, TD.Sequence;
+
+describe ticketdetail
+;
+select * from jobheader where jobid = 'A-MARK-TEST';
+select * from laborcostview where jobid = 'A-1150I-GR-LH';
+select * from laborcostview where JobId = 'W-1200C-LH' order by sequence;
+select * from jobdetail where jobid LIKE  'W-1200C';
+
+select * from operation where opcode = '222';
+update operation set levelcode = 0 where opcode = '222';
+select * from levelcode;
+
+SELECT * FROM nokona.ticketheader where jobid like 'S-1200C_S%';
+SELECT * FROM nokona.jobheader where jobid like 'S-1200C_S%';
+SELECT * FROM nokona.jobdetail where jobid like 'S-1200C%';
+
+select * from nokona.ticketheader where ticketheader.key = 38747;
+
+select * from nokona.ticketheader;
+SELECT * FROM nokona.jobheader where jobid like 'A-1150I%';
+SELECT * FROM nokona.jobdetail where jobId like 'A-1150%';
+Select count(distinct(ticketheader.jobid)) from ticketheader left join jobHeader on  ticketheader.jobid = jobHeader.jobid where jobheader.jobid is null order by ticketheader.jobid;
+Select distinct(ticketheader.jobid)from ticketheader left join jobHeader on  ticketheader.jobid = jobHeader.jobid where jobheader.jobid is null  order by ticketheader.jobid;
+select * from ticketheader where jobid like 'W%';
+select distinct jh.jobid from jobdetail jd  left join jobheader jh on jd.jobid = jh.jobid where jh.jobid = null;  
+Select distinct(ticketheader.jobid)from ticketheader left join jobHeader on  ticketheader.jobid = jobHeader.jobid where jobheader.jobid is null  order by ticketheader.jobid;
+
+SELECT * FROM nokona.ticketheader;
+use nokona;
+select * from ticketdetail where ticketdetail.key=35514;
+update operation set LevelCode = 'P0' where levelcode = '0';
+
+Use nokona;
+SELECT count(*) FROM nokona.ticketheader th join ticketDetail td on td.key = th.key where th.jobid = 'W-1275M-A-RH' and th.status <> 'C' and hourlyRateSAH > 0
+order by tH.key desc, sequence asc;
+
+Select * from ticketheader th join ticketdetail td on th.key = td.key 
+						where jobID = 'W-1275M-A-RH' and th.status = 'P' and hourlyRateSAH > 0 and td.status = 'C' order by th.key desc, sequence;
+select * from ticketdetail where ticketDetail.key =        53322;
+SELECT * FROM nokona.operationscompletedview ocv join ticketheader th on th.key = ocv.key;
+SELECT * FROM nokona.operationscompletedview;
+select * from ticketheader th join ticketdetail td on td.key = th.key where th.key =53324;
+select th.key, th.jobId, th.description, th.quantity, ocv.cost, ocv.completedcount, tov.totalcount,
+ocv.completedcount / tov.totalcount as "pct_complete" from ticketheader th
+join ticketdetailview tdv on th.key = tdv.key
+join operationscompletedview ocv on th.key = ocv.key
+join totaloperationsview tov on th.key = tov.key
+where tdv.qty > 0 and th.status = 'P'
+group by th.key
+order by jobId, pct_complete desc;
+
+SELECT *
+ FROM nokona.ticketdetail where ticketdetail.key in (40302);
+ 
+ 
+SELECT * FROM ticketheader where createddate != statusdate  and status != 'C';

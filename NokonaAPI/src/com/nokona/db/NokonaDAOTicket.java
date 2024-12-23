@@ -162,6 +162,9 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 						ticket.getTicketDetails().remove(i);
 					}
 				}
+//				for (TicketDetail td : ticket.getTicketDetails()) {
+//					System.err.println(td);
+//				}
 				tickets.add(ticket);
 			}
 		} catch (SQLException ex) {
@@ -538,7 +541,7 @@ public class NokonaDAOTicket extends NokonaDAO implements NokonaDatabaseTicket {
 		String opCode = rs.getString("opCode");
 		int sequence = rs.getInt("Sequence");
 		int updatedSequence = rs.getInt("UpdatedSequence");
-		Date statusDate = DateUtilities.convertSQLDateToUtilDate(rs.getDate("StatusDate"));
+		Date statusDate = DateUtilities.convertSQLDateToUtilDate(rs.getDate("td.StatusDate"));
 		String operationStatusString = rs.getString("td.Status");
 		// System.out.println("Op Status is " +operationStatusString);
 		String operationDescription = rs.getString("operationDescription");

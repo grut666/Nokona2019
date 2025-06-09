@@ -325,7 +325,7 @@ Order By Coalesce(Concat(EM.LastName, ', ', EM.FirstName), 'UNKNOWN'), TD.BarCod
 				<textFieldExpression><![CDATA[$F{SAH}]]></textFieldExpression>
 			</textField>
 			<textField pattern="MM/dd/yyyy">
-				<reportElement x="620" y="0" width="60" height="15" uuid="c64aa74f-2740-46c7-9c3a-2969c8209311">
+				<reportElement x="620" y="0" width="68" height="15" uuid="c64aa74f-2740-46c7-9c3a-2969c8209311">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="143c8917-5385-437f-ad13-1f37adec1a19"/>
 				</reportElement>
 				<textElement>

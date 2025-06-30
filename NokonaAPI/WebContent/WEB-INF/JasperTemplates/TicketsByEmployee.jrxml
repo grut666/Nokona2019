@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TicketsByEmployee" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2b2eae34-b49d-496b-a7ea-e4a835db99c0">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="311"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="679"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Nokona Data Adapter"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="START_DATE" class="java.lang.String"/>
+	<parameter name="END_DATE" class="java.lang.String"/>
+	<parameter name="BAR_CODE_ID" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT th.key, td.opCode, td.OperationDescription, td.statusdate, td.levelcode, td.ActualQuantity1, td.HourlyRateSAH, emp.LastName, emp.FirstName, td.barcodeid1
+FROM ticketheader AS th
+	INNER JOIN ticketdetail AS td ON th.key = td.Key
+    INNER JOIN employee AS emp ON td.BarCodeID1 = emp.BarCodeID
+WHERE (td.StatusDate  BETWEEN $P{START_DATE} and $P{END_DATE}) AND (td.BarCodeID1 = $P{BAR_CODE_ID} OR 'All' =  $P{BAR_CODE_ID})
+ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
+	</queryString>
+	<field name="key" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="key"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketheader"/>
+	</field>
+	<field name="opCode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="opCode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketdetail"/>
+	</field>
+	<field name="OperationDescription" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="OperationDescription"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketdetail"/>
+	</field>
+	<field name="statusdate" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="statusdate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketdetail"/>
+	</field>
+	<field name="levelcode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="levelcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketdetail"/>
+	</field>
+	<field name="ActualQuantity1" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="ActualQuantity1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketdetail"/>
+	</field>
+	<field name="HourlyRateSAH" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="HourlyRateSAH"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketdetail"/>
+	</field>
+	<field name="LastName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="LastName"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="employee"/>
+	</field>
+	<field name="FirstName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="FirstName"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="employee"/>
+	</field>
+	<field name="barcodeid1" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="barcodeid1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ticketdetail"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="240" y="0" width="280" height="30" uuid="aa4a538d-b2ec-4f6f-922b-22a6341a5546"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tickets By Employee]]></text>
+			</staticText>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement x="640" y="0" width="100" height="30" uuid="8c73a870-ad38-45fd-b159-f8bd4438aabb"/>
+				<textElement>
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement x="210" y="40" width="100" height="17" uuid="5eeff36a-09a4-44b5-b19d-04df0087660f"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{START_DATE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement x="450" y="40" width="100" height="20" uuid="d48f0152-de9a-432a-944c-38412c2ee54f"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{END_DATE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="340" y="40" width="100" height="19" uuid="3ad0c816-94bb-4a93-a923-63ebf0baa6d7"/>
+				<textElement>
+					<font fontName="Arial" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Thru]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="470" y="0" width="100" height="20" uuid="2ab50514-a170-4670-99f8-c265d3d595c7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
+				</reportElement>
+				<text><![CDATA[FirstName]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="580" y="0" width="100" height="20" uuid="e751d841-1f63-458b-8c40-4e0e04ed882c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b8871d63-5908-4993-93f9-27f6f001179f"/>
+				</reportElement>
+				<text><![CDATA[LastName]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="700" y="0" width="100" height="20" uuid="c09b3923-f887-4d24-b7e3-94f6539ef2f6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9d0622a8-d176-4fe7-b3a6-08742b40a96e"/>
+				</reportElement>
+				<text><![CDATA[barcodeid1]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="1" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<textField>
+				<reportElement x="470" y="2" width="100" height="20" uuid="b8ac6a96-92fa-4683-8568-fb5c619fe8e6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{FirstName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="580" y="2" width="100" height="20" uuid="9057ff00-b02f-496d-9862-0f5969e1bc43">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b8871d63-5908-4993-93f9-27f6f001179f"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{LastName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="700" y="2" width="100" height="20" uuid="05375950-b14f-4515-8125-a9added49eba">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9d0622a8-d176-4fe7-b3a6-08742b40a96e"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{barcodeid1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

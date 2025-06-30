@@ -15,6 +15,13 @@ public class TicketReports {
 			parms.put("END_DATE", properties.getEndDate());
 			parms.put("STATUS", properties.getParameters().get("STATUS"));
 			
+		} else if (reportName.startsWith("TicketsByEmployee")) {
+			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/" + reportName + ".jrxml");
+			
+			parms.put("START_DATE", properties.getStartDate());
+			parms.put("END_DATE", properties.getEndDate());
+			parms.put("BAR_CODE_ID", properties.getParameters().get("BAR_CODE_ID"));
+			
 		} else {
 			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/TicketWIP.jrxml");
 		}

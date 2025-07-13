@@ -22,6 +22,7 @@ public class ReportProperties {
 	private List<OrderBy> orderBys;	
 	private String operatorId;
 	private String jobId;
+	private String barCodeId;
 	private List<String> jobIds;
 	private String operationId;
 	private boolean csvNotHtml;

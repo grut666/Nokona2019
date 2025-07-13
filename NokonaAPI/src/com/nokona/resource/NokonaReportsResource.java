@@ -84,6 +84,7 @@ public class NokonaReportsResource extends NokonaDAO {
 			@DefaultValue("") @QueryParam("all") String all,
 			@DefaultValue("") @QueryParam("csv") String csv,
 			@DefaultValue("") @QueryParam("jobId") String jobId,
+			@DefaultValue("") @QueryParam("barCodeId") String barCodeId,
 			@DefaultValue("") @QueryParam("jobIds") List<String> jobIds)
 	{
 		ReportProperties properties = new ReportProperties();
@@ -92,11 +93,13 @@ public class NokonaReportsResource extends NokonaDAO {
 		properties.setStartDate(startDate);
 		properties.setEndDate(endDate);
 		properties.setJobId(jobId);
+		properties.setBarCodeId(barCodeId);
 		properties.setJobIds(jobIds);
 		System.out.println("**** JobIDS are " + jobIds + "**********");
 		properties.setReportName(reportName);
 		properties.setReportCategory(ReportCategory.valueOf(reportCategory));
 		properties.getParameters().put("STATUS", status);
+		properties.getParameters().put("BAR_CODE_ID", barCodeId);
 		properties.getParameters().put("CATEGORY", category);
 		properties.getParameters().put("ALL", all);
 		properties.setCsvNotHtml("True".equals(csv) ? true : false);

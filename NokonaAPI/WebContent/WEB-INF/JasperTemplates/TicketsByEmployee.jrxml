@@ -16,13 +16,14 @@
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="START_DATE" class="java.lang.String"/>
 	<parameter name="END_DATE" class="java.lang.String"/>
-	<parameter name="BAR_CODE_ID" class="java.lang.String"/>
+	<parameter name="BAR_CODE_ID" class="java.lang.Integer"/>
+	<parameter name="ALL" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT th.key, td.opCode, td.OperationDescription, td.statusdate, td.levelcode, td.ActualQuantity1, td.HourlyRateSAH, emp.LastName, emp.FirstName, td.barcodeid1
 FROM ticketheader AS th
 	INNER JOIN ticketdetail AS td ON th.key = td.Key
     INNER JOIN employee AS emp ON td.BarCodeID1 = emp.BarCodeID
-WHERE (td.StatusDate  BETWEEN $P{START_DATE} and $P{END_DATE}) AND (td.BarCodeID1 = $P{BAR_CODE_ID} OR 'All' =  $P{BAR_CODE_ID})
+WHERE (td.StatusDate  BETWEEN $P{START_DATE} and $P{END_DATE}) AND (td.BarCodeID1 = $P{BAR_CODE_ID} OR 'All' =  $P{ALL})
 ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
 	</queryString>
 	<field name="key" class="java.lang.Integer">
@@ -108,54 +109,198 @@ ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch">
+		<band height="33" splitType="Stretch">
 			<staticText>
-				<reportElement x="470" y="0" width="100" height="20" uuid="2ab50514-a170-4670-99f8-c265d3d595c7">
+				<reportElement x="600" y="8" width="50" height="20" uuid="2ab50514-a170-4670-99f8-c265d3d595c7">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
 				</reportElement>
-				<text><![CDATA[FirstName]]></text>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[First]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="580" y="0" width="100" height="20" uuid="e751d841-1f63-458b-8c40-4e0e04ed882c">
+				<reportElement x="660" y="8" width="60" height="20" uuid="e751d841-1f63-458b-8c40-4e0e04ed882c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b8871d63-5908-4993-93f9-27f6f001179f"/>
 				</reportElement>
-				<text><![CDATA[LastName]]></text>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Last]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="700" y="0" width="100" height="20" uuid="c09b3923-f887-4d24-b7e3-94f6539ef2f6">
+				<reportElement x="735" y="8" width="50" height="20" uuid="c09b3923-f887-4d24-b7e3-94f6539ef2f6">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9d0622a8-d176-4fe7-b3a6-08742b40a96e"/>
 				</reportElement>
-				<text><![CDATA[barcodeid1]]></text>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[BarCD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="490" y="8" width="30" height="20" uuid="e89d91f8-2523-42a0-991d-bda5ea96b698">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lvl]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="450" y="8" width="30" height="20" uuid="348e65f1-23d8-4019-aad1-f17af97c925b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qty]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="8" width="50" height="20" uuid="df0c853f-414b-4312-897d-dbce62a11b31">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[St Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="8" width="50" height="20" uuid="b2eb404b-9181-48b8-b7db-44cc94740e85">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Desc]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="70" y="8" width="50" height="20" uuid="6fa48b33-7985-4a17-ae8a-f7452451df4c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[OpCode]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-10" y="8" width="50" height="20" uuid="d99c0bfb-55d2-433a-9efa-fadc3f1e869c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ticket]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="530" y="8" width="50" height="20" uuid="add291a2-4344-4fda-b8e4-3515208a16ab">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SAH]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="1" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
 		<band height="24" splitType="Stretch">
 			<textField>
-				<reportElement x="470" y="2" width="100" height="20" uuid="b8ac6a96-92fa-4683-8568-fb5c619fe8e6">
+				<reportElement x="600" y="0" width="50" height="20" uuid="b8ac6a96-92fa-4683-8568-fb5c619fe8e6">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
 				</reportElement>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{FirstName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="580" y="2" width="100" height="20" uuid="9057ff00-b02f-496d-9862-0f5969e1bc43">
+				<reportElement x="660" y="0" width="60" height="20" uuid="9057ff00-b02f-496d-9862-0f5969e1bc43">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b8871d63-5908-4993-93f9-27f6f001179f"/>
 				</reportElement>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{LastName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="700" y="2" width="100" height="20" uuid="05375950-b14f-4515-8125-a9added49eba">
+				<reportElement x="735" y="0" width="50" height="20" uuid="05375950-b14f-4515-8125-a9added49eba">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9d0622a8-d176-4fe7-b3a6-08742b40a96e"/>
 				</reportElement>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{barcodeid1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="0" width="70" height="20" uuid="1cb9db64-8cc6-4654-a801-e99da6156416">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f3174480-5238-4884-94c1-f5906a6190c2"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{opCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-10" y="0" width="70" height="20" uuid="3b6800cf-c49b-4139-8810-f326e90387a2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c2df8f2b-53b1-41d1-a69d-2bf7fb1888c9"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{key}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="0" width="210" height="20" uuid="ceccc3ba-933a-46a6-99a2-0ca6af8761fe">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="67ec36c7-385d-4e43-9b91-a286e4f42c40"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{OperationDescription}]]></textFieldExpression>
+			</textField>
+			<textField pattern="M/d/yyyy">
+				<reportElement x="370" y="0" width="70" height="20" uuid="5fc6c646-1a8e-42c1-ac63-cc1b06aae726">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="825da449-63cb-442c-82c6-d6538dacd91d"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{statusdate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="450" y="-2" width="30" height="20" uuid="8ab1bf53-f202-4950-ab48-9e7442d2c3e8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="26b78a0d-c980-4d2d-adaa-63390cbe9857"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ActualQuantity1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="530" y="0" width="61" height="20" uuid="1f8c3ce8-815a-4bb1-9f90-c0c9516492a0">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="299fac9c-4301-4916-8aef-bf41fd19e1ae"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{HourlyRateSAH}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="495" y="0" width="25" height="20" uuid="9540b278-ce4b-4d60-9abb-e399f7754a4a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4fb4c103-b7b0-484e-b2a3-45382f7658d5"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{levelcode}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band height="18" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch"/>

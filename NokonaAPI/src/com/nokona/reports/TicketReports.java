@@ -17,10 +17,19 @@ public class TicketReports {
 			
 		} else if (reportName.startsWith("TicketsByEmployee")) {
 			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/" + reportName + ".jrxml");
-			
+			System.err.println("***************** TicketsByEmployee ***************");
+//			System.err.println("End Date: "  + properties.getEndDate());
+//			System.err.println("Start Date: " +properties.getStartDate());
+//			System.err.println("Bar Code ID: " + properties.getParameters().get("BAR_CODE_ID"));
+			if (properties.getBarCodeId().equals("All")) {
+				 parms.put("ALL", "All");
+				 parms.put("BAR_CODE_ID", 0);
+			} else {
+				parms.put("ALL", "One");
+				parms.put("BAR_CODE_ID", Integer.parseInt(properties.getParameters().get("BAR_CODE_ID")));
+			}
 			parms.put("START_DATE", properties.getStartDate());
 			parms.put("END_DATE", properties.getEndDate());
-			parms.put("BAR_CODE_ID", properties.getParameters().get("BAR_CODE_ID"));
 			
 		} else {
 			templateFileName = context.getRealPath("/WEB-INF/JasperTemplates/TicketWIP.jrxml");

@@ -115,7 +115,7 @@ ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
 				</reportElement>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[First]]></text>
 			</staticText>
@@ -124,7 +124,7 @@ ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b8871d63-5908-4993-93f9-27f6f001179f"/>
 				</reportElement>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Last]]></text>
 			</staticText>
@@ -133,7 +133,7 @@ ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9d0622a8-d176-4fe7-b3a6-08742b40a96e"/>
 				</reportElement>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[BarCD]]></text>
 			</staticText>
@@ -142,7 +142,7 @@ ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
 				</reportElement>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Lvl]]></text>
 			</staticText>
@@ -151,7 +151,7 @@ ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
 				</reportElement>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Qty]]></text>
 			</staticText>
@@ -160,7 +160,7 @@ ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
 				</reportElement>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[St Date]]></text>
 			</staticText>
@@ -169,7 +169,7 @@ ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
 				</reportElement>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Desc]]></text>
 			</staticText>
@@ -178,7 +178,7 @@ ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
 				</reportElement>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[OpCode]]></text>
 			</staticText>
@@ -187,7 +187,7 @@ ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
 				</reportElement>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ticket]]></text>
 			</staticText>
@@ -196,7 +196,7 @@ ORDER BY emp.LastName, emp.FirstName, td.StatusDate, td.LevelCode]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="61b8863f-79a3-42a0-bd3f-fd334168136d"/>
 				</reportElement>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[SAH]]></text>
 			</staticText>
